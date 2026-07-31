@@ -6,6 +6,7 @@ at commit `e4e4163101f162881e628f300a9ca4e6a940bcea`:
 
 - `laravel-patterns`
 - `python-patterns`
+- `seo`
 - `vue-patterns`
 
 The source material is licensed under the MIT License:

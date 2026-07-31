@@ -13,13 +13,15 @@ ALLOWED = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 class CatalogContract(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.manifest = json.loads((ROOT / "catalog.json").read_text(encoding="utf-8"))
+        cls.manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"))
 
     def test_manifest_names_a_versioned_catalog(self):
-        self.assertEqual(1, self.manifest["manifest"])
+        self.assertEqual(1, self.manifest["schema"])
         self.assertRegex(self.manifest["name"], ALLOWED)
         self.assertRegex(self.manifest["version"], r"^\d+\.\d+\.\d+$")
         self.assertTrue(self.manifest["description"].strip())
+        self.assertGreaterEqual(len(self.manifest["skills"]), 1)
+        self.assertFalse((ROOT / "catalog.json").exists())
 
     def test_manifest_declares_every_skill_directory_once(self):
         declared = self.manifest["skills"]
@@ -29,6 +31,11 @@ class CatalogContract(unittest.TestCase):
             sorted(path.name for path in (ROOT / "skills").iterdir() if path.is_dir()),
             sorted(names),
         )
+
+    def test_general_catalog_contains_pdf_and_seo(self):
+        names = {entry["name"] for entry in self.manifest["skills"]}
+        self.assertIn("pdf-creation", names)
+        self.assertIn("seo", names)
 
     def test_every_entry_is_a_complete_named_skill(self):
         for entry in self.manifest["skills"]:
