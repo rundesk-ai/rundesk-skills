@@ -1,7 +1,7 @@
 {
   "manifest": 1,
   "name": "rundesk-skills-dev",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Curated development guidance for Rundesk agents.",
   "skills": [
     {
@@ -23,10 +23,6 @@
     {
       "name": "vue-patterns",
       "path": "skills/vue-patterns"
-    },
-    {
-      "name": "writing-rundesk-skills",
-      "path": "skills/writing-rundesk-skills"
     }
   ]
 }
