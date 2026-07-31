@@ -1,0 +1,32 @@
+{
+  "manifest": 1,
+  "name": "rundesk-skills-dev",
+  "version": "0.1.0",
+  "description": "Curated development guidance for Rundesk agents.",
+  "skills": [
+    {
+      "name": "frontend-design",
+      "path": "skills/frontend-design"
+    },
+    {
+      "name": "laravel-patterns",
+      "path": "skills/laravel-patterns"
+    },
+    {
+      "name": "python-patterns",
+      "path": "skills/python-patterns"
+    },
+    {
+      "name": "python-testing",
+      "path": "skills/python-testing"
+    },
+    {
+      "name": "vue-patterns",
+      "path": "skills/vue-patterns"
+    },
+    {
+      "name": "writing-rundesk-skills",
+      "path": "skills/writing-rundesk-skills"
+    }
+  ]
+}
