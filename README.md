@@ -1,7 +1,8 @@
 # Rundesk Skills
 
-Rundesk's curated collection of general-purpose, guidance-only Agent Skills. It contains
-complete skill packages and no service integration commands, credentials, or shared state.
+Rundesk's curated collection of general-purpose, guidance-only Agent Skills. It is included
+with every Rundesk install, contains complete skill packages, and has no service integration
+commands, credentials, or shared state.
 
 Install the repository into Rundesk's machine-wide skill library:
 
@@ -38,3 +39,7 @@ strict semantic `version` changes whenever installed content changes.
 
 Script-backed skill catalogs use this same manifest format, but they will live in separate
 repositories rather than this general collection.
+
+Rundesk checks this repository after every successful `rundesk update` and activates it only
+when `manifest.json` declares a newer version. See [RELEASING.md](RELEASING.md) for the
+version, tag, validation, and GitHub Release process maintainers use.

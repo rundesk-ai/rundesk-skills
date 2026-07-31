@@ -49,6 +49,16 @@ class CatalogContract(unittest.TestCase):
     def test_catalog_contains_no_integration_commands(self):
         self.assertEqual([], list((ROOT / "skills").glob("*/scripts/**")))
 
+    def test_release_process_ties_tags_to_the_manifest_version(self):
+        guide = (ROOT / "RELEASING.md").read_text(encoding="utf-8")
+        workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("manifest.json", guide)
+        self.assertIn('tags:', workflow)
+        self.assertIn('does not match manifest', workflow)
+        self.assertIn('gh release create', workflow)
+
 
 if __name__ == "__main__":
     unittest.main()
