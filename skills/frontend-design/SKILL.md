@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: Design, implement, or critique distinctive website and product interfaces with strong visual hierarchy, usable interaction flows, responsive behavior, and accessibility. Use for landing pages, web apps, dashboards, component redesigns, UI polish, UX reviews, design systems, or any frontend task where visual and interaction quality matters.
+description: Design, implement, or critique distinctive, accessible web interfaces. Use for landing pages, apps, dashboards, component redesigns, UI polish, UX reviews, design systems, responsive behavior, or frontend work where visual and interaction quality matters.
 ---
 
 # Frontend design

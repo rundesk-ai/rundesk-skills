@@ -1,6 +1,6 @@
 ---
 name: python-testing
-description: Python standard-library unittest patterns for TestCase, discovery, cleanup, subtests, mocking, and async tests. Use when a project uses unittest or when writing, reviewing, debugging, or organizing unittest-based tests.
+description: Apply standard-library unittest patterns for cases, discovery, cleanup, subtests, mocking, and async tests. Use when writing, reviewing, debugging, or organizing unittest-based Python tests.
 ---
 
 # Python unittest

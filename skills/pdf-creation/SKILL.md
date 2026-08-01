@@ -1,6 +1,6 @@
 ---
 name: pdf-creation
-description: Create polished custom PDF documents locally with ReportLab, including flowing multipage layouts, tables, images, fonts, headers, and footers. Use when generating or revising a PDF where visual layout must be rendered and verified before delivery.
+description: Create polished PDFs locally with ReportLab and verify rendered layout. Use for multipage documents, tables, images, custom fonts, headers, footers, or PDF generation and revision where visual quality matters.
 ---
 
 # Local PDF creation
