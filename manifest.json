@@ -1,9 +1,13 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
+    {
+      "name": "filing-github-issues",
+      "path": "skills/filing-github-issues"
+    },
     {
       "name": "frontend-design",
       "path": "skills/frontend-design"
@@ -31,6 +35,14 @@
     {
       "name": "vue-patterns",
       "path": "skills/vue-patterns"
+    },
+    {
+      "name": "writing-github-pull-requests",
+      "path": "skills/writing-github-pull-requests"
+    },
+    {
+      "name": "writing-plans",
+      "path": "skills/writing-plans"
     }
   ]
 }
