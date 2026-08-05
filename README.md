@@ -31,6 +31,7 @@ Removal requires a second `--yes` invocation and is refused while any declared s
 
 ## Included skills
 
+- `filing-github-issues`
 - `frontend-design`
 - `laravel-patterns`
 - `pdf-creation`
@@ -38,6 +39,8 @@ Removal requires a second `--yes` invocation and is refused while any declared s
 - `python-testing`
 - `seo`
 - `vue-patterns`
+- `writing-github-pull-requests`
+- `writing-plans`
 
 ## Manifest contract
 
