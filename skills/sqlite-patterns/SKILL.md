@@ -1,6 +1,6 @@
 ---
 name: sqlite-patterns
-description: "Apply SQLite patterns for connection PRAGMAs, WAL, transactions, migrations, FTS5, indexing, and parameterized queries. Use when embedding SQLite in an application, choosing journal or synchronous settings, writing SQL that takes user input, planning a schema change, building full-text search, or diagnosing `database is locked`, a slow query, a corrupt FTS index, or a database file that will not shrink."
+description: "Apply SQLite patterns for connection PRAGMAs, WAL, transactions, migrations, FTS5, indexing, and parameterized queries. Use when embedding SQLite in an application, choosing journal or synchronous settings, writing SQL that takes user input, planning a schema change, building full-text search, backing up or copying a database file, or diagnosing `database is locked`, a slow query, a corrupt FTS index, or a database file that will not shrink."
 ---
 
 # SQLite Patterns
@@ -13,15 +13,6 @@ your problem rather than a DBA's.
 This skill is engine-level and language-neutral — the rules are SQL and PRAGMA. Worked examples use
 Python's standard-library `sqlite3` because it is the thinnest binding; the same calls exist in
 every other binding.
-
-## When to Apply
-
-- Opening a SQLite connection, or deciding what to configure on it
-- Writing or reviewing SQL that takes user input
-- Planning a schema change or a migration runner
-- Building full-text search
-- Diagnosing `database is locked`, `SQLITE_BUSY`, a slow query, or a file that keeps growing
-- Deciding how to back up, copy, or ship a database file
 
 ## How to Use
 

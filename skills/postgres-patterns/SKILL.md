@@ -1,6 +1,6 @@
 ---
 name: postgres-patterns
-description: "Apply Postgres schema, indexing, query, security, locking, and connection patterns. Use when creating or altering tables and columns, choosing column types, writing migrations, designing indexes, writing RLS policies, granting privileges, or writing SQL; and when diagnosing slow queries, bad EXPLAIN plans, high CPU, timeouts, connection exhaustion, lock contention, bloat, or rows visible to the wrong tenant."
+description: "Apply Postgres schema, indexing, query, security, locking, and connection patterns. Use when creating or altering tables and columns, choosing column types, writing migrations, designing indexes, writing RLS policies, granting privileges, configuring connection limits or a pooler, or writing SQL; and when diagnosing slow queries, bad EXPLAIN plans, high CPU, timeouts, connection exhaustion, lock contention, bloat, or rows visible to the wrong tenant."
 ---
 
 # Postgres Patterns
@@ -8,14 +8,6 @@ description: "Apply Postgres schema, indexing, query, security, locking, and con
 Rules for Postgres running anywhere, across eight categories ordered by how much damage getting
 them wrong does. Each reference file states the rule, shows the incorrect and the correct SQL,
 and explains why the planner or the server behaves that way.
-
-## When to Apply
-
-- Writing SQL queries or designing schemas
-- Adding indexes or tuning an existing query
-- Diagnosing a performance problem in a running database
-- Configuring connection limits or a pooler
-- Writing or reviewing Row-Level Security policies and privilege grants
 
 ## How to Use
 

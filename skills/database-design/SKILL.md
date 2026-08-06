@@ -1,6 +1,6 @@
 ---
 name: database-design
-description: "Apply engine-independent data modelling — normalization, keys, relationship shapes, polymorphic associations, hierarchies, temporal history, audit trails, soft delete, optimistic locking, and keyset pagination. Use when designing a new schema, modelling a many-to-many or parent-child relationship, deciding where a nullable column or a JSON blob belongs, keeping historical versions of a row, recording who changed what and when, or choosing between deleting and retiring a record."
+description: "Apply engine-independent data modelling — normalization, keys, relationship shapes, polymorphic associations, hierarchies, temporal history, audit trails, soft delete, optimistic locking, and keyset pagination. Use when designing a new schema or reviewing one someone proposed, modelling a many-to-many or parent-child relationship, deciding where a nullable column or a JSON blob belongs, keeping historical versions of a row, recording who changed what and when, choosing between deleting and retiring a record, handling two users editing the same row, or paginating a list that will get long."
 ---
 
 # Database Design
@@ -23,16 +23,6 @@ This skill owns the model. It does not own engine tuning, and does not restate i
 When a modelling decision below has an index or a locking consequence, this skill names the
 consequence and points you at whichever of those three you are running. What index type serves it,
 and what the planner does with it, is their answer, not this one's.
-
-## When to Apply
-
-- Designing a schema for a new feature, or reviewing one someone proposed
-- Modelling a relationship: one-to-many, many-to-many, self-referential, or one of several types
-- Deciding between a nullable column, a separate table, and a JSON document
-- Needing history: previous versions of a row, or a record of who changed it
-- Deciding whether a delete removes the row or retires it
-- Handling two users editing the same record
-- Paginating a list that will get long
 
 ## How to Use
 
