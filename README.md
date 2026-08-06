@@ -31,13 +31,17 @@ Removal requires a second `--yes` invocation and is refused while any declared s
 
 ## Included skills
 
+- `database-design`
 - `filing-github-issues`
 - `frontend-design`
 - `laravel-patterns`
+- `mysql-patterns`
 - `pdf-creation`
+- `postgres-patterns`
 - `python-patterns`
 - `python-testing`
 - `seo`
+- `sqlite-patterns`
 - `vue-patterns`
 - `writing-github-pull-requests`
 - `writing-plans`

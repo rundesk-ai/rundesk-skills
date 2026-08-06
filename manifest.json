@@ -1,9 +1,13 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
+    {
+      "name": "database-design",
+      "path": "skills/database-design"
+    },
     {
       "name": "filing-github-issues",
       "path": "skills/filing-github-issues"
@@ -17,8 +21,16 @@
       "path": "skills/laravel-patterns"
     },
     {
+      "name": "mysql-patterns",
+      "path": "skills/mysql-patterns"
+    },
+    {
       "name": "pdf-creation",
       "path": "skills/pdf-creation"
+    },
+    {
+      "name": "postgres-patterns",
+      "path": "skills/postgres-patterns"
     },
     {
       "name": "python-patterns",
@@ -31,6 +43,10 @@
     {
       "name": "seo",
       "path": "skills/seo"
+    },
+    {
+      "name": "sqlite-patterns",
+      "path": "skills/sqlite-patterns"
     },
     {
       "name": "vue-patterns",
