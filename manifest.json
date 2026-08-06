@@ -5,6 +5,10 @@
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
+      "name": "database-design",
+      "path": "skills/database-design"
+    },
+    {
       "name": "filing-github-issues",
       "path": "skills/filing-github-issues"
     },
@@ -39,6 +43,10 @@
     {
       "name": "seo",
       "path": "skills/seo"
+    },
+    {
+      "name": "sqlite-patterns",
+      "path": "skills/sqlite-patterns"
     },
     {
       "name": "vue-patterns",
