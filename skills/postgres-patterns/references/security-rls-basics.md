@@ -53,4 +53,18 @@ The second argument to `current_setting` is `missing_ok`. With `true`, a connect
 set the value gets NULL rather than an error, and NULL in `using` makes the row invisible — the
 connection sees nothing instead of failing open.
 
+**Behind a transaction-mode pooler, a bare `SET` is a tenant leak.** `set app.current_user_id`
+outside a transaction is session state, so the pooler hands that value to whatever client gets the
+connection next — and every policy above then filters for the wrong user. Set it inside the
+transaction that uses it, with `is_local` true, so it is discarded at commit:
+
+```sql
+begin;
+select set_config('app.current_user_id', '123', true);  -- true = local to this transaction
+select * from orders;
+commit;
+```
+
+See `conn-pooling.md` for which session state survives each pool mode.
+
 Reference: [Row Security Policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)

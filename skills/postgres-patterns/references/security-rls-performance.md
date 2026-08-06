@@ -17,7 +17,7 @@ where that call sits in the policy decides whether it runs once or once per row.
 
 ```sql
 create policy orders_policy on orders
-  using (current_setting('app.current_user_id', true)::uuid = user_id);  -- called per row!
+  using (current_setting('app.current_user_id', true)::bigint = user_id);  -- called per row!
 
 -- With 1M rows, current_setting() is called 1M times
 ```
@@ -26,7 +26,7 @@ create policy orders_policy on orders
 
 ```sql
 create policy orders_policy on orders
-  using ((select current_setting('app.current_user_id', true)::uuid) = user_id);  -- called once
+  using ((select current_setting('app.current_user_id', true)::bigint) = user_id);  -- called once
 
 -- 100x+ faster on large tables
 ```
@@ -51,7 +51,7 @@ as $$
     select 1 from public.team_members
     -- always check the calling user's identity inside the function
     where team_id = $1
-      and user_id = (select current_setting('app.current_user_id', true)::uuid)
+      and user_id = (select current_setting('app.current_user_id', true)::bigint)
   );
 $$;
 
