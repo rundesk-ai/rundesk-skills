@@ -1,12 +1,27 @@
 ---
 name: debugging-code
-description: Use this skill when asked to diagnose or fix software that crashes, hangs, regresses, behaves inconsistently, returns wrong results, or fails a test, build, or runtime check without a proven cause. It supplies a language-agnostic workflow to reproduce the failure, preserve evidence, isolate the responsible boundary, test causal hypotheses, find root cause, and prove the smallest safe correction. Do not use it to review a completed change or explain a known cause.
+description: Use this skill when asked to diagnose or fix software that crashes, hangs, regresses, behaves inconsistently, returns wrong results, or fails a test, build, or runtime check without a proven cause. It supplies a language-agnostic workflow to reproduce the failure, preserve evidence, isolate the responsible boundary, test causal hypotheses, find root cause, and prove the smallest safe correction, plus in-depth debugging references for Laravel, Vue and Nuxt, and Python. Do not use it to review a completed change or explain a known cause.
 ---
 
 # Debug code
 
 Find the cause before choosing the correction. Keep observations, inferences, and hypotheses
 separate throughout the investigation.
+
+## Load the framework's mechanics
+
+The workflow below is language-agnostic. Read the reference for the stack in front of you as soon as
+you know what it is — each one says where the evidence is already recorded, how to bisect that
+stack's request or render path, which symptom points at which layer, and the traps that send a
+diagnosis the wrong way.
+
+- [references/laravel.md](references/laravel.md) — Laravel and its queue, Eloquent, and cache layers.
+- [references/vue.md](references/vue.md) — Vue and Nuxt: reactivity, render triggers, hydration.
+- [references/python.md](references/python.md) — tracebacks, `pdb`, development mode, hangs, leaks.
+- [references/sources.md](references/sources.md) — the citation basis for the above.
+
+These supply mechanics only. The rules a symptom violates belong to that stack's own skill —
+`laravel-patterns`, `vue-patterns`, `python-patterns`.
 
 ## Establish the failure
 
@@ -79,7 +94,8 @@ a fix is authorized:
 4. Exercise nearby boundary and failure cases that share the corrected path.
 5. Remove temporary instrumentation and confirm the fix did not conceal the signal.
 
-Use the applicable language or testing skill for framework-specific mechanics.
+Use the framework reference above for the mechanics of proving the fix on that stack, and the
+applicable language or testing skill for the rules the defect violated.
 
 ## Report what is known
 
