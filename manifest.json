@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "0.4.1",
+  "version": "2.1.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -9,8 +9,8 @@
       "path": "skills/database-design"
     },
     {
-      "name": "filing-github-issues",
-      "path": "skills/filing-github-issues"
+      "name": "debugging-code",
+      "path": "skills/debugging-code"
     },
     {
       "name": "frontend-design",
@@ -19,6 +19,10 @@
     {
       "name": "laravel-patterns",
       "path": "skills/laravel-patterns"
+    },
+    {
+      "name": "managing-github",
+      "path": "skills/managing-github"
     },
     {
       "name": "mysql-patterns",
@@ -37,8 +41,8 @@
       "path": "skills/python-patterns"
     },
     {
-      "name": "python-testing",
-      "path": "skills/python-testing"
+      "name": "reviewing-code",
+      "path": "skills/reviewing-code"
     },
     {
       "name": "seo",
@@ -49,12 +53,12 @@
       "path": "skills/sqlite-patterns"
     },
     {
-      "name": "vue-patterns",
-      "path": "skills/vue-patterns"
+      "name": "testing-code",
+      "path": "skills/testing-code"
     },
     {
-      "name": "writing-github-pull-requests",
-      "path": "skills/writing-github-pull-requests"
+      "name": "vue-patterns",
+      "path": "skills/vue-patterns"
     },
     {
       "name": "writing-plans",
