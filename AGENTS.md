@@ -19,7 +19,7 @@ is how a version ships. This file defines how you build here.
    |---|---|
    | any `SKILL.md` | `writing-skills` |
    | any Python in this repository | `python-patterns` |
-   | `tests/test_catalog.py` | `python-testing` |
+   | `tests/test_catalog.py` | `python-patterns` (testing) |
    | a pull request | `managing-github` (pull requests) |
    | a version bump, tag, or release | `RELEASING.md`, then `managing-github` (releases) |
 

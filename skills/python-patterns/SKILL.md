@@ -1,9 +1,17 @@
 ---
 name: python-patterns
-description: Apply maintainable Python patterns for typing, errors, resources, iterators, data classes, decorators, concurrency, packaging, performance, and tooling. Use when writing, reviewing, debugging, refactoring, or structuring Python code, especially around API design, cleanup, async or concurrent work, project layout, and Python-version compatibility. Use python-testing for unittest-specific work.
+description: Use this skill when asked to write, review, debug, refactor, structure, or test Python code, including typing, error handling, resource cleanup, async or concurrent work, packaging, performance, version compatibility, and standard-library unittest. It supplies maintainable Python design patterns plus deeper unittest guidance.
 ---
 
 # Python Development Patterns
+
+## Load focused depth
+
+- Read [references/testing.md](references/testing.md) for standard-library `unittest` discovery,
+  assertions, cleanup, subtests, mocking, async cases, isolation, and command selection. Use
+  `testing-code` for language-neutral test strategy.
+- Read [references/advanced-patterns.md](references/advanced-patterns.md) for concurrency, package
+  layout, performance, tooling configuration, and broader idiom reviews.
 
 ## Core Principles
 
@@ -426,6 +434,3 @@ def process():
 
 # Each call to process() prints the call count
 ```
-
-
-Read `references/advanced-patterns.md` when working on concurrency, package layout, performance, tooling configuration, or Python idiom reviews.
