@@ -1,124 +1,108 @@
 ---
 name: reviewing-code
-description: Use this skill when asked to review a code change—whether a diff, commit, branch, pull request, file set, or completed implementation—for defects, regressions, security, maintainability, performance, or repository-rule violations. It provides a language-agnostic process for establishing intended behavior, inspecting the full change and its context, validating material risks, and reporting prioritized, evidence-backed findings with a readiness verdict. Do not use it merely to explain code or write a pull request.
+description: Use when asked to review a diff, change set, commit, branch, merge or pull request, file set, or completed implementation for defects, regressions, security, reliability, maintainability, performance, test gaps, or repository-rule violations. It supplies a language-, platform-, provider-, and version-control-neutral workflow for establishing scope, tracing changed contracts, proving material findings, and issuing a defensible readiness verdict. Do not use merely to explain code or implement fixes.
 ---
 
 # Review code
 
-Judge the change against its intended behavior and the repository's standards, not personal
-preference. Seek material problems; perfection is not the bar.
+Judge the change against intended behavior and repository rules, not personal preference. Seek
+material problems; perfection is not the bar.
 
-Treat review as read-only unless the user also asks for fixes. Do not post comments, approve a
-change, or request changes in an external system without explicit authorization.
+Treat review as read-only unless the user also asks for fixes. Do not post comments, approve, request
+changes, merge, deploy, or mutate an external system without explicit authorization.
 
-## Establish the review contract
+## Set the subject and scope
 
-1. Read every applicable repository instruction, contribution guide, design note, and acceptance
-   criterion.
-2. Identify the exact change, its intended outcome, and the base it should be compared with. State
-   any assumption that could alter the verdict.
-3. Inspect repository status before judging a diff. Include staged, unstaged, and relevant untracked
-   files when reviewing local work.
-4. Bound the review. If any file, generated output, dependency, or risk area is excluded, say so;
-   never imply exhaustive coverage after sampling.
+1. Read repository rules, the requirement, and relevant design decisions.
+2. Resolve the artifact, intended outcome, and effective base. Ask the review system what it compares;
+   do not infer a default branch, revision, or workspace state.
+3. Enumerate the scope, including local staged, unstaged, and untracked work when applicable. Check
+   hidden or truncated files and generated, dependency, schema, configuration, and documentation
+   changes. State exclusions, sampling, and unavailable evidence.
 
-For Git work, choose the comparison that matches the request:
+If the repository uses Git, select the command matching the named artifact:
 
 ```sh
 git status --short
-git diff --stat
 git diff
 git diff --cached
-git diff <base>...<head>
 git show <commit>
+git diff <base>...<head>
 ```
 
-Do not assume the default branch or use a working-tree diff when the request names a commit, range,
-or pull request.
+Use the repository's native comparison otherwise. A precise review of the wrong comparison is still
+the wrong review.
 
-## Understand before judging
+## Trace behavior beyond the patch
 
-Review in this order:
+1. Read the reason, history, and primary entry points; scan the complete change for boundaries,
+   surprises, and high-risk operations.
+2. Inspect every in-scope human-authored line and enough whole-file context to understand its
+   contract.
+3. Search changed names, interfaces, schemas, formats, flags, and invariants through callers,
+   consumers, persistence, configuration, failure paths, and rollout.
+4. Inspect tests, documentation, migrations, generated outputs, and operational changes that prove
+   or carry the behavior.
 
-1. Read the task, issue, change summary, and commit history to learn why the change exists.
-2. Scan the complete diff for shape, boundaries, unexpected files, and high-risk areas.
-3. Inspect the primary entry points and design before line-level details.
-4. Trace changed behavior through callers, callees, data models, interfaces, configuration, and
-   failure paths. Read unchanged context where the contract lives.
-5. Inspect every changed human-authored line, then the relevant proof, documentation, migrations,
-   and operational changes.
+Follow risk: correctness, boundaries, data integrity, trust, authorization, validation, privacy,
+concurrency, compatibility, recovery, observability, and resource bounds. Check whether proof exercises
+the changed behavior. Flag complexity or performance only for a concrete cost or defect risk.
 
-A diff shows what moved, not whether the system still works. Search the repository for uses of
-changed names, interfaces, schemas, flags, and assumptions before filing a finding.
+Apply repository rules as authoritative. Report style only when it violates those rules, obscures
+behavior, or creates material maintenance risk.
 
-## Evaluate quality by risk
+## Avoid known review traps
 
-Prioritize these lenses:
+These pairs distill the evidence in [references/sources.md](references/sources.md), which should be
+read when auditing or revising a rule. Angle brackets below are placeholders, not fabricated defects.
 
-1. **Correctness and data integrity:** Does reachable behavior satisfy the requirement across valid,
-   empty, boundary, repeated, and partial-failure cases? Can state be lost, duplicated, corrupted,
-   or reported inaccurately?
-2. **Security and privacy:** Are trust boundaries, authorization, validation, secrets, sensitive
-   data, and command or query construction handled safely?
-3. **Design and integration:** Does responsibility live in the right layer? Do callers and consumers
-   still honor the changed contract? Is the solution consistent with nearby architecture?
-4. **Failure and concurrency:** Are errors observable and recoverable? Consider retries, ordering,
-   cancellation, timeouts, atomicity, races, and cleanup where the system makes them relevant.
-5. **Compatibility and rollout:** Can APIs, stored data, configuration, migrations, and mixed
-   versions move forward safely? Is rollback or partial deployment hazardous?
-6. **Proof:** Do existing checks exercise the behavior that changed, including meaningful failure
-   paths? Never infer correctness solely from a green suite.
-7. **Maintainability:** Is the code understandable at the repository's normal level of abstraction?
-   Flag duplication or complexity only when it creates a concrete cost or defect risk.
-8. **Performance and operations:** Flag measurable or structurally clear impact, not hypothetical
-   micro-optimization. Check logging, diagnosis, resource bounds, and user-facing documentation when
-   the change affects them.
+| Bad | Do instead |
+|---|---|
+| Review the convenient diff. | Name the artifact and effective base first. |
+| Inspect changed lines only. | Trace contracts through unchanged callers and consumers. |
+| `Green means correct.` | Show the check exercises the change and fails when it breaks. |
+| `This might break` or `This looks unsafe.` | Show `<trigger> -> <behavior> -> <impact>` and the missing or bypassed safeguard. |
+| Inflate uncertain concerns. | Rank reachable impact; mark uncertainty unverified. |
+| Promote preference or analyzer output. | Require policy or a reachable failure. |
+| Report each symptom. | Report one root cause and its affected paths. |
+| Sample, then declare readiness. | Name scope; use `Cannot conclude` when omissions block judgment. |
 
-Apply repository rules as authoritative. Treat style as a finding only when it violates those rules,
-obscures behavior, or creates material maintenance risk.
+## Prove and rank findings
 
-Validate proportionally. When permitted, use the smallest repository-prescribed check or focused
-reproduction that can confirm a material concern. During a review-only request, do not change code
-or add proof. Separate observed results from inference and state which relevant checks were not run.
+Require **location -> trigger -> behavior -> impact -> missing safeguard**. Confirm callers and tests
+do not resolve it and it was introduced by or blocks the change. Ask, mark unverified, or omit when
+proof is incomplete. Keep unrelated pre-existing problems out of change findings.
 
-## Prove each finding
+Assign severity from impact:
 
-Before reporting a problem:
+- **Blocking:** likely compromise, data loss, outage, or fundamental correctness failure; prevents
+  readiness.
+- **Important:** reachable regression, contract break, or material operational risk; normally
+  prevents readiness.
+- **Optional:** worthwhile improvement that does not affect readiness. Keep these few and separate.
 
-- identify the smallest useful file and line location;
-- name the input, state, or sequence that reaches it;
-- trace the resulting behavior and concrete impact;
-- confirm nearby code, callers, and existing safeguards do not resolve it; and
-- give the smallest practical correction direction without redesigning the change.
+When permitted, run the smallest prescribed check that tests a material concern. Do not change code
+during review-only work. Record commands, discovered counts, skips, and failures; separate observation
+from inference. One green suite is never exhaustive.
 
-Do not report speculation, generic advice, duplicate symptoms of one cause, or unrelated pre-existing
-problems. If evidence is incomplete, ask a focused question or mark the concern as unverified rather
-than presenting it as a defect.
+## Report a defensible decision
 
-Use severity consistently:
-
-- **Blocking:** likely security, data-loss, outage, or fundamental correctness failure that must be
-  resolved before the change proceeds.
-- **Important:** reachable regression, contract break, or substantial maintenance or operational
-  risk that should be resolved.
-- **Optional:** worthwhile improvement that does not affect readiness. Keep these few and clearly
-  separate from defects.
-
-## Report the decision
-
-Put findings first, ordered by severity and then impact. For each finding include:
+Put findings first, ordered by severity and impact:
 
 ```text
 [severity] Concise title — path/to/file:line
-Trigger and observed behavior. Explain the impact and the correction direction.
+Trigger: <input, state, or sequence>
+Impact: <observed behavior and consequence>
+Evidence: <trace, check, and missing safeguard>
+Direction: <small correction, without redesigning the change>
 ```
 
-Then state only the assumptions or unanswered questions that affect the decision. End with one
+Then list only decision-relevant assumptions, questions, checks not run, or exclusions. End with one
 verdict:
 
-- **Ready:** no material finding blocks the stated change.
-- **Changes requested:** list the findings that prevent readiness.
+- **Ready:** no material finding blocks the fully stated scope.
+- **Changes requested:** name the findings that prevent readiness.
 - **Cannot conclude:** name the missing context or excluded risk that prevents a defensible verdict.
 
-If there are no findings, say `No material findings` and identify any material area not validated.
-Do not claim the code is correct merely because the review found no defect.
+If there are no findings, say `No material findings` and name any material area not validated. This
+means no demonstrated defect was found in scope; it does not prove correctness.

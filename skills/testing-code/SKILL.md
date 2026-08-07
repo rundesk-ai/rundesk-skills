@@ -1,89 +1,86 @@
 ---
 name: testing-code
-description: Use this skill when asked to design, add, repair, organize, or assess automated tests in any language; reproduce a defect; choose unit, integration, contract, or end-to-end coverage; or diagnose flaky, slow, brittle, or misleading tests. It supplies a language-neutral workflow to choose the smallest meaningful boundary, assert observable behavior, control nondeterminism and dependencies, and produce actionable failures. Pair it with a language- or framework-specific testing skill for syntax and tooling.
+description: Use when designing, adding, repairing, or assessing automated tests in any codebase; reproducing a defect; selecting a test boundary; or diagnosing flaky, brittle, or falsely green results. It supplies a provider- and runner-neutral workflow for deterministic, maintainable cases and auditable evidence. Do not use it only for framework syntax or runner setup.
 ---
 
-# Test code
+# Testing code
 
-Write the smallest test that would detect a meaningful violation of the intended contract. Treat test
-code as maintained production code: readable, deterministic, and valuable when it fails.
+Prove the smallest meaningful contract, then prove the test can detect its violation.
 
-## Establish what must be proven
+## Define the proof
 
-1. Read the repository's rules, existing test layout, runner commands, and nearby conventions.
-2. Translate the requirement or defect into observable behavior before choosing a framework or
-   assertion.
-3. Identify the risk: wrong result, invalid state, broken boundary, lost data, unsafe access,
-   concurrency error, or failed user journey.
-4. Inspect existing coverage by behavior. Add a test only when it proves something not already
-   established at an appropriate level.
+1. Read repository rules, test commands, nearby tests, and the authoritative requirement.
+2. State the observable behavior, required side effects, and risk if it breaks.
+3. Search existing tests by behavior; add only missing proof.
+4. For a defect, isolate the smallest reproducing input and environment.
 
-For a defect, first create a focused regression case that fails for the reported reason. A case that
-passes before the correction, or fails during unrelated setup, does not prove the defect.
+```text
+Good: assert the public result and required state change.
+Bad:  assert a private collaborator was called before another, although users cannot observe it.
+```
 
-## Choose the smallest useful boundary
+Assert an interaction only when it is required behavior, such as emitting an event or avoiding an
+expensive boundary.
 
-| Boundary | Use it to prove |
+## Choose the boundary that contains the risk
+
+| Boundary | Prove |
 |---|---|
-| Unit | Pure decisions, transformations, invariants, and error handling inside one small boundary. |
-| Integration | Serialization, persistence, filesystem, process, queue, network, or component contracts with a real local dependency where practical. |
-| Contract | A producer and consumer agree on requests, responses, events, or stored formats without requiring the complete system. |
-| End to end | A small number of critical user journeys and wiring decisions that lower levels cannot prove. |
+| Unit | Decision, transformation, invariant, or error path without infrastructure. |
+| Integration | Wiring to a real local boundary such as persistence, filesystem, queue, network, process, or serializer. |
+| Contract | Producer and consumer agree on the messages and formats each uses. |
+| End to end | A few critical journeys or wiring decisions narrower tests cannot establish. |
 
-Prefer the lowest boundary that includes the risk. Add a wider test only when it answers a different
-question; repeating every edge case through the full stack increases cost without adding confidence.
-Testing terminology varies, so describe what runs and which dependencies are real instead of relying
-on the label alone.
+Prefer the narrowest boundary containing the risk. Add a wider case only when it answers another
+question; do not replay every edge case through the full system. Report what ran and which
+dependencies were real because labels vary.
 
-## Design an actionable case
+```text
+Good: use the real serializer to prove its stored format.
+Bad:  mock the serializer and call the result an integration test.
+```
 
-- Arrange only the state required, perform one meaningful action, then assert the resulting contract.
-- Name the behavior and condition so the failure is understandable without opening the test body.
-- Cover the normal case plus material boundaries and failures: empty, invalid, repeated, maximum,
-  partial, unauthorized, or concurrent behavior when the contract makes them relevant.
-- Assert public results and meaningful side effects. Avoid private fields, incidental call order,
-  generated formatting, or other implementation details unless they are the contract.
-- Use the narrowest assertion that prints useful expected and actual values. A failure should expose
-  enough evidence to begin diagnosis without adding instrumentation and rerunning.
-- Keep control flow and helper logic small. A reader should not need to simulate the test to learn
-  which behavior failed.
+## Make one case trustworthy
 
-Do not weaken an assertion merely to make a suite green. When intended behavior changes, update the
-test from the authoritative requirement, not by copying the current implementation.
+- Arrange only relevant state, perform one action, and assert the contract.
+- Name the condition and behavior; make failures print useful expected and actual values.
+- Cover only material partitions such as normal, empty, invalid, maximum, repeated, unauthorized,
+  partial, or concurrent behavior.
+- Keep causal values visible. Helpers hide noise, not why the case passes.
+- Use an independent expected value or oracle. Duplicating production logic can make both wrong.
 
-## Control the environment
+Never weaken an assertion merely to get green. When behavior changes intentionally, update it from
+the requirement—not current output.
 
-- Give every case its own mutable state and make execution order irrelevant.
-- Control clocks, timezones, locale, randomness, identifiers, environment variables, and scheduling
-  when they affect the result. Record seeds for generated cases.
-- Create resources in setup and register cleanup immediately. Use unique temporary files, records,
-  ports, accounts, and namespaces when cases may run concurrently.
-- Never call production services or modify production data. Prefer a real local dependency, a
-  hermetic test service, or a maintained fake.
-- Use stubs to supply inputs and mocks only when an interaction is itself observable behavior.
-  Constrain doubles to the real interface; extensive mock choreography usually tests implementation.
-- Wait for an observable condition or event in asynchronous tests. Fixed sleeps trade one race for a
-  slower race.
+## Replace known traps
 
-Treat a flaky result as a defect in the test, system, runner, or environment. Preserve the failing
-seed, order, timing, and artifacts, then find the source of nondeterminism. Retries may gather
-evidence; they must not redefine an unreliable test as passing.
+| Avoid | Do instead | Prove the replacement |
+|---|---|---|
+| Ambient time, locale, randomness, environment, identifiers, or scheduling | Inject or freeze inputs; record seeds | Re-run the seed and boundaries |
+| Shared state or order-dependent cleanup | Use unique state; register cleanup on acquisition | Run alone, reordered, and in parallel |
+| Production services or data | Use a real local dependency, hermetic service, contract, or maintained fake | Name the real boundary; test drift separately |
+| Mock choreography for computation | Stub inputs; mock only an observable interaction against its real interface | Refactor internals; behavior tests stay green |
+| Fixed sleep before an async assertion | Wait for the event or condition with a diagnostic timeout | Delay the operation; completion follows the event |
+| Retry that converts intermittent failure to green | Preserve seed, order, timing, logs, and artifacts; fix the cause | Repeat the failing conditions; report retries |
 
-## Run proof in widening circles
+A flaky result is a defect in the test, system, runner, or environment. Quarantine may protect the
+main signal temporarily; keep the failure visible and owned.
 
-1. Run the new or changed case and confirm it exercises at least one test.
-2. For a regression, observe the expected failure before the correction when practical.
-3. Run the containing file, class, or package to expose isolation and shared-state problems.
-4. Run the repository's required broader checks in its prescribed environment.
+## Prove the test and the run
 
-Read exit status, discovered-test count, skips, retries, warnings, and failure output. A green command
-that selected nothing or silently skipped the relevant environment proves nothing.
+1. For a regression, observe failure for the reported reason before the correction. If that is unsafe
+   or impractical, state the limitation instead of claiming the defect was reproduced.
+2. Run the changed case, containing suite, then required broader checks.
+3. Read exit status, discovery/execution counts, skips, expected failures, retries, and warnings.
 
-Use coverage to locate unexercised risk, not as a substitute for assertions or as an invented target.
-A covered line may be incidental; an uncovered line may be unreachable or irrelevant.
+```text
+Good: exit 0; 37 discovered, 37 executed, 0 skipped; new regression passed.
+Bad:  "green"; 0 discovered, or the relevant case skipped because its dependency was absent.
+```
 
-## Report the evidence
+Coverage locates unexercised code; it does not prove assertions or justify an invented target.
 
-State the behavior proved, boundary chosen, test command, result, and discovered count. Name any real
-dependency, skipped environment, unresolved flake, or important path not exercised. Do not claim the
-whole system works when the evidence covers only one boundary.
+Report the behavior, boundary, command, result, counts, real dependencies, and unresolved paths. Do
+not claim more than the evidence covers.
+
+Read [the source map](references/sources.md) when auditing, changing, or extending these rules.

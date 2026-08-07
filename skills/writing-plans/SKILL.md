@@ -1,110 +1,110 @@
 ---
 name: writing-plans
-description: Create executable implementation plans. Use for multi-step or cross-component work, risky changes, handoffs, or later continuation.
+description: Use when work needs an executable implementation plan, especially for dependent steps, cross-component changes, risky operations, handoffs, or later continuation. It supplies a provider-neutral workflow for grounding decisions, ordering coherent tasks, respecting authority, and defining observable proof. Do not use it for a small local edit whose intent and verification fit in the response.
 ---
 
 # Writing plans
 
-A plan is an implementation contract: a worker with repository access but no conversation
-history can follow it without guessing. Make it specific enough to execute and short enough
-to remain useful when the code changes.
+Write a contract a capable worker can execute with repository access and no conversation history.
 
-## Decide whether a plan helps
+## Decide scope and destination
 
-Write a plan when the work has three or more dependent steps, crosses components, carries a
-risky migration, or will be handed to another worker or session. For a small local edit, state
-the intent and verification in the turn instead of creating a document nobody needs.
+Plan three or more dependent steps, multiple components or owners, risky transitions, or a handoff.
+Split only when each outcome can leave a working, testable state; keep shared constraints together.
 
-If the requirements contain independent outcomes, split them into separate plans when each can
-produce a working, testable result. Keep one plan when splitting would hide shared constraints or
-force the same decision to be repeated.
+Choose the destination in this order:
 
-## Put it in your own home
+1. Use the path the user names.
+2. Follow an existing repository convention found in its rules or documentation.
+3. Use an established workspace or document area available to the user.
+4. Otherwise, return the complete plan in the response.
 
-Save every plan under `plans/` in the home directory you start in — the one named after you, which
-`rundesk agents` prints. Nothing tidies it between turns and no other agent reads it.
+Do not invent a provider home, storage directory, or repository convention. For an otherwise
+unnamed standalone plan, use `YYYY-MM-DD-<short-topic>.md`; a project convention wins.
 
-```text
-plans/YYYY-MM-DD-<short-topic>.md
-```
+## Ground the plan
 
-Use lowercase words and hyphens in the filename, and create `plans/` if it is not there yet. A
-repository you are working in belongs in the shared `projects/` directory instead, and its own
-specifications and roadmaps stay with it — do not scatter implementation plans among them. If the
-owner names another destination, theirs wins.
+Read the request, repository rules, implementation, tests, interfaces, migrations, and relevant
+documentation. Search before proposing structure. Confirm every path, symbol, command, and tool;
+never present model recall as repository fact.
 
-## Inspect before decomposing
+Map each requirement to its owning component. For each architectural decision, record the choice,
+material alternative, and repository-specific reason. Ask about unresolved choices that change
+scope, behavior, data, cost, or authority; choose and state ordinary implementation details.
 
-Read the requirements and the repository's own rules first. Locate the relevant implementation,
-tests, interfaces, migrations, and documentation. Confirm paths and commands rather than recalling
-them. Record unresolved choices that materially change the solution and ask before planning past
-them; choose ordinary implementation details and state the choice.
+Label assumptions and their confirmation. If execution must discover a fact, make discovery the
+first task and give the decision rule for each result. `TBD` is not a decision rule.
 
-Map the files before writing tasks. For each file, say whether it is created, modified, or tested
-and what responsibility it has. Follow the existing structure unless restructuring is part of the
-requested outcome.
+## Write the execution contract
 
-## Plan document contract
-
-Begin with:
+Start with:
 
 ```markdown
 # <Outcome> implementation plan
 
-**Goal:** <one sentence describing the completed behavior>
-
-**Approach:** <the key design and why it fits this repository>
-
-**Constraints:**
-- <requirements, compatibility limits, authorization boundaries, and things that must not break>
-
-**Proof:** <the checks that demonstrate the outcome>
+**Goal:** <completed behavior>
+**Approach:** <design choice and why it fits this repository>
+**Constraints:** <compatibility, safety, ownership, and authorization boundaries>
+**Proof:** <observable checks for the complete outcome>
 ```
 
-Then write numbered tasks in dependency order. Each task contains:
+Order numbered tasks by dependency. Each must leave a coherent state and contain:
 
 ```markdown
 ## 1. <Testable outcome>
 
 **Files:**
-- Modify: `exact/path`
-- Test: `exact/test/path`
+- Modify: `confirmed/path`
+- Test: `confirmed/test/path`
 
-**Change:** <the concrete behavior, interfaces, data flow, and edge cases>
+**Change:** <behavior, interfaces, data flow, edge cases, and preserved behavior>
 
-**Verify:** `<exact command>` — expect <observable result>
+**Verify:** <confirmed command or observable check> — expect <specific observable result>
 ```
 
-Use exact paths, existing symbol names, and commands verified in the repository. Include interface
-signatures or data shapes when another task depends on them. Include representative code only when
-it resolves an ambiguity that prose cannot; a plan is not a duplicate patch.
+Name created, modified, and tested files. Include signatures or data shapes only when downstream
+work depends on them. Use code only to resolve ambiguity; a plan is not a speculative patch.
 
-Every task ends in an independently checkable result. Fold setup, configuration, and documentation
-into the task whose outcome needs them. Split a task when a reviewer could reasonably accept one
-part and reject the other, not merely to make the checklist longer.
+Keep implementation and proof together. Split at independently reviewable outcomes, not file
+counts. Keep setup, configuration, and documentation with the outcome they enable. Put prerequisite
+interfaces or characterization tests before consumers or refactors. Make every task self-contained;
+never write “same as above” when a worker may receive only that task.
 
-Do not put commits, pushes, deployments, messages, destructive operations, or account changes into
-the plan unless the owner authorized them. If authorized, name the boundary and the verification.
+```text
+Good: characterize existing behavior, verify it, then refactor and rerun the targeted and required
+      suites in a separate coherent task.
+Bad:  "Refactor the component and add tests." This hides order, preserved behavior, and proof.
 
-## Remove guesswork
+Good: `<confirmed command>` — expect rejected input, an unchanged valid path, and a passing required
+      regression suite.
+Bad:  "Run tests." A command without an expected observation does not prove the requirement.
+```
 
-Replace placeholders such as `TBD`, “add validation,” “handle errors,” or “write tests” with the
-specific cases and expected results. Do not say “similar to the previous task”; a worker may receive
-only one task. Do not name files, flags, APIs, or commands you have not confirmed exist.
+These patterns follow the small-change and behavior-verification evidence mapped in
+[references/sources.md](references/sources.md).
 
-Separate facts from proposals. When a detail is inferred, label it and say what evidence would
-confirm it. When discovery must happen during execution, make that discovery an explicit first step
-with a decision rule for what follows.
+## Maintain execution state
 
-## Review the finished plan
+When the plan drives implementation, use the tracker's status fields when available: `pending`,
+`in progress`, and `completed`, or their local equivalents. Keep the current task explicit and mark
+it complete only after its `Verify` result is observed. Do not turn task status into a progress
+diary.
 
-Before handing it off:
+If confirmed facts invalidate the approach, revise affected decisions and downstream tasks before
+continuing. Do not silently follow or diverge from a stale plan.
 
-1. Map every requirement to at least one task and remove work that serves none.
-2. Check that paths, symbols, interfaces, and terminology agree across tasks.
-3. Search for placeholders and vague verification; replace each with an observable check.
-4. Confirm task order follows dependencies and each task leaves a coherent state.
-5. Confirm the plan preserves owner changes and stays within granted authority.
+## Preserve authority and handoff quality
 
-Say where the plan was saved and summarize the outcome, major decisions, open choices, and first
-task. Do not begin implementation unless the request also authorized it.
+Exclude commits, pushes, deployments, destructive operations, account changes, purchases, and
+messages unless authorized. If authorized, name who may act, the approval checkpoint, recovery path
+where relevant, and post-action proof. A plan does not grant permission.
+
+Before delivery:
+
+1. Trace every requirement to a task and remove unrequested work.
+2. Recheck paths, symbols, commands, terminology, interfaces, and dependency order.
+3. Replace vague verbs (`handle`, `update`, `test`) with cases and expected results.
+4. Confirm each task preserves existing work and stays inside the granted authority.
+5. Report the destination, outcome, decisions, open choices, and first executable task.
+
+Do not start implementation unless the request also authorizes it.

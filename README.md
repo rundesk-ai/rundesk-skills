@@ -45,6 +45,7 @@ agent no longer needs it.
 - `pdf-creation`
 - `postgres-patterns`
 - `python-patterns`
+- `researching-topics`
 - `reviewing-code`
 - `seo`
 - `sqlite-patterns`

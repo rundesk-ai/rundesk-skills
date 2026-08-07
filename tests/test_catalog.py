@@ -39,9 +39,10 @@ class CatalogContract(unittest.TestCase):
         declared = {entry["name"] for entry in self.manifest["skills"]}
         self.assertEqual(declared, listed, "README.md and manifest.json disagree")
 
-    def test_general_catalog_contains_pdf_and_seo(self):
+    def test_general_catalog_contains_required_specialties(self):
         names = {entry["name"] for entry in self.manifest["skills"]}
         self.assertIn("pdf-creation", names)
+        self.assertIn("researching-topics", names)
         self.assertIn("seo", names)
 
     def test_every_entry_is_a_complete_named_skill(self):
