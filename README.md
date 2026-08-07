@@ -53,6 +53,7 @@ agent no longer needs it.
 - `sqlite-patterns`
 - `testing-code`
 - `vue-patterns`
+- `working-as-an-assistant`
 - `writing-plans`
 - `writing-prds`
 - `writing-technical-docs`

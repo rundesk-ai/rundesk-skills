@@ -46,6 +46,7 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("creating-design-assets", names)
         self.assertIn("researching-topics", names)
         self.assertIn("seo", names)
+        self.assertIn("working-as-an-assistant", names)
         self.assertIn("writing-prds", names)
         self.assertIn("writing-technical-docs", names)
 
