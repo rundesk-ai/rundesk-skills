@@ -6,7 +6,8 @@ workflow; the per-framework references hold the mechanics. Use this file to audi
 
 **Read in this order of authority.** Framework documentation states what a tool reports; practitioner
 sources carry the judgement about which observation to make next. Verified in **August 2026**,
-against Laravel 13, Vue 3.5 / Nuxt 4, and Python 3.14.
+against GCC 15.3, GDB 17.2, Clang/LLDB 24 development documentation, CMake 4.4, Laravel 13,
+Vue 3.5 / Nuxt 4, and Python 3.14.
 
 ## Debugging as a skill
 
@@ -80,6 +81,71 @@ against Laravel 13, Vue 3.5 / Nuxt 4, and Python 3.14.
 - [pytest — how to invoke](https://docs.pytest.org/en/stable/how-to/usage.html) — `-x`, `--lf`,
   `--pdb`.
 
+## C++
+
+### Build identity and optimized code
+
+- [GCC 15.3 debugging options](https://gcc.gnu.org/onlinedocs/gcc-15.3.0/gcc/Debugging-Options.html) and
+  [GDB 17.2: optimized code](https://sourceware.org/gdb/download/onlinedocs/gdb.html/Optimized-Code.html) —
+  `-g` is independent of optimization; GCC recommends `-Og` when no other optimization is required;
+  optimized code can remove variables, reorder statements, inline calls, and break the apparent
+  source-to-machine sequence. Verified on 2026-08-07.
+- [CMake `CXXFLAGS`](https://cmake.org/cmake/help/latest/envvar/CXXFLAGS.html),
+  [`GENERATOR_IS_MULTI_CONFIG`](https://cmake.org/cmake/help/latest/prop_gbl/GENERATOR_IS_MULTI_CONFIG.html),
+  and [`cmake --build`](https://cmake.org/cmake/help/latest/manual/cmake.1.html#build-a-project) —
+  `CXXFLAGS` initializes the cache only on first configuration, multi-config generators ignore
+  `CMAKE_BUILD_TYPE`, and `--config` / `--verbose` select and expose the actual build. Verified
+  against CMake 4.4.2 on 2026-08-07.
+
+### GDB and LLDB mechanics
+
+- [GDB 17.2 command summary](https://sourceware.org/gdb/download/onlinedocs/gdb.html/gdb-man.html),
+  [watchpoints](https://sourceware.org/gdb/download/onlinedocs/gdb.html/Set-Watchpoints.html), and
+  [C++ catchpoints](https://sourceware.org/gdb/download/onlinedocs/gdb.html/Set-Catchpoints.html) —
+  launch, break, backtrace, inspect, watch, and catch-throw syntax; software-watchpoint cost and
+  multi-thread limits; an exception catchpoint stopping in the runtime before project frames.
+- [GDB 17.2: calling program functions](https://sourceware.org/gdb/download/onlinedocs/gdb.html/Calling.html),
+  [attaching](https://sourceware.org/gdb/download/onlinedocs/gdb.html/Attach.html), and
+  [auto-loading](https://sourceware.org/gdb/download/onlinedocs/gdb.html/Auto_002dloading.html) —
+  expression evaluation can call target code and alter or crash the process; attach stops the
+  process; `run` after attach kills it; `-nx` plus early `set auto-load off` avoids scripts from an
+  untrusted artifact. Verified on 2026-08-07; the
+  [release documentation index](https://sourceware.org/gdb/download/onlinedocs/) identified 17.2 as
+  the latest release manual.
+- [LLDB tutorial](https://lldb.llvm.org/use/tutorial.html) and
+  [GDB-to-LLDB command map](https://lldb.llvm.org/use/map.html), plus the
+  [LLDB breakpoint option source](https://github.com/llvm/llvm-project/blob/main/lldb/source/Commands/Options.td) —
+  precise breakpoints including the C++ exception form, watchpoints, all-thread backtraces, frame
+  selection, and `frame variable` as the non-expression path for frame data. Pages were checked on
+  2026-08-07 against LLDB 24 development docs; `breakpoint set -E c++` was also verified with Apple
+  LLDB 2100.0.17.108 command help.
+
+### Optimized and checked-library evidence
+
+- [GNU libstdc++ debug mode](https://gcc.gnu.org/onlinedocs/libstdc%2B%2B/manual/debug_mode_using.html) —
+  `_GLIBCXX_DEBUG` changes standard-template sizes and behavior, so debug and release translation
+  units cannot exchange affected container instantiations safely. Verified with GCC 15.3 docs on
+  2026-08-07.
+- [What Every C Programmer Should Know About Undefined Behavior](https://blog.llvm.org/2011/05/what-every-c-programmer-should-know.html) —
+  **Chris Lattner**, LLVM project founder, 2011. Maintainer explanation of how UB licenses
+  optimization transformations inherited by C++; supports treating optimization-only behavior as
+  a UB lead rather than proof of an optimizer defect. Checked 2026-08-07.
+
+### Cores and crash reports
+
+- [GDB 17.2 core files](https://sourceware.org/gdb/download/onlinedocs/gdb.html/Files.html) and
+  [separate debug files](https://sourceware.org/gdb/download/onlinedocs/gdb.html/Separate-Debug-Files.html) —
+  postmortem loading and build-ID/debug-link matching between an executable and symbols.
+- Linux man-pages [`core(5)`](https://man7.org/linux/man-pages/man5/core.5.html) and
+  [`systemd-coredump(8)`](https://man7.org/linux/man-pages/man8/systemd-coredump.8.html) — dump
+  suppression causes, `core_pattern` routing, and core files as process memory images. The catalog's
+  sensitive-artifact rule is the safety conclusion from that memory-image contract. Checked
+  2026-08-07.
+- Apple [Analyzing a crash report](https://developer.apple.com/documentation/xcode/analyzing-a-crash-report)
+  and [Adding identifiable symbol names](https://developer.apple.com/documentation/xcode/adding-identifiable-symbol-names-to-a-crash-report) —
+  use the complete OS report, require full symbolication, and match binary / `dSYM` UUIDs. Checked
+  2026-08-07.
+
 ## Related skills in this catalog
 
 The framework references here deliberately stop at *how to observe*. The rules a symptom violates
@@ -89,6 +155,8 @@ live with the language:
 - `vue-patterns` — especially reactivity, SSR, and separation of concerns.
 - `python-patterns` — especially `documented-traps.md`, which explains the failures behind several
   symptoms listed here.
+- `cpp-patterns` — especially `tooling.md` and `undefined-behavior.md`, for build integration and
+  the language rules behind sanitizer and optimization symptoms.
 - `testing-code` and `reviewing-code` for the surrounding process.
 
 ## What this package deliberately does not cite

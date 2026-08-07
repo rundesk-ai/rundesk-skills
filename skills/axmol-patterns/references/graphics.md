@@ -1,134 +1,69 @@
 # Graphics
 
-Read this for shaders, sprite sheets, batching, and text rendering.
+Read this for Axmol 2 shaders, sprite batching, atlases, and SDF text. Axmol 3 uses a different
+pipeline; follow its current shader guide instead of adapting these rules.
 
-## Shaders and axslcc
+## Shader compiles on one backend and fails on another
 
-Axmol 2.x compiles shaders at **build time** through `axslcc` (a fork of `glslcc`), producing
-Desktop GL, GLES3, GLES2 and Metal variants from one source.
+**Cause:** Axmol 2's axslcc accepts ESSL 310 or GLSL 450 and produces backend variants, but its SPIR-V
+and Metal paths impose two non-obvious constraints.
 
-**Authoring rules:**
+**Replace:** put samplers outside blocks and every other uniform in exactly one uniform block per
+stage. Put `#version` before every directive or code token; GLSL permits only whitespace and comments
+before it. Share repeated shader functions with axslcc `#include` support.
 
-- Write in **ESSL v310 or GLSL v450**. Extensions: `.vert`/`.vsh` for vertex, `.frag`/`.fsh` for
-  fragment.
-- **`#version` must be the first line.** Not the first *code* line — the first line. A leading comment
-  breaks compilation, and the error does not say so.
-- Custom shaders live in `{project_root}/Source/shaders/`, compile into
-  `${CMAKE_BINARY_DIR}/runtime/axslc/custom`, and are referenced with a `custom/` prefix. The names
-  change: `MyEffect.vsh` → `MyEffect_vs`, `MyEffect.fsh` → `MyEffect_fs`.
-
-```cpp
-auto* program = ProgramManager::getInstance()
-    ->loadProgram("custom/MyEffect_vs", "custom/MyEffect_fs");
+```glsl
+#version 310 es
+layout(std140) uniform FragData { vec4 tint; }; // one non-sampler block
+uniform sampler2D u_texture;                    // sampler stays outside
 ```
 
-Built-in shaders skip the prefix and have constants in `Shaders.h`.
+**Prove:** delete generated shader output, rebuild it with the pinned axslcc, then run the affected
+Metal and GL targets. After an engine branch switch, re-run `setup.ps1` before changing shader code;
+the FAQ identifies a branch/tool mismatch as the usual cause of sudden axslcc failures.
 
-**The two uniform constraints, quoted, because they are not obvious and the errors are opaque:**
+## A visual effect multiplies draw calls
 
-> **"All non-sampler uniforms must in uniform block, because glslcc(spirv) limits."**
+**Cause:** Axmol 2 does not automatically batch sprites using custom shaders because it cannot know
+whether separate `ProgramState` instances have identical uniform data.
 
-> **"Only write 1 uniform block per shader stage"** — the Metal backend does not support more.
-
-So: samplers stand alone, everything else goes in a single block per stage. A shader that compiles on
-GL and fails on Metal is usually this.
-
-**Share shader code with `#include`** — axslcc supports it. Logic duplicated across `.frag` files
-**will** drift: the copies diverge and only one of them gets the fix. Put the common function in one
-file and include it.
-
-**Guard colour transforms by texel coverage under premultiplied alpha**, or transparent texels pick up
-colour and the sprite grows a halo at its edges.
-
-If shader compilation breaks after a branch switch or an engine bump, it is a tools mismatch — re-run
-`setup.ps1` before debugging the shader.
-
-## Batching and draw calls
-
-**A custom shader disables automatic sprite batching by default.** This is the performance trap of the
-graphics layer: a small visual effect applied across many sprites quietly turns one draw call into
-hundreds.
-
-The engine gives you the way back:
+**Replace:** finalize uniform values, then call `updateBatchId()` on states that are identical. Do not
+call it before later uniform changes or assume differently valued instances can batch.
 
 ```cpp
-programState->updateBatchId();   // on instances that share identical uniform data
+programState->setUniform(location, data, size);
+programState->updateBatchId();
 ```
 
-Call it on instances whose uniforms match, and they batch again. Instances with genuinely different
-uniforms cannot batch — which is an argument for pushing per-instance variation into vertex
-attributes or a texture rather than uniforms, when it is on the hot path.
+**Prove:** capture draw-call counts before and after on the representative scene. Keep the change only
+if measurement confirms the expected grouping; render order and program changes can still split a
+batch.
 
-Otherwise the usual rules apply: draw calls come down by sharing a texture (an atlas), sharing a
-program, and avoiding state changes between nodes. Measure before restructuring.
+## An atlas returns the wrong frame
 
-## Sprite sheets
+**Cause:** `SpriteFrameCache` uses one namespace across loaded atlases, so repeated names collide.
 
-- **PLIST v3** is the default format. Custom formats are possible via the `SpriteSheetLoader`
-  interface, registered with `SpriteFrameCache::registerSpriteSheetLoader()`.
-- Tools the engine points at: **spright**, **SpriteSheet Packer** (polygon packing), **Free Texture
-  Packer**, **Free Sprite Sheet Packer**, and **TexturePacker** commercially.
-- **Frame names must be unique across every loaded atlas.** `SpriteFrameCache` is one global
-  namespace, so two atlases each containing `icon.png` collide and one silently wins.
+**Replace:** prefix names or preserve subdirectories at pack time. Configure the packer not to strip
+those directories.
 
-The documented fix is to make names unique at pack time — either prefix them (`scene1_image1.png`) or
-use subdirectories (`scene1/image1.png`), **ensuring the packer does not strip the subfolder**. Decide
-this convention before the second atlas exists; retrofitting it means renaming every reference.
+```text
+Good: inventory/ui/icon.png  and  battle/ui/icon.png
+Bad:  icon.png in both atlases
+```
 
-Unload atlases you are done with (`removeSpriteFramesFromFile`) rather than letting the cache grow for
-the session.
+**Prove:** load all atlases that coexist, resolve every expected frame name, and assert it maps to the
+intended texture. Do this before a second atlas makes renaming expensive.
 
-## Texture filtering
+## SDF outlines look wrong at every size
 
-**Nearest-neighbour filtering muddies detailed icons.** Choose the filter per texture class rather
-than globally:
+**Cause:** the Axmol 2 SDF spread is defined in `FontFreeType.cpp`, while the shader uses a separate
+scale. Changing only one makes the CPU-generated field and shader interpretation disagree.
 
-- **Nearest** for pixel art, and for anything drawn at exact integer scale.
-- **Linear** for icons, photographic content, and anything scaled or rotated.
+**Replace:** keep spread and shader scale synchronized. Start within the documented `outlineSize`
+ranges—0.5–2.0 for ordinary UI, 2.0–3.0 for tuned large text—and treat thicker effects as an engine
+change with a larger texture/performance budget.
 
-A single global default is why crisp pixel art and blurry UI icons show up in the same build.
+**Prove:** inspect small and large glyphs in the live target at each supported content scale. An
+offline bitmap cannot prove the runtime filter, blend mode, content scale, or batching behavior.
 
-## Text and SDF
-
-Signed-distance-field text renders crisply at any scale and supports outlines. It is the right choice
-for UI text that scales, and for high-DPI displays.
-
-The documented outline ranges:
-
-| Outline | Use |
-|---|---|
-| 0.5 – 2.0 | UI text: buttons, labels, high-DPI. **Safe** |
-| 2.0 – 3.0 | Headings and large fonts, with tuning |
-| 3.0 – 6.0 | Special effects, needs engine modification |
-| > 6.0 | Not recommended |
-
-The mechanism is split across two places: `FontFreeType.cpp` defines a spread (default 6.0) and the
-shader applies a scale factor (1.5). **Changing the default means changing both, in sync** — a CPU-side
-value that disagrees with the shader produces outlines that look wrong at every size and nobody can
-find why.
-
-Tradeoffs: a thicker outline needs more SDF texture resolution; a large outline on a small font
-reduces legibility; and dense text increases fragment-shader load.
-
-## Verifying visual work
-
-**Verify against the live window, never an offline composite.** A composite proves the generator
-produced the image; it does not prove the engine draws it that way, at that scale, with that filter,
-under that blend mode. Several classes of bug — premultiplied-alpha halos, filtering choice, content
-scale factor, batching-related z-order changes — are invisible in a composite and obvious in the
-window.
-
-For a seam or tiling problem, do not sample scenes and eyeball them. **Enumerate the pair matrix and
-check it mechanically** — scene-sampled verification of a combinatorial surface never converges,
-because the pair you have not looked at is always the broken one.
-
-## Sources
-
-- [Shaders in Axmol 2.x](https://github.com/axmolengine/axmol/wiki/Shaders-in-Axmol-2.x) — axslcc, ESSL/GLSL versions, file naming, the `custom/` prefix, both uniform constraints quoted, and `updateBatchId()`
-- [Shaders in Axmol 3](https://github.com/axmolengine/axmol/wiki/Shaders-in-Axmol3) — for the v3 pipeline
-- [Sprite sheets: tools and formats](https://github.com/axmolengine/axmol/wiki/Sprite-Sheets-Tools-and-Formats) — PLIST v3, `SpriteSheetLoader`, the tool list, and the unique-name requirement
-- [SDF text rendering](https://github.com/axmolengine/axmol/wiki/SDF-text-rendering) — the outline ranges and the CPU/shader coupling
-- [Particle system](https://github.com/axmolengine/axmol/wiki/Particle-System) · [Tiled](https://github.com/axmolengine/axmol/wiki/Tiled) · [Protecting image assets](https://github.com/axmolengine/axmol/wiki/Protecting-image-assets)
-- [The Book of Shaders](https://thebookofshaders.com/) — the engine's own recommended fragment-shader primer
-- The `#version`-first-line rule, `#include` sharing, premultiplied-alpha guarding, filtering-per-class
-  and the pair-matrix verification point were recorded during Axmol v2.11.x development.
+See [the source basis](sources.md#graphics) for the Axmol wiki pages and v2.11.4 code used here.

@@ -1,153 +1,85 @@
 # Project setup
 
-Read this when creating a C++ project, adding a target, or changing how it builds.
+Read this when creating a C++ project, adding a target, or changing its build.
 
-## Think in targets, not directories
+## Model requirements on targets
 
-Modern CMake is target-based. A target declares what *it* needs and what its *consumers* need, and
-CMake propagates the difference. Directory-level commands are the old model and they leak.
-
-CMake's own documentation is explicit: directory-level commands mean "all targets defined on that
-level inherit those properties, which increases the chance of hidden dependencies. It's better to
-operate on the targets directly."
+Declare what a target needs and what its consumers inherit:
 
 ```cmake
 add_library(simcore STATIC src/grid.cpp src/worldgen.cpp)
-
 target_include_directories(simcore
-    PUBLIC  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>   # consumers see this
-    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)                          # only this target does
-
+  PUBLIC  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_compile_features(simcore PUBLIC cxx_std_20)
 target_link_libraries(simcore PRIVATE fmt::fmt)
 ```
 
-The three keywords are the whole model:
-
-| Keyword | Applies to the target | Propagates to consumers |
-|---|---|---|
+| Scope | Target uses it | Consumers inherit it |
+|---|---:|---:|
 | `PRIVATE` | yes | no |
 | `PUBLIC` | yes | yes |
 | `INTERFACE` | no | yes |
 
-Get these right and a consumer needs to know nothing about your internals. Get them wrong and
-either the build breaks or every target in the tree quietly depends on everything.
+Use the narrowest correct scope. A missing public requirement breaks consumers; an unnecessarily
+public one creates hidden coupling.
 
-## The commands that replaced the old ones
-
-| Don't | Do | Because |
+| Avoid | Prefer | Failure avoided |
 |---|---|---|
-| `include_directories()` | `target_include_directories()` | Every target below the directory inherits it, so a target compiles only by accident of where it sits |
-| `add_definitions()` | `target_compile_definitions()` | A define that changes a class layout, applied unevenly, is an ODR violation |
-| `link_directories()` | `target_link_libraries()` with an imported target | A bare path finds the wrong library or none, and carries no usage requirements |
-| `set(CMAKE_CXX_FLAGS "-std=c++20 …")` | `target_compile_features(t PUBLIC cxx_std_20)` | The flag differs per compiler and is not satisfied by a newer standard |
-| `set(CMAKE_CXX_FLAGS "-Wall …")` | `target_compile_options()` | Vendored dependencies inherit your warnings and drown the signal |
-| `file(GLOB …)` for sources | List sources explicitly | A glob is evaluated at configure time, so a new file silently is not built |
+| `include_directories()` | `target_include_directories()` | unrelated targets inherit includes |
+| `add_definitions()` | `target_compile_definitions()` | configuration-dependent definitions leak across targets |
+| `link_directories()` and bare names | imported targets in `target_link_libraries()` | wrong library selection and lost usage requirements |
+| `CMAKE_CXX_FLAGS` for the standard | `target_compile_features(... cxx_std_N)` | compiler-specific flags and inconsistent consumers |
+| directory-wide warnings | `target_compile_options(... PRIVATE ...)` | third-party noise hides project warnings |
+| `file(GLOB ...)` for sources | list sources | added or removed files can evade regeneration |
 
-On the standard specifically: setting `-std=c++20` in `CMAKE_CXX_FLAGS` "will break in the future
-because those requirements are also fulfilled in other standards… and the compiler option is not the
-same on old compilers." `target_compile_features` lets CMake choose the flag.
+CMake explicitly prefers target-specific include directories and discourages source globs. If an
+existing project uses `CONFIGURE_DEPENDS`, keep its convention unless asked to migrate; the check
+adds rebuild cost and is not reliable with every possible generator.
 
-On globbing: a glob is evaluated at configure time, so a new file does not appear until something
-re-runs CMake. `CONFIGURE_DEPENDS` makes it re-check, at the cost of a glob check on every build —
-and a glob-verification step is one of the things that can make a build re-run CMake in a loop when
-its stamps get inconsistent. Engine templates often glob; if yours does, know that is why adding a
-file sometimes needs a reconfigure.
+## Isolate build state
 
-## Build directories
-
-Always out-of-source. Beyond that, two rules that cost real time when broken:
-
-- **One writer per build directory.** Ninja is not concurrency-safe on a single build dir. Two
-  builds at once corrupt `.ninja_deps`/`.ninja_log`, which makes ninja forget what it built and
-  recompile everything; concurrent `ar` can truncate a static archive to zero bytes, producing a
-  link error like `file is empty in lib/libFoo.a`. If your dev loop can be run by more than one
-  actor, take a lock. See [`build-loop-traps.md`](build-loop-traps.md).
-- **Separate directories for separate purposes**, and make sure only one of them produces a
-  runnable artifact. A headless test configuration that builds no application avoids a whole class
-  of "I ran the wrong binary" failure.
+Use out-of-source directories and give each concurrent actor or incompatible configuration its own:
 
 ```sh
-cmake -B build/dev   -G Ninja -DCMAKE_BUILD_TYPE=Debug
-cmake -B build/tests -G Ninja -DCMAKE_BUILD_TYPE=Debug -DHEADLESS_ONLY=ON
+cmake -S . -B build/dev -G Ninja -DCMAKE_BUILD_TYPE=Debug \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 cmake --build build/dev --target app
 ```
 
-Prefer **Ninja** over Makefiles for speed, and over IDE generators for predictability — an IDE
-generator can apply settings that a command-line build does not, so a project that only works in the
-IDE has flags hiding in the IDE.
+Do not run multiple Ninja processes against the same tree. Ninja maintainers describe that mode as
+unsupported: each process computes dirtiness independently and shares its command log. Use one
+Ninja invocation for parallelism, or a separate build directory.
 
-## The compile database
+`compile_commands.json` records per-translation-unit compile commands for supported generators
+(Makefile and Ninja). Check it when a flag, define, or include path seems wrong; do not assume an IDE
+and command-line build use the same command.
 
-```cmake
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-```
+## Keep warnings actionable
 
-`compile_commands.json` records the exact command for every translation unit. It is what
-`clang-tidy`, `clangd`, and every editor integration read, and it is the fastest way to answer "is
-this file actually compiled with the flag I think?" — including verifying a single file compiles
-without touching the shared build directory.
+Start with the warning set already supported by the project. Common GCC/Clang candidates are
+`-Wall -Wextra -Wpedantic`; add focused warnings such as `-Wshadow`, `-Wconversion`, or
+`-Wnon-virtual-dtor` only after checking the compiler and baseline. Use `/W4` for MSVC projects.
 
-## Warnings and standard
+- Scope project warnings `PRIVATE`; do not impose them on dependencies.
+- Make stable warnings errors in CI. Adopt noisy checks incrementally instead of creating a large
+  suppression backlog.
+- Record every suppression beside the code with the reason it is safe.
 
-```cmake
-target_compile_features(mylib PUBLIC cxx_std_20)
+## Pin fetched content and enforce layers
 
-target_compile_options(mylib PRIVATE
-    $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic -Wshadow
-                                   -Wnon-virtual-dtor -Wold-style-cast -Wconversion>
-    $<$<CXX_COMPILER_ID:MSVC>:/W4 /permissive->)
-```
+Consume dependencies through imported targets. Pin remote `FetchContent` with a commit hash (or an
+archive hash); CMake recommends hashes because mutable branch and tag names are less secure and do
+not prove which content was downloaded.
 
-- Scope warnings **to your targets**, `PRIVATE`. A third-party or vendored dependency compiled with
-  your warning set produces noise you cannot fix and will learn to ignore.
-- Make them errors in CI, not locally — a local build that refuses to compile over an unused
-  variable interrupts thinking.
-- `-Wconversion` and `-Wold-style-cast` are noisy on an existing codebase. Add them on new targets
-  and work backwards, rather than turning them on everywhere and suppressing.
-- Where a vendored dependency emits deprecation warnings through a header you include, scope the
-  suppression to *your* target rather than patching the dependency.
+Make dependency direction executable. For example, a `core` target that links no framework cannot
+silently acquire a framework dependency. Keep an application target for wiring and tests that link
+the narrowest production target they exercise.
 
-## Dependencies
+Good: `tests -> core`, while `app -> core + renderer`.
 
-In rough order of preference:
+Bad: link the renderer into `core` tests to make a forbidden include compile; this removes the
+boundary instead of fixing the dependency.
 
-1. **A system or package-manager package** found with `find_package()`, consumed as an imported
-   target.
-2. **`FetchContent`** for a small dependency you want pinned to a commit.
-3. **A git submodule pinned to a tag**, when the dependency is large, must be built with the project,
-   or is patched. Record the pin.
-
-Whichever you choose: **never edit a vendored dependency in place.** Every fix you need belongs in
-your own build files, so upgrading stays a pointer change with nothing to reconcile. That rule is
-what keeps an engine or library bump from becoming an archaeology exercise.
-
-## A layout that scales
-
-```text
-project/
-├── CMakeLists.txt          top level: options, dependencies, add_subdirectory
-├── cmake/                  helper modules
-├── include/project/        public headers — one directory per library
-├── src/                    implementation
-├── tests/
-└── third_party/            or a submodule, pinned
-```
-
-Keep public headers in a directory named for the project so an include reads
-`#include <project/grid.h>` and cannot collide. Give each library its own `CMakeLists.txt` and let
-it declare its own dependencies — that is what makes a target movable.
-
-**Make the layering mechanical.** If a lower layer must not depend on a higher one, the way to
-enforce it is a target that links only the lower layer: the day the forbidden include appears, that
-target stops linking and the build goes red. A rule in a document is a rule that drifts; a target
-that will not link is a rule that cannot.
-
-## Sources
-
-- [CMake `target_include_directories`](https://cmake.org/cmake/help/latest/command/target_include_directories.html) · [`include_directories`](https://cmake.org/cmake/help/latest/command/include_directories.html) — the directory-level warning, quoted
-- [Effective Modern CMake](https://gist.github.com/mbinna/c61dbb39bca0e4fb7d1f73b0d66a4fd1) — the target-based model and the `CMAKE_CXX_FLAGS` standard argument
-- [Modern CMake](https://cliutils.gitlab.io/modern-cmake/) — the community introduction
-- [Professional CMake](https://crascit.com/professional-cmake/) — Craig Scott; the reference text
-- [CMake tutorial: usage requirements](https://cmake.org/cmake/help/latest/guide/tutorial/Adding%20Usage%20Requirements%20for%20a%20Library.html)
-- [`CMAKE_EXPORT_COMPILE_COMMANDS`](https://cmake.org/cmake/help/latest/variable/CMAKE_EXPORT_COMPILE_COMMANDS.html)
+See [the source basis](sources.md#build-and-project-structure) for the CMake contracts and community
+practice behind these defaults.

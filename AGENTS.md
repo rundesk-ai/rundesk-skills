@@ -30,26 +30,40 @@ later and does not permit its removal.
 
 ## A skill is researched judgment
 
-A skill synthesizes traps, defaults, and decisions a capable agent would not reliably infer. It is
-not generated filler or a condensed manual.
+A skill synthesizes traps, defaults, and decisions a capable agent would not reliably infer. Its
+job is consistent output quality: teach the preferred practice, what not to do, what to do instead,
+and the failure that choice prevents. It is not generated filler or a condensed manual.
 
 | Do | Don't |
 |---|---|
 | Teach the workflow in execution order | Enumerate an API or every option |
 | Give one strong default and when to deviate | Present preference as universal law |
 | Name the gotcha and the failure it causes | Use unexplained `always` or `never` |
+| Pair every `don't` with the better replacement | Leave the agent knowing only what to avoid |
 | Show a small good/bad pair | Add background prose |
 | Route conditional depth to one reference | Duplicate a rule across files |
 | Link to exhaustive upstream detail | Paraphrase the manual |
 
 Keep a rule only when it changes execution, prevents a likely failure, or routes needed depth.
+Write a known trap as **symptom → cause → preferred replacement → proof**. If a source only says a
+feature exists and reveals no failure or better practice, link the manual when needed; do not copy
+it into the skill.
 
-```markdown
-Good: Keep network calls outside the transaction; waiting on the network holds row locks and widens
-the deadlock window.
+Good/bad examples are sourced evidence, not invented illustrations. Derive each pair from a cited
+guideline, analyzer rule, maintainer resolution, or reproduced community failure. You may minimize
+the syntax, but `sources.md` must make the lesson behind the pair traceable.
 
-Bad: Always keep transactions short.
+```cpp
+// Good: erase returns the next valid iterator.
+it = items.erase(it);
+
+// Bad: erase invalidates `it`; incrementing it is undefined behavior.
+items.erase(it);
+++it;
 ```
+
+Source: `skills/cpp-patterns/references/sources.md` maps this pair to cppreference's invalidation
+rules.
 
 Before shipping, ask: would a competent practitioner learn more than the docs' first page; does
 each constraint name its failure; and can the agent act now? If not, research or cut it.
