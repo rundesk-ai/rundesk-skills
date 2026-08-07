@@ -38,6 +38,7 @@ agent no longer needs it.
 - `database-design`
 - `debugging-code`
 - `frontend-design`
+- `inertia-patterns`
 - `laravel-patterns`
 - `managing-github`
 - `mysql-patterns`

@@ -1,11 +1,7 @@
-# Inertia
+# Inertia core
 
 Read this for the Inertia mental model, responses, forms, validation, security, SSR, versioning, and
-testing. Data-loading strategy is in [`inertia-data-loading.md`](inertia-data-loading.md).
-
-**Check the version first.** Inertia v3 shipped 26 March 2026; v2 gets bug fixes until 26 September
-2026 and security patches until 26 March 2027. `grep '@inertiajs' package.json` before advising —
-several APIs were renamed.
+testing. Data-loading strategy is in [`data-loading.md`](data-loading.md).
 
 ## The mental model
 
@@ -68,7 +64,7 @@ one without the other is the bug this pattern invites.
 
 Laravel's own docs show this shape in `HandleInertiaRequests::share()` — convenient for global
 permissions, but see the shared-data warnings in
-[`inertia-data-loading.md`](inertia-data-loading.md).
+[`data-loading.md`](data-loading.md).
 
 ## Forms
 
@@ -186,27 +182,9 @@ $this->get('/podcasts/41')
 - **`missing()` is the security test.** Assert that pages do not ship fields they should not — that is
   the check that catches somebody passing a whole model later.
 
-## v2 → v3 breaking changes
+## v2 → v3
 
-Requires PHP 8.2+, Laravel 11+, React 19+, Svelte 5 with runes. ESM-only output.
-
-| v2 | v3 |
-|---|---|
-| `Inertia::lazy()` | `Inertia::optional()` |
-| `router.on('invalid')` | `router.on('httpException')` |
-| `router.on('exception')` | `router.on('networkError')` |
-| `router.cancel()` | `router.cancelAll()` |
-| `inertia` attribute in Blade | `data-inertia` |
-| `hideProgress()` / `revealProgress()` | `progress.hide()` / `progress.reveal()` |
-
-Axios, `qs`, and `lodash-es` are no longer dependencies — Inertia ships its own XHR client, which is
-about 15KB gzipped smaller. Axios interceptors must migrate to the built-in interceptor system. The
-`config/inertia.php` `testing` block moved under `pages`, and the `future` namespace is gone with all
-four options permanently on. React arrow-function layouts must be wrapped: `Dashboard.layout = [Layout]`.
-
-New in v3 and worth reaching for: `useHttp` for requests that should not navigate, first-class
-optimistic updates with automatic rollback, layout props (`useLayoutProps` / `setLayoutProps`) instead
-of an event bus, and instant visits.
+See [`migration.md`](migration.md) — the renames, the dependency removals, and the upgrade order.
 
 ## Sources
 
