@@ -22,7 +22,8 @@ re-check registry dist-tags before making current-version claims.
 
 - [Reactivity fundamentals](https://vuejs.org/guide/essentials/reactivity-fundamentals.html): `ref` as
   primary API; `reactive` value-type, replacement, and destructuring limits. This proves the
-  disconnected-destructure good/bad pair.
+  disconnected-destructure good/bad pair and why a ref-returning composable's mock must preserve the
+  mutable `.value` contract.
 - [Watchers](https://vuejs.org/guide/essentials/watchers.html): valid sources, async dependency
   tracking, deep-watch cost, flush timing, stale-request cleanup, Vue 3.5 `onWatcherCleanup`, and the
   unowned async-watcher leak. This proves the getter, cancellation, and sync-creation pairs.
@@ -83,6 +84,10 @@ re-check registry dist-tags before making current-version claims.
 
 - [Vue SSR](https://vuejs.org/guide/scaling-up/ssr.html): lifecycle behavior, browser globals,
   cross-request state pollution, hydration causes and recovery cost, and `data-allow-mismatch`.
+- An anonymized production regression, reproduced and audited 7 August 2026, found that a pointer
+  media query swapped a Vue component root after SSR and made every touch-mode card disappear. A
+  stable root plus a compatible initial tree fixed the failure. This field evidence is scoped to
+  client-only responsive structure; Vue's SSR docs define the public contract.
 - [`useId`](https://vuejs.org/api/composition-api-helpers.html#useid): app-stable ids that avoid SSR
   hydration mismatches.
 - [Nuxt data fetching](https://nuxt.com/docs/4.x/getting-started/data-fetching): bare `$fetch` double
@@ -96,8 +101,6 @@ re-check registry dist-tags before making current-version claims.
 - [Vue performance](https://vuejs.org/guide/best-practices/performance.html): profiling tools, delivery
   architecture, route/component splitting, the exact prop-stability pair, virtualization, shallow
   reactivity trade-off, memo directives, and the warning against removing a few abstractions.
-- [Vue Router lazy loading](https://router.vuejs.org/guide/advanced/lazy-loading.html): dynamic imports
-  for route components.
 
 ## Separation and determinism
 
@@ -115,6 +118,10 @@ re-check registry dist-tags before making current-version claims.
   Vite. The component good/bad pair is a minimized form of this documented guidance.
 - [Vue Test Utils async behavior](https://test-utils.vuejs.org/guide/advanced/async-suspense.html): await
   Vue updates before assertions.
+- The same anonymized regression above found that a plain `false` mock replaced a composable's
+  `Ref<boolean>`, making the touch branch impossible to exercise. Returning a mutable `ref`, flipping
+  it per case, and asserting rendered output exposed the missing branch. Vue's reactivity source
+  defines the return contract; this field reproduction supplies the failure and replacement.
 - [Pinia testing](https://pinia.vuejs.org/cookbook/testing.html): unit and component-store setup.
 - [`eslint-plugin-vue` rules](https://eslint.vuejs.org/rules/): automated essential-rule coverage.
 

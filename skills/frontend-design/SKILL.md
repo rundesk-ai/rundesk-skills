@@ -1,100 +1,141 @@
 ---
 name: frontend-design
-description: Design, implement, or critique distinctive, accessible web interfaces. Use for landing pages, apps, dashboards, component redesigns, UI polish, UX reviews, design systems, responsive behavior, or frontend work where visual and interaction quality matters.
+description: Use when designing, implementing, or critiquing web UI/UX, including pages, applications, dashboards, forms, navigation, components, design systems, responsive behavior, interaction states, accessibility, usability, or visual polish. It supplies an evidence-backed workflow for task flow, hierarchy, affordances, feedback, error recovery, and rendered verification.
 ---
 
 # Frontend design
 
-Treat design as part of the product behavior. Make the interface specific to its subject and
-audience while preserving the project's framework, design system, content, and constraints.
+Treat UI as product behavior, not decoration. Make the shortest important task understandable,
+operable, and recoverable before making it memorable. Preserve the project's framework, design
+system, content, and constraints.
 
-## Establish the direction
+## Ground the experience
 
-Before implementation, identify:
+Before implementation:
 
-- the user, their primary task, and the page or flow's single most important outcome;
-- required content, states, actions, devices, and technical constraints;
-- existing brand tokens, components, patterns, and reference screens that must remain coherent;
-- one visual thesis describing the interface's mood, material, typography, and energy;
-- one signature element worth remembering, with everything else supporting rather than competing.
+1. Identify the user, their primary task, the page or flow's outcome, and evidence behind the brief.
+2. Read the current interface and trace the real data, permissions, navigation, terminology, and
+   tests. Do not invent content, capabilities, metrics, or states.
+3. Map the shortest successful path and the decisions, interruptions, and recovery points along it.
+4. Inventory initial, loading, empty, partial, success, error, disabled, and permission-limited
+   states. Include long content, translation, narrow viewports, zoom, keyboard, and touch.
+5. Derive a visual thesis from the subject's real language, materials, artifacts, and environment.
+   Turn it into typography roles, palette roles, composition, density, imagery, and motion choices.
+   When appropriate, choose one signature element; let everything else support the task.
 
-When the brief leaves details open, choose a concrete subject and audience and state the choice.
-Derive visual ideas from that subject's real materials, language, artifacts, and environment. Do
-not fill missing direction with whatever aesthetic is currently fashionable.
+When evidence is missing, state the assumption and choose a reversible direction. Do not turn a
+personal preference or current aesthetic trend into a user requirement.
 
-## Design the experience before the surface
+## Make actions obvious and predictable
 
-Map the shortest clear path through the task. Keep primary actions visually dominant, secondary
-actions available, and destructive actions distinct. Design every consequential state:
+- Use a link for navigation and a button for an action. Give non-submit buttons an explicit
+  `type="button"`; a button inside a form otherwise submits by default.
+- Give each region one visually dominant action. Lower the emphasis of secondary actions and make
+  destructive actions distinct without making them the default path.
+- Label actions with specific verbs and objects: `Save changes`, not `Submit`; `Delete project`, not
+  `Yes`. Keep the same name through the control, confirmation, loading state, and result.
+- Design default, hover, keyboard-focus, pressed, selected, loading, disabled, success, and error
+  states without moving the control or hiding its label unexpectedly.
+- Make enabled click or tap targets look interactive before hover. Use control shape, label,
+  contrast, placement, state changes, and cursor together.
+- Apply `cursor: pointer` to every enabled activation target: buttons, links, clickable cards, menu
+  triggers, icon actions, toggles, checkbox and radio labels, and equivalent controls. Disabled
+  controls are not activation targets; drag, resize, text-selection, and similar interactions keep
+  their truthful operation-specific cursors. A pointer cursor never substitutes for native
+  semantics, keyboard behavior, focus, or a visible pressed state.
+- Make the entire visible control activate the action. Use generous hit areas; provide a single-
+  pointer alternative to dragging and never hide required behavior behind hover.
 
-- initial, loading, empty, partial, success, error, disabled, and permission-limited;
-- hover, focus, active, selected, expanded, and validation feedback;
-- narrow mobile, common desktop, wide viewport, zoomed text, and long or translated content.
+Read [interaction-and-actions.md](references/interaction-and-actions.md) when building or reviewing
+buttons, links, clickable cards, menus, dialogs, icon controls, destructive actions, cursor behavior,
+pointer and keyboard states, touch targets, gestures, or mixed-input behavior.
 
-Use interface copy as navigation. Prefer plain, specific verbs; keep the same action name through
-controls, confirmation, and results. Errors say what happened and how to recover. Empty states
-offer a relevant next action rather than decoration.
+## Build hierarchy before decoration
 
-## Build a coherent visual system
+- Establish task order with composition, alignment, spacing, type, contrast, scale, and imagery.
+- Make the visual thesis critiqueable: name what each type role, color role, layout move, and motion
+  communicates. Do not substitute a font-and-color list for a direction tied to the subject.
+- Reuse project tokens for color, type, spacing, radius, borders, elevation, and motion. Extend a
+  shared primitive only when the behavior is genuinely shared.
+- Use color to reinforce hierarchy and state, never as the only carrier of meaning. Do not rely on
+  size alone for heading hierarchy.
+- Use cards only when grouping or interaction needs a card. Avoid nested rounded panels, default
+  dashboard mosaics, fake metrics, ornamental icon rows, and decorative gradients that dilute the
+  primary task.
+- Let structure encode real meaning: numbering for order, badges for status, dividers for grouping,
+  and motion for continuity or state change.
+- Spend boldness in one place. Remove any decoration that does not clarify content, brand, state, or
+  action.
 
-- Start with hierarchy and composition, not a catalog of components.
-- Define reusable tokens for color, type, spacing, radius, borders, elevation, and motion.
-- Give typography a deliberate scale, line length, weight, and role. Do not rely on size alone
-  to express hierarchy.
-- Use color to communicate hierarchy and state, never as the only carrier of meaning.
-- Prefer whitespace, alignment, contrast, scale, and imagery before adding containers or chrome.
-- Use cards only when grouping or interaction requires a card. Avoid default dashboard mosaics,
-  nested rounded panels, decorative gradients, fake metrics, and ornamental icon rows.
-- Let structural devices encode real information. Numbering belongs to ordered content, badges
-  to meaningful status, and dividers to actual grouping.
-- Spend boldness in one place. Remove decoration that does not clarify content, brand, or action.
+Make aesthetic choices from the subject and audience. A familiar style is valid when it fits; it is
+weak when it appears only because no decision was made.
 
-Make aesthetic choices from the brief rather than from a fixed anti-pattern list. A familiar
-style is valid when the subject calls for it; it is weak when it appears only because no decision
-was made.
+## Give feedback and recovery
 
-## Make accessibility part of the design
+- Respond visibly to every action. Keep the initiating control and affected content understandable
+  while work is pending, then show the stored result or a specific recovery path.
+- Do not disable a primary action merely to conceal incomplete validation. When an action is truly
+  unavailable, explain what enables it; when submission begins, preserve the label, show progress,
+  and prevent accidental duplicate effects at the system boundary.
+- Preserve entered values after validation failure. Put a specific message beside each field and,
+  for longer forms, provide a linked summary and deliberate focus placement.
+- Match interruption to consequence. Prefer undo for cheap reversible actions; require explicit
+  confirmation for irreversible or high-impact actions and name the object and consequence.
+- Confirm completion, not just receipt of a click. State what changed, what happens next, and how the
+  user can recover, revisit, or continue.
 
-- Use semantic elements and native controls before ARIA substitutes.
-- Preserve a logical heading structure, reading order, focus order, and visible focus treatment.
-- Give every control an accessible name and every field a persistent label, instructions, and
-  programmatically associated error when needed.
-- Ensure the whole flow works by keyboard without traps; do not hide required actions behind hover.
-- Provide useful text alternatives for meaningful images and empty alternatives for decoration.
+Read [forms-and-feedback.md](references/forms-and-feedback.md) when designing forms, validation,
+loading and submission behavior, notifications, confirmations, empty states, or error recovery.
+
+Read [mobile-and-responsive.md](references/mobile-and-responsive.md) for responsive layout, reflow,
+zoom, safe areas, dynamic viewport height, or real-device verification. Read
+[mobile-input-and-navigation.md](references/mobile-input-and-navigation.md) for on-screen keyboards,
+mobile forms, hidden or fixed navigation, and action reach. Read
+[responsive-data-and-connectivity.md](references/responsive-data-and-connectivity.md) for narrow-screen
+tables, dense data, slow or interrupted requests, and offline transitions.
+
+## Make accessibility part of quality
+
+- Prefer semantic elements and native controls; add ARIA only for semantics HTML cannot express.
+- Preserve logical heading, reading, and focus order. Keep focus visible and unobscured, and return
+  it to a sensible location after dialogs or removed content.
+- Give every control an accessible name and every input a persistent label. Add instructions for
+  required formats and programmatically associated errors when needed.
+- Make the complete flow work by keyboard, touch, pointer, voice, zoom, and reflow. Do not infer a
+  user's input method from viewport width.
 - Verify text, control, focus, and status contrast; never encode meaning with color alone.
-- Support reflow, text resizing, coarse pointers, and practical target sizes.
-- Respect reduced-motion preferences and provide controls for motion that persists or distracts.
+- Provide text alternatives for meaningful images, empty alternatives for decoration, live status
+  announcements where needed, and reduced-motion behavior.
+- Use practical touch targets above the WCAG minimum when space permits; dense layouts still need
+  sufficient size or separation to prevent adjacent activation.
 
-Accessibility is a quality floor, not a visual style. Do not trade comprehension, focus, contrast,
-or operability for novelty.
+Accessibility is a floor, not a visual style. Automated checks can find defects but cannot prove the
+task is understandable or operable.
 
-## Implement in the project's language
+## Implement and prove the experience
 
-Read the existing UI before changing it. Reuse its framework, routing, components, tokens, data
-patterns, and test approach. Extend shared primitives when the new behavior is truly shared;
-otherwise keep the change local. Do not add a dependency or replace the design system merely to
-recreate something the project already provides.
+Use real or representative content with realistic lengths. Build responsive behavior from content
+pressure rather than arbitrary device names. Do not add a dependency or replace the design system to
+recreate a primitive the project already has.
 
-Use real content or representative content with realistic lengths. Keep semantic HTML separate
-from visual styling. Build responsive behavior from content pressure and available space rather
-than arbitrary device names. Motion should explain hierarchy, continuity, or state; one composed
-transition is usually stronger than many unrelated effects.
+Render the result whenever tooling permits and inspect it rather than trusting source code. Verify:
 
-## Critique and verify
+1. The first viewport communicates purpose, hierarchy, current state, and the primary action.
+2. Every interactive element exposes its purpose, enabled state, hover or pointer cue, visible focus,
+   keyboard behavior, pressed feedback, and result.
+3. Mobile, desktop, zoomed, long-content, loading, empty, error, and permission states preserve task
+   order without clipping, overflow, layout shift, or dead ends.
+4. Forms retain input, identify errors, focus the right place, prevent duplicate effects, and confirm
+   the stored outcome.
+5. Destructive actions provide recovery or consequence-appropriate confirmation.
+6. Automated accessibility checks, keyboard traversal, and a representative screen-reader path pass;
+   record what was tested rather than claiming general conformance.
+7. Repeated elements share components and tokens, and the result remains specific to this product.
 
-Render the result whenever tooling permits and inspect it rather than trusting the source. Check:
+Compare approved references at the same viewport. Iterate while a difference affects hierarchy,
+usability, responsiveness, accessibility, interaction feedback, or the chosen visual direction.
 
-1. The first viewport makes the purpose, hierarchy, and primary action obvious.
-2. Mobile and desktop layouts preserve task order without overflow, clipping, or accidental gaps.
-3. Keyboard navigation, focus visibility, form errors, reduced motion, and state announcements work.
-4. Loading, empty, error, success, disabled, and long-content states remain usable.
-5. Repeated elements share components or tokens instead of drifting through copied styles.
-6. The result looks specific to this product and does not introduce claims or content the brief
-   cannot support.
-
-Compare the rendering with any approved reference at the same viewport. Keep iterating while the
-remaining difference affects hierarchy, usability, responsiveness, accessibility, or the chosen
-visual direction.
+The evidence and lesson mapping for this package are in [sources.md](references/sources.md).
 
 *Modified from Anthropic's Apache-2.0 `frontend-design` Agent Skill; see `LICENSE.txt` and
 the repository's `THIRD_PARTY_NOTICES.md`.*

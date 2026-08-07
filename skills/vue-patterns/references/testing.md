@@ -29,6 +29,15 @@ A composable with lifecycle hooks needs an active component scope. Mount a minim
 behavior, and unmount it so listener, timer, subscription, and watcher cleanup actually runs. A pure
 function or lifecycle-free composable can be called directly.
 
+## Mock the reactive contract
+
+Bad: mock a composable's `Ref<boolean>` as the plain value `false`; the branch becomes constant and a
+test that appears to cover touch or responsive behavior never exercises it.
+
+Good: return a real `ref(false)`, mutate `.value` for each case, and assert the resulting public DOM or
+event. A mock must preserve the real return shape and mutability—not merely a value that satisfies a
+loose test stub.
+
 ## Use the matching layer
 
 - Vitest for pure logic and headless composables in Vite-based projects.

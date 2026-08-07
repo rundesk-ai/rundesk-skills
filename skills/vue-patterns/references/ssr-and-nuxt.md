@@ -10,10 +10,14 @@ Read this for hydration warnings, server-only failures, request-state leaks, or 
 | Random values | Server and client render different values | Serialize a seed, render client-only, or use `useId` for ids |
 | User-local date/time | Server and browser timezones differ | Render the local form after mount |
 | Browser globals in setup | They do not exist on the server | Read them in `onMounted` or a client-only abstraction |
+| Media query swaps the initial root or wrapper | The server fallback and first client render differ | Keep the initial tree stable; use CSS or enhance after mount |
 
 Vue recovers from many mismatches by discarding and mounting nodes, which costs work and may hide the
 wrong output. Vue 3.5's `data-allow-mismatch` is for mismatches that are truly inevitable, not a first
 response. Nuxt's `<ClientOnly>` is likewise a boundary for a genuinely client-only widget.
+
+A stable outer root limits the blast radius but does not make a mismatched child tree correct.
+`data-allow-mismatch` is not a substitute for making client-only responsive structure predictable.
 
 ## Create request-local state
 
