@@ -45,14 +45,14 @@ either the build breaks or every target in the tree quietly depends on everythin
 
 ## The commands that replaced the old ones
 
-| Don't | Do |
-|---|---|
-| `include_directories()` | `target_include_directories()` |
-| `add_definitions()` | `target_compile_definitions()` |
-| `link_directories()` | `target_link_libraries()` with an imported target |
-| `set(CMAKE_CXX_FLAGS "-std=c++20 …")` | `target_compile_features(t PUBLIC cxx_std_20)` |
-| `set(CMAKE_CXX_FLAGS "-Wall …")` | `target_compile_options()` |
-| `file(GLOB …)` for sources | List sources explicitly |
+| Don't | Do | Because |
+|---|---|---|
+| `include_directories()` | `target_include_directories()` | Every target below the directory inherits it, so a target compiles only by accident of where it sits |
+| `add_definitions()` | `target_compile_definitions()` | A define that changes a class layout, applied unevenly, is an ODR violation |
+| `link_directories()` | `target_link_libraries()` with an imported target | A bare path finds the wrong library or none, and carries no usage requirements |
+| `set(CMAKE_CXX_FLAGS "-std=c++20 …")` | `target_compile_features(t PUBLIC cxx_std_20)` | The flag differs per compiler and is not satisfied by a newer standard |
+| `set(CMAKE_CXX_FLAGS "-Wall …")` | `target_compile_options()` | Vendored dependencies inherit your warnings and drown the signal |
+| `file(GLOB …)` for sources | List sources explicitly | A glob is evaluated at configure time, so a new file silently is not built |
 
 On the standard specifically: setting `-std=c++20` in `CMAKE_CXX_FLAGS` "will break in the future
 because those requirements are also fulfilled in other standards… and the compiler option is not the

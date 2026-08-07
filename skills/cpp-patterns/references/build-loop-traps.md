@@ -168,4 +168,6 @@ Only after all six does the code become the leading suspect.
 - [ctest](https://cmake.org/cmake/help/latest/manual/ctest.1.html) — output capture and `--output-on-failure`
 - [cppreference: One Definition Rule](https://en.cppreference.com/w/cpp/language/definition) — why mismatched TUs are UB rather than a link error
 - [Apple: Launch Services](https://developer.apple.com/documentation/coreservices/launch_services) — bundle-identifier registration, the mechanism behind the wrong-binary trap
-- The concrete failures on this page were recorded during Axmol/CMake/Ninja game development; the mechanisms are general to any Ninja + CMake project, and the macOS bundle trap to any macOS application build.
+- The concrete failures on this page were recorded during CMake/Ninja game development on macOS. The
+  mechanisms are general to any Ninja + CMake project, and the bundle trap to any macOS application
+  build. Engine-specific traps from the same projects are in `axmol-patterns`.

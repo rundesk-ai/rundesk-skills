@@ -33,6 +33,7 @@ agent no longer needs it.
 
 ## Included skills
 
+- `axmol-patterns`
 - `cpp-patterns`
 - `database-design`
 - `debugging-code`

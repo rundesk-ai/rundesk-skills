@@ -29,6 +29,85 @@ is how a version ships. This file defines how you build here.
    covering the same ground splits the guidance and neither half stays current.
 4. When the owner raises a concern, investigate before contradicting — evidence, not a hunch.
 
+## A skill is not a copy of the documentation
+
+**This is the rule the rest of the file serves.** A skill exists to help an agent *write something
+well* — consistently, idiomatically, and without walking into a failure somebody else already found.
+It is not a reference manual, and the reader already has the manual.
+
+| A skill is | A skill is not |
+|---|---|
+| How to do the task well, in the order it is done | An enumeration of the API surface |
+| The default to reach for, and when to deviate | A list of every available option |
+| **Dos and don'ts, with the failure each prevents** | A restatement of what a function returns |
+| The gotcha that is not obvious from the signature | A paraphrase of a doc page |
+| Version facts that change the advice | A changelog |
+| Judgement the documentation deliberately leaves open | An opinion presented as a rule |
+
+Three tests before shipping a page:
+
+1. **Would a competent practitioner learn something?** If it only tells them what they would find in
+   the first paragraph of the docs, delete it.
+2. **Does every rule name the failure it prevents?** "Use X" is unevaluable. "Use X, because Y silently
+   produces the wrong value after a reallocation" can be judged, argued with, and applied.
+3. **Could the reader act on this without the docs open?** A skill routes and decides; it links out
+   for the exhaustive detail rather than reproducing it.
+
+Copying documentation is worse than omitting it: it doubles the maintenance surface, it goes stale
+invisibly, and it buries the guidance that only this package has.
+
+## Research before writing — every claim is sourced
+
+**Never write a skill or a reference from memory.** A model's recollection of a framework is a
+snapshot of an average of old tutorials; it is confidently wrong about versions, renamed APIs, and
+anything that changed recently. Research first, then write only what the research supports.
+
+**Every package carries a `references/sources.md`** recording where its content came from, and any
+claim a reader might challenge is traceable to a source from that file.
+
+### Where the content must come from
+
+Find the traps, gotchas, and failures **other people have already hit and solved.** That is the whole
+value of a skill — not a restatement of an API, which the reader can look up.
+
+| Source | Use it for |
+|---|---|
+| Official documentation | Version facts, exact APIs, and the **warnings the vendor wrote down** |
+| Lint and analyser rule catalogs | What the ecosystem thinks is worth failing a build over |
+| Issue trackers, GitHub Discussions, forums, mailing lists | The problem somebody already debugged, and the maintainer's answer |
+| Stack Overflow, when the answer is authoritative and current | Concrete failure modes with reproductions |
+| Practitioner blogs and talks by maintainers and recognized experts | Judgement the docs deliberately omit |
+| Published studies and measurements | Anything empirical, quoted with its sample and date |
+| Release notes, upgrade guides, deprecation schedules | What is about to break |
+
+### Documentation grounds a package; it must not be the whole of it
+
+**A `sources.md` that is only vendor documentation is not finished research.** Documentation says how
+a thing is meant to work. It rarely says which part bites people, what the maintainer told somebody
+in a thread, or which recommended approach the community abandoned. A package built only from docs
+reproduces the manual and misses the reason the skill exists.
+
+So every package cites **more than one kind of source**, and the non-documentation sources must be
+reputable and identifiable — a named maintainer, a project's own discussion forum, a recognized
+practitioner, a study with a method. An anonymous listicle is not a source.
+
+### Rules
+
+- **Cite the specific page, not the site.** `sources.md` says what each source established.
+- **Quote a rule that a reader might otherwise soften.** A vendor's own `WARNING` in its own words
+  carries weight a paraphrase does not.
+- **Verify every link resolves** before committing, and say so in the pull request. Report any link
+  you could not verify rather than implying you did.
+- **Check version facts against a registry or release page**, never against documentation prose or
+  recollection. Say which version the package was verified against, and date it.
+- **Label empirical claims** with sample, date, and author, and mark them correlational when they are.
+  Never present a vendor's marketing figure as a finding.
+- **Separate what a source states from what you concluded.** If guidance is the package's own
+  judgement, say so and give the failure it prevents.
+- **Recorded first-hand experience is a legitimate source** and often the most valuable, because it is
+  what no document contains. Record it as such, say how strong the evidence is, and generalize it —
+  never name a person, customer, private project, or owner path.
+
 ## Hard gates — require explicit approval
 
 - **An executable, a service adapter, or anything that needs a credential.** This catalog is
@@ -100,3 +179,7 @@ Keep the documentation true in the same task that changes reality.
 3. `README.md` and `manifest.json` agree with what the repository actually ships.
 4. The governing skills in **Before you work** were followed, or your report names the ones you
    could not load.
+5. **The research rules held.** Every package touched has a `references/sources.md`; it cites more
+   than vendor documentation; every link was checked and any that could not be verified is named in
+   the report; and version facts were confirmed against a registry or release page, with the date
+   recorded.
