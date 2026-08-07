@@ -20,6 +20,10 @@ Before changing code, inspect:
 Do not modernize syntax past the runtime floor or reformat unrelated code. For Python 3.9, use
 `Optional[T]` or `Union[T, None]`; `T | None` requires Python 3.10.
 
+Prefer a check the repository can run to an opinion. `ruff check` and a type checker find most of
+what a review would argue about, and a rule code makes a finding verifiable rather than a matter of
+taste. Report what the tools already flag before adding judgement of your own.
+
 ## Load focused depth
 
 - Read [references/organization-and-naming.md](references/organization-and-naming.md) when creating,
@@ -31,6 +35,16 @@ Do not modernize syntax past the runtime floor or reformat unrelated code. For P
 - Read [references/testing.md](references/testing.md) for standard-library `unittest` discovery,
   assertions, cleanup, subtests, mocking, async cases, isolation, and command selection. Use
   `testing-code` for language-neutral test strategy.
+- Read [references/documented-traps.md](references/documented-traps.md) when reviewing unfamiliar
+  code, debugging behavior nobody can explain, or checking a change against the failures Python's own
+  FAQ and the ecosystem's linters have already catalogued.
+- Read [references/anti-patterns.md](references/anti-patterns.md) when reviewing design rather than
+  correctness: abstraction, interfaces, error-handling shape, idiom, state, and the cost each choice
+  imposes later. Traps are defects; these are judgements, and the page says how to rank them.
+- Read [references/typing.md](references/typing.md) when adding or reviewing annotations, choosing
+  between `Protocol`, `TypedDict`, `Literal`, and a dataclass, or configuring a type checker.
+- Read [references/security.md](references/security.md) when code runs a subprocess, deserializes,
+  handles secrets or credentials, builds a query or a path from input, or parses untrusted data.
 - Read [references/advanced-patterns.md](references/advanced-patterns.md) only for concurrency,
   cancellation, shared state, memory, or measured performance work.
 - Read [references/sources.md](references/sources.md) when reviewing, updating, or challenging a
