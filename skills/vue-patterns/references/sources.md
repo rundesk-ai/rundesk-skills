@@ -128,6 +128,27 @@ Conventions and judgement, cited where the docs deliberately do not decide.
   practical teardown checklist; community write-ups converge on uncleaned intervals, listeners, and
   promise chains accumulating across route navigations.
 
+## About the code examples
+
+Examples in this package are one of two things, and the text says which:
+
+- **Lifted from the source** — the framework's own documented example, or a worked case from a cited
+  article. These are marked inline, because "this is how the maintainers show it" is stronger evidence
+  than anything a skill can assert.
+- **Synthesised to isolate one failure** — written here to show a specific trap with nothing else in
+  the frame. These are the package's own judgement, and the surrounding prose gives the mechanism so a
+  reader can evaluate rather than trust.
+
+Every ✅/❌ pair states the failure the ❌ produces. An example that only says "prefer this" is not
+worth the space.
+
+**Examples are version-gated where the behaviour is.** Where a pattern only works above a floor, or
+behaved differently below it, the text says so — silently correct-looking code that misbehaves on an
+older version is worse than no example.
+
+JavaScript examples in this package were syntax-checked with `node --check`, each ✅ and ❌ variant
+independently.
+
 ## What this package deliberately does not cite
 
 - Vue 2 and Options API material, except where naming a migration.

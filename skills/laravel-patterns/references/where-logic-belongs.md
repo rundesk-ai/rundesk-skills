@@ -36,6 +36,9 @@ inside an observer runs whether or not the caller wanted it to.
 
 ## The refactor
 
+The shape below follows the worked example in Laravel News' controller-refactor walkthrough — the same
+five responsibilities in one action, extracted the same way — rather than an invented case.
+
 ```php
 // ❌ Everything in the controller: validation, persistence, files, mail, notification
 public function store(Request $request)

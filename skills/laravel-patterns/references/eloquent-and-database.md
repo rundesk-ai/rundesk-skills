@@ -34,13 +34,18 @@ foreach ($books as $book) { echo $book->author->name; }
 // ✅ two queries
 $books = Book::with('author')->get();
 
-// ✅ nested, and constrained
+// ✅ nested, and constrained — note the version floor on limit()
 $books = Book::with(['author.contacts', 'reviews' => fn ($q) => $q->latest()->limit(3)])->get();
 
 // ✅ already have the models
 $books->load('author');
 ```
 
+- **`limit()` inside an eager-load constraint needs Laravel 11+.** Native per-parent eager-load
+  limiting landed in 11, absorbing Jonas Staudenmeir's `eloquent-eager-limit`. **On 10 and earlier the
+  limit applied to the whole query rather than per parent** — so it returned three reviews in total,
+  not three per book, and did so silently. Check the floor before copying this pattern into an older
+  codebase.
 - **Count without loading:** `Post::withCount('comments')` gives `comments_count`. Loading the
   relationship to call `->count()` on it reads every row for a number.
 - **Existence without loading:** `Post::has('comments')`, `whereHas`, `doesntHave`. `whereHas` with a

@@ -107,7 +107,8 @@ that might be synchronously mutated many times, e.g. arrays."
 
 ## Cleanup and the memory leak
 
-**A watcher created asynchronously is never stopped.** This is the documented leak:
+**A watcher created asynchronously is never stopped.** This is the documented leak, and the example is
+Vue's own:
 
 ```js
 // ✅ bound to the component, stops on unmount
