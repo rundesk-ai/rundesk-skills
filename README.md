@@ -39,6 +39,7 @@ Removal requires a second `--yes` invocation and is refused while any declared s
 - `mysql-patterns`
 - `pdf-creation`
 - `postgres-patterns`
+- `publishing-github-releases`
 - `python-patterns`
 - `python-testing`
 - `reviewing-code`

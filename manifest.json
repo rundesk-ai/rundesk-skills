@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -35,6 +35,10 @@
     {
       "name": "postgres-patterns",
       "path": "skills/postgres-patterns"
+    },
+    {
+      "name": "publishing-github-releases",
+      "path": "skills/publishing-github-releases"
     },
     {
       "name": "python-patterns",
