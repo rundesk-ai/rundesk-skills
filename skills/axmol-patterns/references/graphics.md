@@ -1,7 +1,7 @@
 # Graphics
 
-Read this for Axmol 2 shaders, sprite batching, atlases, and SDF text. Axmol 3 uses a different
-pipeline; follow its current shader guide instead of adapting these rules.
+Read this for Axmol 2 shaders, sprite batching, texture sampling, atlases, and SDF text. Axmol 3
+uses a different pipeline; follow its current shader guide instead of adapting these rules.
 
 ## Shader compiles on one backend and fails on another
 
@@ -53,6 +53,22 @@ Bad:  icon.png in both atlases
 
 **Prove:** load all atlases that coexist, resolve every expected frame name, and assert it maps to the
 intended texture. Do this before a second atlas makes renaming expensive.
+
+## Scaled UI icons look blocky
+
+**Cause:** `setAliasTexParameters()` selects nearest-neighbor sampling. That preserves intentional
+pixel-art edges, but scales the partial-alpha edge pixels in an antialiased raster as visible blocks.
+
+**Replace:** choose by asset, not by scene. Use linear sampling for antialiased or vector-derived UI
+sprites that scale; keep nearest sampling for pixel art whose texel grid must remain visible.
+
+```cpp
+uiTexture->setAntiAliasTexParameters(); // antialiased icon
+tileTexture->setAliasTexParameters();   // pixel art
+```
+
+**Prove:** inspect the live target at every supported content scale. The source PNG cannot show the
+runtime sampler, scale, blend mode, or content scale.
 
 ## SDF outlines look wrong at every size
 

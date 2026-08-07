@@ -19,6 +19,22 @@ Laravel stops loading `.env` after `config:cache`; only external system variable
 `env()`. Keep every `env()` call in `config/`. Set `APP_DEBUG=false` in production because debug
 output can expose configuration values.
 
+## Read literal dotted keys without path parsing
+
+A dynamic key containing `.` can return `null` even when that literal key exists because Laravel
+configuration lookups parse dots as path separators.
+
+```php
+// Bad when $version is "api.v2": Laravel looks for nested api -> v2 keys.
+$schema = config("features.schemas.$version");
+
+// Good: resolve the known path, then index the literal key with PHP.
+$schemas = config('features.schemas');
+$schema = $schemas[$version] ?? null;
+```
+
+Load the owning array before indexing any externally defined identifier that may contain a dot.
+
 Run the application's documented deploy sequence rather than copying one blindly. For a conventional
 Laravel deployment, install production dependencies, migrate deliberately, run `php artisan optimize`
 to cache framework metadata, and restart every long-running process that holds PHP or SSR code.

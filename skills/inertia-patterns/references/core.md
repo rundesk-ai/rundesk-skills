@@ -51,6 +51,26 @@ must preserve client-set errors, pass `preserveErrors: true`; Laravel shares ser
 For one-time notifications, use Inertia flash data. Unlike shared props, flash data is not persisted
 in history and therefore does not reappear on back navigation.
 
+## Choose layout lifetime deliberately
+
+A layout wrapped inside each page is destroyed and recreated between visits. Stateful widgets can
+reset, third-party setup can run again, and a component-local `ref` cannot guard work for the session
+because the guard is recreated too.
+
+```vue
+<!-- Bad when the layout must survive navigation: each page owns its instance. -->
+<Layout><PageContent /></Layout>
+
+<!-- Good: assign Layout through Inertia's persistent-layout API. -->
+<script>
+import Layout from './Layout.vue'
+export default { layout: Layout }
+</script>
+```
+
+Use a persistent layout for UI that must outlive page visits. Otherwise make mount and unmount work
+idempotent and verify repeated navigation, including focus and retained state.
+
 ## Protect history and deployed assets
 
 For privileged page data, enable history encryption and rotate the key when clearing sensitive

@@ -95,6 +95,23 @@ Pair `whenLoaded()` with eager loading in the controller; it prevents accidental
 does not fetch missing data. Keep the response envelope consistent rather than hand-building a new
 shape in each controller.
 
+## Match session lifetime to the request flow
+
+State that exists after a POST but disappears after its redirected GET was likely flashed for only
+the next request. A direct post-response assertion misses that browser-visible failure.
+
+```php
+// Bad: a later workflow step needs this after the redirect target has rendered.
+return to_route('review')->with('workflow.result', $result);
+
+// Good: keep multi-request state until the workflow consumes it.
+$request->session()->put('workflow.result', $result);
+// In the later request:
+$result = $request->session()->pull('workflow.result');
+```
+
+Exercise the POST, redirect target, and later request in order, then assert the final response props.
+
 ## Follow the installed skeleton
 
 On Laravel 11+, middleware registration belongs in `bootstrap/app.php`, not

@@ -33,6 +33,12 @@ maintainer examples and community reports show the failures those contracts prev
 - [Partial reloads](https://inertiajs.com/docs/v3/data-props/partial-reloads) establishes Laravel's
   `errors` as an `always` prop and `preserveErrors`. It also corrects the earlier false claim that an
   Inertia validation flow receives a `422` response.
+- [Layouts](https://inertiajs.com/docs/v3/the-basics/layouts) establishes that a page-wrapped layout
+  is destroyed and recreated on visits while a persistent layout stays alive. [Manual visits](https://inertiajs.com/docs/v3/the-basics/manual-visits)
+  establishes when page state is recreated or preserved, and [issue #1211](https://github.com/inertiajs/inertia/issues/1211)
+  reproduces remount-driven DOM state loss. An anonymized first-hand Vue/Inertia reproduction in 2026
+  traced repeated third-party initialization and focus loss to the same layout lifetime, supporting
+  the replacement in `core.md`.
 
 ## Data-loading traps
 

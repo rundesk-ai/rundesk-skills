@@ -89,6 +89,27 @@ with patch.dict("os.environ", {"MODE": "test"}, clear=True):
 Unit tests must not call production services. An integration test should provision an explicit
 test service and make its address and cleanup part of setup.
 
+On POSIX, never test process-group cleanup by signaling a synthetic group. `killpg(0, ...)` targets
+the test runner's own group, and POSIX leaves group values at or below one undefined. Mock the lookup
+boundary in unit tests. For an integration test, start the child in a new session, prove
+`os.getpgid(child.pid) == child.pid > 1`, then signal that verified group.
+
+```python
+# Good: prove the lookup validates the group before signaling.
+with patch("package.runner.os.getpgid", return_value=child_pid) as getpgid, \
+     patch("package.runner.os.killpg", autospec=True) as killpg:
+    terminate_group(child_pid)
+getpgid.assert_called_once_with(child_pid)
+killpg.assert_called_once_with(child_pid, signal.SIGTERM)
+
+# Also force getpgid() to return 0, 1, and an unrelated group; each case must be refused and
+# killpg must remain uncalled.
+```
+
+Never use `os.killpg(0, ...)` as the bad-path test; it can terminate the shell or CI worker. Prove the
+guard by forcing the lookup result and rejecting zero, one, or any group other than the isolated
+child's verified group.
+
 ## Use subtests deliberately
 
 Subtests keep a small data table in one method while identifying the failing input:
@@ -159,6 +180,23 @@ class TestFetcher(unittest.IsolatedAsyncioTestCase):
 
 Do not share event loops, pending tasks, or async clients between cases.
 
+A cancellation test must prove the coroutine started before it cancels the task. Cancellation is
+delivered at the next scheduling opportunity; if the task never ran, its `finally` block was never
+entered, so the test is not exercising cleanup.
+
+```python
+started = asyncio.Event()
+task = asyncio.create_task(worker(started))  # worker sets started inside its body
+await started.wait()
+task.cancel()
+with self.assertRaises(asyncio.CancelledError):
+    await task
+self.assertTrue(cleanup_finished())
+```
+
+Do not replace the event with timing luck such as `sleep(0)`. Prove the test by removing or breaking
+the worker's cleanup and watching the final assertion fail.
+
 ## Run and select tests
 
 Use the repository's command first. Standard-library selection supports:
@@ -178,6 +216,22 @@ and confirm every selected command ran at least one test.
 
 ## Avoid unittest traps
 
+- Do not wrap the module under test in `except ImportError: raise SkipTest`. A defect or missing
+  transitive import then turns the whole suite green-but-skipped. Probe only the optional prerequisite,
+  require a matching `ModuleNotFoundError.name`, and import the subject outside the guard:
+
+  ```python
+  try:
+      import optional_dependency
+  except ModuleNotFoundError as exc:
+      if exc.name != "optional_dependency":
+          raise
+      raise unittest.SkipTest("optional dependency is not installed") from exc
+
+  from package import subject
+  ```
+
+  Prove the boundary by breaking `package`'s import: the test must error, not skip.
 - Do not name a `TestCase` helper `_outcome`, `_result`, `_subtest`, or `_cleanups`; those names are
   runner internals.
 - Do not catch a broad exception only to call `self.fail()`. Preserve unexpected tracebacks and use

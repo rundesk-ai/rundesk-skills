@@ -45,6 +45,59 @@ Make cancellation part of the contract:
 - decide whether one child failure cancels siblings or permits partial results;
 - do not retry cancellation, validation failures, or permanent errors as transient work.
 
+## Own subprocess streams
+
+**A child can block before it exits when a captured pipe fills.** Symptom: `await process.wait()` never
+returns for a verbose child. Cause: the child is blocked writing to an unread `PIPE`, so it cannot
+terminate. Use `communicate()` when output is bounded; for unbounded output, start concurrent drains
+for every captured stream before waiting. If stdin is a pipe, write or close it on every path.
+
+```python
+# Good: communicate drains both captured streams and waits for exit.
+stdout, stderr = await process.communicate()
+
+# Bad: nobody drains the captured output while the child is running.
+await process.wait()
+stdout = await process.stdout.read()
+```
+
+Prove the lifecycle with a child that writes more than the pipe capacity before exiting. The
+draining implementation completes; the wait-first implementation stalls.
+
+**`StreamWriter.write()` may only buffer bytes.** Symptom: a slow or closed peer is noticed late while
+memory grows. Cause: `write()` does not provide flow control; failure can surface when the buffer is
+drained or closed. Pair writes with `await drain()`, then close and await closure:
+
+```python
+# Good
+writer.write(payload)
+await writer.drain()
+writer.close()
+await writer.wait_closed()
+
+# Bad: no backpressure or observed shutdown.
+writer.write(payload)
+```
+
+Prove it with a slow reader and a peer that closes early; the producer must stay bounded and observe
+the broken connection.
+
+**Reuse only the pending set from `asyncio.wait()`.** Symptom: a `FIRST_COMPLETED` loop consumes a CPU
+without new work finishing. Cause: a completed future remains immediately ready when passed to the
+next wait. Carry `pending`, not the original set:
+
+```python
+pending = set(tasks)
+while pending:
+    done, pending = await asyncio.wait(
+        pending, return_when=asyncio.FIRST_COMPLETED
+    )
+    consume(done)
+```
+
+Prove it with one fast and one blocked task: each completion is consumed once, and the loop waits for
+the blocked task instead of repeatedly returning the first.
+
 ## Protect shared state
 
 Do not rely on the apparent atomicity of a built-in operation. Interpreter details change, and a

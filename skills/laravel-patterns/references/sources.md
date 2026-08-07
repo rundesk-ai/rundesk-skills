@@ -85,6 +85,12 @@ advice is marked in the owning reference instead of maintaining a patch/support 
   — source for the `whenLoaded()` pair and the requirement to eager load at the query site.
 - [CSRF protection](https://laravel.com/docs/13.x/csrf#excluding-uris-from-csrf-protection) — narrow
   route exclusion rather than application-wide disablement.
+- [Laravel session flash data](https://laravel.com/docs/13.x/session#flash-data) establishes that a
+  flashed value is deleted after the subsequent request. An anonymized first-hand Laravel/Inertia
+  reproduction in 2026 found a redirect target consuming flash before a later workflow request, a
+  failure hidden by a test that stopped after the POST. The documented lifetime establishes the
+  mechanism; the reproduction supports exercising the complete request sequence in
+  `http-and-validation.md`.
 
 ## Queue lessons
 
@@ -120,6 +126,13 @@ advice is marked in the owning reference instead of maintaining a patch/support 
 - [Configuration caching](https://laravel.com/docs/13.x/configuration#configuration-caching) and
   [debug mode](https://laravel.com/docs/13.x/configuration#debug-mode) — exact basis for the `env()` /
   `config()` pair and production debug warning.
+- [Accessing configuration values](https://laravel.com/docs/13.x/configuration#accessing-configuration-values)
+  defines dots as path separators, and Laravel's current
+  [`Repository::get`](https://github.com/laravel/framework/blob/13.x/src/Illuminate/Config/Repository.php)
+  delegates lookup to `Arr::get`. A [community reproduction](https://stackoverflow.com/questions/51154711/laravel-5-how-to-use-array_get-method-to-access-an-attribute-with-a-dot-inside)
+  shows why a literal dotted key must be indexed from its owning array. An anonymized first-hand
+  Laravel 13 reproduction in 2026 confirmed the same `null` lookup and replacement used in
+  `performance-and-deployment.md`.
 - [Deployment optimization](https://laravel.com/docs/13.x/deployment#optimization) — framework cache
   commands. The application must still own ordering and zero-downtime mechanics.
 - [Cache atomic locks](https://laravel.com/docs/13.x/cache#atomic-locks) and

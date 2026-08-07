@@ -55,6 +55,58 @@ for every down.
 **Prove:** leave and re-enter the scene, then exercise mouse/touch cancellation and multi-touch. No
 old callback should fire, and gesture state must recover without a terminal event.
 
+## A v2 desktop text field edits twice
+
+**Cause:** in Axmol v2.11.3-v2.11.4 desktop builds, a key reaches `EventKeyboard` first. If that event
+is not stopped, Backspace then reaches `IMEDelegate::deleteBackward()` and navigation, Delete, and
+Escape reach `controlKey()`.
+
+**Replace:** give each key one owner. Let Backspace fall through to the IME delegate; call
+`stopPropagation()` for every control key the keyboard listener handles. Receive printable text only
+through `IMEDelegate::insertText()`.
+
+**Prove:** test Backspace, Delete, Home, End, Left, Right, and Escape at the start, middle, and end of
+text; each physical press must edit or move once.
+
+## A multiline v2 `TextFieldTTF` ends editing on Enter
+
+**Cause:** its newline path treats `\n` as input completion and detaches from the IME unless the
+delegate consumes it. The class exposes no cursor-position getter, so a delegate cannot reliably
+insert that newline at the current caret.
+
+**Replace:** use `TextFieldTTF` as a single-line field. For multiline editing, own the text, caret,
+and selection in an application model behind `IMEDelegate` instead of appending in a
+`TextFieldDelegate` callback.
+
+**Prove:** place the caret mid-string, press Enter, and confirm the newline lands there while focus
+remains attached.
+
+## macOS Cmd shortcuts do nothing in a v2 desktop build
+
+**Cause:** Axmol maps GLFW's left and right Super keys to `EventKeyboard::KeyCode::KEY_HYPER`, not a
+GUI- or Command-named key.
+
+**Replace:** track `KEY_HYPER` press and release for Cmd chords. Keep Ctrl handling separate so the
+same editor can support both conventions where required.
+
+**Prove:** exercise Cmd+A/C/X/V on macOS and verify modifier state clears after release.
+
+## Resizing a TTF label changes its font path
+
+**Cause:** `setSystemFontSize()` switches a label to `STRING_TEXTURE`; it is not the TTF resize API.
+
+**Replace:** preserve the TTF configuration:
+
+```cpp
+auto cfg = label->getTTFConfig();
+cfg.fontSize = size;
+label->setTTFConfig(cfg);       // good: remains TTF
+label->setSystemFontSize(size); // bad: switches to a system-font texture
+```
+
+**Prove:** assert `getLabelType() == LabelType::TTF` after resizing and inspect the intended typeface
+in the live target.
+
 ## Animation changes the size of a physics sprite
 
 **Cause:** Axmol documents that a sprite's content size cannot change after a physics body is

@@ -120,3 +120,50 @@ Maintainer writing, cited where the documentation states a mechanism but not a j
   optimizing and choosing deterministic or statistical profiling tools.
 - [Python data model — `__slots__`](https://docs.python.org/3/reference/datamodel.html#slots): memory,
   attribute, inheritance, weak-reference, and default-value consequences.
+
+## CLI, subprocess, and async failure evidence
+
+- [Linux `pipe(7)`](https://man7.org/linux/man-pages/man7/pipe.7.html) establishes that an empty pipe
+  blocks while a writer remains open. [Codex CLI issue #20919](https://github.com/openai/codex/issues/20919)
+  records a non-TTY stdin pipe hanging an unattended CLI. Together they support explicit stdin opt-in;
+  the opt-in policy is this catalog's conclusion.
+- [Python asyncio subprocesses](https://docs.python.org/3/library/asyncio-subprocess.html#asyncio.subprocess.Process.wait)
+  warns that waiting with unread `stdout=PIPE` or `stderr=PIPE` can deadlock and directs bounded-output
+  callers to `communicate()`. Concurrent drains are this catalog's replacement for output too large to
+  buffer safely.
+- [Python asyncio streams](https://docs.python.org/3/library/asyncio-stream.html#asyncio.StreamWriter.write)
+  states that `write()` may buffer data and should be paired with `drain()`.
+  [CPython issue 25441](https://bugs.python.org/issue25441) reproduces a broken peer becoming observable
+  through `drain()`.
+- [`asyncio.wait()`](https://docs.python.org/3/library/asyncio-task.html#asyncio.wait) defines its
+  `(done, pending)` result and `FIRST_COMPLETED` behavior. Carrying only `pending` is this catalog's
+  conclusion from that contract and a reproduced busy-loop failure.
+
+## Test-harness failure evidence
+
+- [Python task cancellation](https://docs.python.org/3/library/asyncio-task.html#task-cancellation)
+  says cancellation is delivered at the next opportunity.
+  [CPython issue #116048](https://github.com/python/cpython/issues/116048) reproduces cancellation
+  before a task starts, when the coroutine body and its `finally` block never run.
+- [`unittest` skipping](https://docs.python.org/3/library/unittest.html#skipping-tests-and-expected-failures)
+  requires an explicit reason and offers conditional skip boundaries.
+  [`ModuleNotFoundError`](https://docs.python.org/3/library/exceptions.html#ModuleNotFoundError)
+  exposes the missing module through `name`.
+  [pytest's `importorskip` deprecation](https://docs.pytest.org/en/latest/deprecations.html#pytest-importorskip-default-behavior-regarding-importerror)
+  explains that catching broad `ImportError` can hide a broken installation, while
+  [Ruff BLE001](https://docs.astral.sh/ruff/rules/blind-except/) encodes the broader rule to catch the
+  expected exception narrowly.
+- [Linux `killpg(3)`](https://man7.org/linux/man-pages/man3/killpg.3.html) states that group zero means
+  the caller's process group and that POSIX leaves values at or below one undefined.
+  [`subprocess.Popen`](https://docs.python.org/3/library/subprocess.html#popen-constructor) documents
+  `start_new_session=True` as the safe Python interface to `setsid()`. Mocking the unit boundary or
+  proving the child owns its group is this catalog's safety conclusion.
+
+## Recorded first-hand evidence
+
+Anonymized failures recorded during CPython 3.9 and 3.14 maintenance reproduced all seven lessons
+above: an open stdin pipe hung automation; unread child pipes stalled exit; un-drained writes hid a
+closed peer; a completed future caused a busy loop; pre-start cancellation skipped cleanup; a broad
+import guard skipped a broken subject; and a synthetic process-group signal terminated its runner.
+The public contracts and issue reproductions above establish the general mechanisms; these records
+establish observed impact, not a universal frequency claim.

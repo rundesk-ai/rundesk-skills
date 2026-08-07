@@ -48,8 +48,9 @@ release proves them.
 - [Memory](references/memory.md) for storing, creating, collecting, or diagnosing `ax::Object`
   instances.
 - [Scene and UI](references/scene-and-ui.md) for resolution policies, node lifecycle, clipping,
-  listeners, and physics-sized nodes.
-- [Graphics](references/graphics.md) for Axmol 2 shaders, batching, atlases, and SDF text.
+  listeners, text input, and physics-sized nodes.
+- [Graphics](references/graphics.md) for Axmol 2 shaders, batching, texture sampling, atlases, and
+  SDF text.
 - [Setup and build](references/setup-and-build.md) for `setup.ps1`, axslcc, CMake generators,
   extensions, and slow or stale builds.
 - [Architecture](references/architecture.md) when engine dependencies leak into the core or tests.

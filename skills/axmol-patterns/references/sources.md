@@ -42,6 +42,13 @@ Use these sources to audit or update this package. The official wiki was checked
   universally breaks Axmol.
 - [Sprite Sheets: Tools and Formats](https://github.com/axmolengine/axmol/wiki/Sprite-Sheets-Tools-and-Formats)
   establishes the global frame-name collision and prefix/subdirectory replacements.
+- Tagged [`Texture2D.cpp`](https://github.com/axmolengine/axmol/blob/v2.11.4/core/renderer/Texture2D.cpp#L610-L640)
+  establishes that `setAliasTexParameters()` selects nearest sampling and
+  `setAntiAliasTexParameters()` selects linear sampling. NASA Earth Observatory's practitioner note
+  [Design basics: anti-aliasing](https://earthobservatory.nasa.gov/blogs/elegantfigures/2010/09/24/163/)
+  explains why blended resampling, unlike nearest-neighbor, preserves antialiased detail when an
+  image is reduced. An anonymized first-hand Axmol v2.11.3 record reproduced the scaled-UI symptom;
+  the tagged source and practitioner guidance establish the scoped replacement.
 - [SDF text rendering](https://github.com/axmolengine/axmol/wiki/SDF-text-rendering) establishes the
   outline ranges and the coupled spread/shader scale.
 
@@ -65,6 +72,19 @@ Use these sources to audit or update this package. The official wiki was checked
 - Tagged [`EventListener.h`](https://github.com/axmolengine/axmol/blob/v2.11.4/core/base/EventListener.h)
   establishes that node-associated listeners follow node enter/exit state while fixed-priority
   listeners do not; this is the basis for preferring node-bound listeners or explicit teardown.
+- Tagged [`RenderViewImpl.cpp` dispatch](https://github.com/axmolengine/axmol/blob/v2.11.4/core/platform/RenderViewImpl.cpp#L1246-L1268)
+  establishes the v2 desktop keyboard-before-IME order and unconsumed control-key fallback; its
+  [`key map`](https://github.com/axmolengine/axmol/blob/v2.11.4/core/platform/RenderViewImpl.cpp#L338-L342)
+  maps GLFW Super to `KEY_HYPER`. Tagged
+  [`TextFieldTTF.cpp`](https://github.com/axmolengine/axmol/blob/v2.11.4/core/2d/TextFieldTTF.cpp#L254-L312) and
+  [`TextFieldTTF.h`](https://github.com/axmolengine/axmol/blob/v2.11.4/core/2d/TextFieldTTF.h#L225-L258)
+  establish newline detachment and the absence of a cursor-position getter. Tagged
+  [`Label.cpp` TTF configuration](https://github.com/axmolengine/axmol/blob/v2.11.4/core/2d/Label.cpp#L827-L830)
+  and [`system-font sizing`](https://github.com/axmolengine/axmol/blob/v2.11.4/core/2d/Label.cpp#L2326-L2334)
+  establish that `setSystemFontSize()` selects `STRING_TEXTURE` while `setTTFConfig()` preserves the
+  TTF path. An
+  anonymized first-hand Axmol v2.11.3 desktop record supplies the four symptoms and adopted
+  replacements; v2.11.4 tagged source supplies their exact causes and confirms the paths remain.
 - [FAQ](https://github.com/axmolengine/axmol/wiki/FAQ) documents Android interception of three-or-more
   point gestures and the resulting missing terminal touch event.
 - [2D Physics Engines](https://github.com/axmolengine/axmol/wiki/2D-Physics-Engines-Information)
@@ -118,7 +138,7 @@ Use these sources to audit or update this package. The official wiki was checked
   This package retains only the Axmol-specific boundary: do not let `ax::Object` ownership or a
   graphics runtime become a dependency of the domain test target.
 
-Records from two anonymous Axmol v2.11.x projects previously drove claims about negative origins,
-nested clipping, early layout timing, DrawNode anti-aliasing, texture filtering, premultiplied-alpha
-transforms, and four macOS/Ninja build fixes. They were either contradicted by tagged source or lacked
-independent evidence, so this revision does not teach them as Axmol rules.
+Other records from two anonymous Axmol v2.11.x projects drove claims about negative origins, nested
+clipping, early layout timing, DrawNode anti-aliasing, premultiplied-alpha transforms, and four
+macOS/Ninja build fixes. They were contradicted by tagged source or lacked independent evidence, so
+this package does not teach them as Axmol rules.

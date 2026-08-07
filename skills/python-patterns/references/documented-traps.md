@@ -202,6 +202,26 @@ silently.
 **`re.sub`/`re.split` take `count`/`flags` positionally** (`B034`) — pass them by keyword, because the
 positional order is not what most people assume.
 
+## Command-line input
+
+**An open pipe is not permission to read stdin.** Symptom: an unattended command hangs only under a
+runner or pipeline. Cause: `not sys.stdin.isatty()` can mean a pipe whose writer is still open but has
+sent neither data nor EOF, so `read()` waits indefinitely. Require an explicit flag or subcommand:
+
+```python
+# Good: the caller opted into consuming stdin.
+if args.stdin:
+    payload = sys.stdin.read()
+
+# Bad: non-interactive input is treated as an instruction to wait.
+if not sys.stdin.isatty():
+    payload = sys.stdin.read()
+```
+
+Prove both paths: redirect stdin from the platform null device (`/dev/null` on POSIX, `NUL` on
+Windows) for the no-input case, then hold a pipe's writer open without writing. Only the explicit
+stdin mode should wait for the second case.
+
 ## Async
 
 **A fire-and-forget task can be garbage collected mid-flight.** The event loop keeps only weak
