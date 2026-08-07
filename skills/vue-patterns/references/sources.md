@@ -1,159 +1,126 @@
-# Vue and Nuxt source basis
+# Vue and Nuxt source map
 
-This package is a Rundesk synthesis of the Vue, Pinia, Vue Router and Nuxt documentation, the lint
-rules the ecosystem enforces, and a set of practitioner sources. Use this file to audit or update any
-claim.
+Use this map to audit a lesson, not as another tutorial. Framework docs establish behavior; official
+lint rules show automated failure prevention; maintainer and practitioner reports supply field-tested
+traps and replacements. Verified 7 August 2026.
 
-**Read in this order of authority.** Framework documentation states the rules; `eslint-plugin-vue`
-encodes which of them the ecosystem actually enforces; practitioner sources carry the conventions and
-judgement the docs leave open. Vue's style guide is explicit that only **Priority A** rules are error
-prevention — do not present a Priority B or C preference as a defect.
+## Version boundary
 
-Verified in **August 2026**. Vue 3.6, Pinia 4, Vue Router 5 and Nuxt 4 all moved within the preceding
-twelve months, so anything checked against an older copy of these docs is suspect.
+The npm registry reported Vue 3.5.41, Pinia 4.0.2, Vue Router 5.2.0, Nuxt 4.5.2, Vite 8.2.1, and
+Vue Test Utils 2.4.11 on the verification date. This is a snapshot; inspect the target lockfile and
+re-check registry dist-tags before making current-version claims.
 
-## Versions, verified against the npm registry on 7 August 2026
+- [Vue releases](https://github.com/vuejs/core/releases) and
+  [release policy](https://vuejs.org/about/releases): stable versus prerelease status.
+- [Pinia 4.0.0](https://github.com/vuejs/pinia/releases/tag/v4.0.0): ESM-only package and separate
+  `@vue/devtools-api` installation.
+- [Vue Router 5.0.0](https://github.com/vuejs/router/releases/tag/v5.0.0): typed-router merge, core API
+  compatibility with v4, and IIFE devtools exception.
+- [Nuxt 4 upgrade](https://nuxt.com/docs/4.x/getting-started/upgrade): Nuxt 4 boundaries.
 
-| Package | Latest | Published |
-|---|---|---|
-| `vue` | 3.5.41 | 2026-08-05 |
-| `vue` (rc) | 3.6.0-rc.2 | 2026-07-22 |
-| `pinia` | 4.0.2 | 2026-07-15 |
-| `vue-router` | 5.2.0 | 2026-07-15 |
-| `nuxt` | 4.5.2 | 2026-08-05 |
-| `vite` | 8.2.1 | 2026-08-06 |
-| `@vue/test-utils` | 2.4.11 | 2026-06-04 |
+## Reactivity and watchers
 
-Re-check with `curl -sS https://registry.npmjs.org/<pkg> | jq '.["dist-tags"]'` rather than trusting
-this table. It is a snapshot.
+- [Reactivity fundamentals](https://vuejs.org/guide/essentials/reactivity-fundamentals.html): `ref` as
+  primary API; `reactive` value-type, replacement, and destructuring limits. This proves the
+  disconnected-destructure good/bad pair.
+- [Watchers](https://vuejs.org/guide/essentials/watchers.html): valid sources, async dependency
+  tracking, deep-watch cost, flush timing, stale-request cleanup, Vue 3.5 `onWatcherCleanup`, and the
+  unowned async-watcher leak. This proves the getter, cancellation, and sync-creation pairs.
+- [`vue/no-side-effects-in-computed-properties`](https://eslint.vuejs.org/rules/no-side-effects-in-computed-properties):
+  side effects make computed behavior unpredictable; the rule is in Vue 3 essential configs.
+- [Bryce Andy, “The Hidden Reason Your Vue Watchers Leak Memory”](https://www.bryceandy.com/posts/the-hidden-reason-your-vue-watchers-leak-memory-and-how-to-avoid-it):
+  production symptoms and reproduced fixes for retained closures, uncancelled requests, and stacked
+  listeners. Practitioner evidence for making cleanup part of each effect.
 
-- [vuejs/core releases](https://github.com/vuejs/core/releases) — 3.6 RC status, Vapor Mode feature
-  completeness, the alien-signals reactivity refactor, and that Vapor supports template-only SFCs and
-  `<script setup>` but **not** the Options API.
-- [Vue releases policy](https://vuejs.org/about/releases) — cadence and pre-release meaning.
-- [Pinia v4.0.0](https://github.com/vuejs/pinia/releases/tag/v4.0.0) — ESM-only, `@vue/devtools-api`
-  must be installed alongside, Nostics error refactor. "Only technically breaking changes."
-- [Vue Router v5.0.0](https://github.com/vuejs/router/releases/tag/v5.0.0) — a "boring" release with no
-  breaking core-API changes; merges `unplugin-vue-router` (typed routes) into core; the IIFE build no
-  longer bundles `@vue/devtools-api`.
-- [Announcing Nuxt 4.0](https://nuxt.com/blog/v4) · [Nuxt 4 upgrade guide](https://nuxt.com/docs/4.x/getting-started/upgrade) —
-  `~` pointing at `app/`, data freed on unmount, `getCachedData` changes, ref/getter keys.
+## Components
 
-## Vue core documentation
+- [Props](https://vuejs.org/guide/components/props.html): one-way flow, nested object mutation caveat,
+  and local-copy/computed replacements.
+- [Events](https://vuejs.org/guide/components/events.html): declaration and listener fallthrough.
+- [Component `v-model`](https://vuejs.org/guide/components/v-model.html): `defineModel` version and
+  child-default de-synchronization warning.
+- [List rendering](https://vuejs.org/guide/essentials/list.html#maintaining-state-with-key) and
+  [Priority A style rules](https://vuejs.org/style-guide/rules-essential): in-place patching, stable
+  keys, `v-if`/`v-for`, detailed props, component names, and scoped-style exceptions. These prove the
+  retained list good/bad pairs.
+- [Provide/inject](https://vuejs.org/guide/components/provide-inject.html): symbol keys, readonly
+  values, and keeping mutations with the provider.
+- [Priority D style rules](https://vuejs.org/style-guide/rules-use-with-caution): class selectors in
+  scoped CSS and explicit parent-child communication.
 
-- [Reactivity fundamentals](https://vuejs.org/guide/essentials/reactivity-fundamentals.html): the three
-  `reactive()` limitations, quoted, and "we recommend using `ref()` as the primary API for declaring
-  reactive state."
-- [Watchers](https://vuejs.org/guide/essentials/watchers.html): `watch` vs `watchEffect` tracking, valid
-  sources, the deep-watch cost warning, flush timing including the `sync` caution, `once`,
-  `onWatcherCleanup` and its synchronous-call constraint, and **the async-creation memory leak
-  warning**.
-- [Computed properties](https://vuejs.org/guide/essentials/computed.html) · [Reactivity in depth](https://vuejs.org/guide/extras/reactivity-in-depth) · [Reactivity API: advanced](https://vuejs.org/api/reactivity-advanced)
-- [Props](https://vuejs.org/guide/components/props.html): one-way data flow, the readonly warning, the
-  two legitimate reasons to want mutation and their alternatives, and the object/array caveat —
-  "unreasonably expensive for Vue to prevent such mutations."
-- [Events](https://vuejs.org/guide/components/events.html) · [v-model](https://vuejs.org/guide/components/v-model.html) · [Slots](https://vuejs.org/guide/components/slots.html) · [provide / inject](https://vuejs.org/guide/components/provide-inject.html) · [Async components](https://vuejs.org/guide/components/async.html)
-- [Composables](https://vuejs.org/guide/reusability/composables.html): naming, `toValue` for
-  ref/getter/value arguments, the plain-object-of-refs return convention, SSR-safe side effects,
-  cleanup in `onUnmounted`, and **the synchronous call-site restriction and why it exists**.
-- [Performance](https://vuejs.org/guide/best-practices/performance.html): profiling tools, the 14kb
-  pre-compiled-template figure, prop stability with Vue's own `ListItem` example, `v-once`, `v-memo`,
-  computed stability since 3.4, `shallowRef` for large immutable structures, virtualization, and the
-  caution that removing a few component abstractions "won't have noticeable effect."
-- [Server-side rendering](https://vuejs.org/guide/scaling-up/ssr.html): the three hydration-mismatch
-  causes, **cross-request state pollution** and the per-request app instance fix, which lifecycle hooks
-  run on the server, and the uncleaned-`created`-side-effect gotcha.
-- [Testing](https://vuejs.org/guide/scaling-up/testing.html): "test what a component does, not how it
-  does it," the prohibition on asserting private state and methods, the snapshot caution, the
-  extract-to-a-utility advice, and the Vitest recommendation.
-- [State management](https://vuejs.org/guide/scaling-up/state-management.html) · [`useId()`](https://vuejs.org/api/composition-api-helpers.html#useid)
+## Composables and effect lifetimes
 
-## Style guide
+- [Vue composables](https://vuejs.org/guide/reusability/composables.html): reactive input tracking,
+  plain object-of-refs returns, SSR-safe effects, cleanup, synchronous call sites, and the compiled
+  post-`await` exception. This proves both composable good/bad pairs.
+- [Anthony Fu, “Composable Vue”](https://antfu.me/posts/composable-vue-vueday-2021), VueDay 2021:
+  lessons learned building VueUse—small concerns, flexible ref inputs, object-of-refs returns,
+  self-cleaning effects, typed injection, and per-app shared state.
+- [VueUse guidelines](https://vueuse.org/guidelines): maintained library conventions for refs,
+  shallow refs over large data, configurable globals, and scope disposal.
 
-- [Priority A: Essential](https://vuejs.org/style-guide/rules-essential) — multi-word component names,
-  detailed prop definitions, keyed `v-for`, avoiding `v-if` with `v-for`, component-scoped styling, each
-  with the failure it prevents.
-- [Priority B: Strongly recommended](https://vuejs.org/style-guide/rules-strongly-recommended) — file
-  and name casing, base-component prefixes, tightly-coupled naming, word order, self-closing
-  components, prop name casing, simple template expressions, directive shorthand consistency.
-- [Priority D: Use with caution](https://vuejs.org/style-guide/rules-use-with-caution) — element
-  selectors with `scoped` and their performance cost, and implicit parent-child communication.
+## Pinia and Vue Router
 
-## The enforced subset
+- [Pinia outside components](https://pinia.vuejs.org/core-concepts/outside-component-usage.html): calls
+  after installation, deferred calls in guards, and explicit request Pinia for SSR.
+- [Pinia composing stores](https://pinia.vuejs.org/cookbook/composing-stores.html): supported top-level
+  setup-store composition, the mutual setup-read loop, and pre-`await` store access in SSR actions.
+- [Pinia state](https://pinia.vuejs.org/core-concepts/state.html) and
+  [`storeToRefs`](https://pinia.vuejs.org/api/pinia/functions/storeToRefs.html): setup-store reset and
+  safe state/getter destructuring.
+- [Eduardo San Martin Morote, “Top 5 mistakes to avoid when using Pinia”](https://masteringpinia.com/blog/top-5-mistakes-to-avoid-when-using-pinia),
+  2022: Pinia author's field guidance on app context, reactive replacement, URL state, and SSR.
+- [Dynamic params](https://router.vuejs.org/guide/essentials/dynamic-matching.html) and
+  [Router Composition API](https://router.vuejs.org/guide/advanced/composition-api.html): component
+  reuse, targeted route watching, and repeatable-param arrays.
+- [Route props](https://router.vuejs.org/guide/essentials/passing-props.html),
+  [lazy loading](https://router.vuejs.org/guide/advanced/lazy-loading.html),
+  [guards](https://router.vuejs.org/guide/advanced/navigation-guards.html), and
+  [data fetching](https://router.vuejs.org/guide/advanced/data-fetching.html): decoupled views, route
+  splits, return-based guards, and valid before/after-navigation fetching.
 
-`eslint-plugin-vue` is where the ecosystem records which rules are worth failing a build over. The
-*essential* preset contains the Priority A rules as lint.
+## SSR and Nuxt
 
-- [Available rules](https://eslint.vuejs.org/rules/)
-- [`vue/no-mutating-props`](https://eslint.vuejs.org/rules/no-mutating-props)
-- [`vue/no-side-effects-in-computed-properties`](https://eslint.vuejs.org/rules/no-side-effects-in-computed-properties) —
-  "it is considered a very bad practice to introduce side effects inside computed properties"
-- [`vue/require-v-for-key`](https://eslint.vuejs.org/rules/require-v-for-key.html)
+- [Vue SSR](https://vuejs.org/guide/scaling-up/ssr.html): lifecycle behavior, browser globals,
+  cross-request state pollution, hydration causes and recovery cost, and `data-allow-mismatch`.
+- [`useId`](https://vuejs.org/api/composition-api-helpers.html#useid): app-stable ids that avoid SSR
+  hydration mismatches.
+- [Nuxt data fetching](https://nuxt.com/docs/4.x/getting-started/data-fetching): bare `$fetch` double
+  fetch, payload transfer, generated and shared keys, and option-consistency warnings. This proves the
+  Nuxt good/bad pair.
+- [Nuxt runtime config](https://nuxt.com/docs/4.x/guide/going-further/runtime-config): private server
+  values and client-exposed `public` values.
 
-## Ecosystem documentation
+## Performance
 
-- [Pinia](https://pinia.vuejs.org/) · [Dealing with composables](https://pinia.vuejs.org/cookbook/composables.html) · [Composing stores](https://pinia.vuejs.org/cookbook/composing-stores.html) · [Testing stores](https://pinia.vuejs.org/cookbook/testing.html)
-- [Vue Router](https://router.vuejs.org/) · [Lazy loading routes](https://router.vuejs.org/guide/advanced/lazy-loading.html)
-- [Nuxt: data fetching](https://nuxt.com/docs/4.x/getting-started/data-fetching) — the double-fetch
-  warning, `$fetch` vs `useFetch` vs `useAsyncData`, key derivation and which options must match across
-  shared keys, `transform`/`pick`/`lazy`/`server`/`watch`.
-- [Nuxt: runtime config](https://nuxt.com/docs/4.x/guide/going-further/runtime-config)
-- [Vue Test Utils](https://test-utils.vuejs.org/) · [Vitest](https://vitest.dev/)
+- [Vue performance](https://vuejs.org/guide/best-practices/performance.html): profiling tools, delivery
+  architecture, route/component splitting, the exact prop-stability pair, virtualization, shallow
+  reactivity trade-off, memo directives, and the warning against removing a few abstractions.
+- [Vue Router lazy loading](https://router.vuejs.org/guide/advanced/lazy-loading.html): dynamic imports
+  for route components.
 
-## Practitioner sources
+## Separation and determinism
 
-Conventions and judgement, cited where the docs deliberately do not decide.
+- [Vue composables—organization](https://vuejs.org/guide/reusability/composables.html#extracting-composables-for-code-organization):
+  extraction by logical concern when components become hard to reason about.
+- Anthony Fu's “Composable Vue” above supplies the one-concern and composition judgment. The layer
+  table is this catalog's scoped synthesis of those sources, not a Vue-mandated folder structure.
+- Reactivity, component, watcher, and SSR sources above prove the deterministic boundary rules. File
+  layout and container/presentational splits were deliberately omitted as universal requirements.
 
-- [Composable Vue](https://antfu.me/posts/composable-vue-vueday-2021) — **Anthony Fu**, Vue core team.
-  The community reference for composable design: `MaybeRef` arguments, "think your functions like
-  LEGO," object-of-refs returns, self-cleaning side effects, typed `InjectionKey` provide/inject,
-  `useVModel`, and the SSR-safe `createXxx` + provide pattern for shared state.
-- [VueUse guidelines](https://vueuse.org/guidelines) — the largest composable library's internal rules:
-  "use `ref` instead of `reactive` whenever possible," "prefer `shallowRef` over `ref` whenever
-  possible," options objects for extensibility, configurable `immediate`/`flush`, `isSupported` flags,
-  `configurableWindow` for SSR and testing, `tryOnScopeDispose` for cleanup.
-- [Ref vs. reactive — which is best?](https://michaelnthiessen.com/ref-vs-reactive) — **Michael
-  Thiessen**. The escalation rule of thumb, and the `.value` inconsistency argument.
-- [Debugging guide: why your Vue component isn't updating](https://michaelnthiessen.com/debugging-guide-why-your-component-isnt-updating)
-- [Top 5 mistakes to avoid when using Pinia](https://masteringpinia.com/blog/top-5-mistakes-to-avoid-when-using-pinia) ·
-  [My top 5 tips for using Pinia](https://masteringpinia.com/blog/my-top-5-tips-for-using-pinia) —
-  **Eduardo San Martin Morote**, author of Pinia and Vue Router.
-- [Composables vs. provide/inject vs. Pinia — when to use what](https://vueschool.io/articles/vuejs-tutorials/composables-vs-provide-inject-vs-pinia-when-to-use-what/) —
-  Vue School. The scope-escalation guidance, and the SSR argument for Pinia over module-level shared
-  state.
-- [Good practices and design patterns for Vue composables](https://dev.to/jacobandrewsky/good-practices-and-design-patterns-for-vue-composables-24lk)
-- [The hidden reason your Vue watchers leak memory](https://www.bryceandy.com/posts/the-hidden-reason-your-vue-watchers-leak-memory-and-how-to-avoid-it) —
-  the async-watcher leak from the field rather than the spec.
-- [How to fix memory leaks in Vue](https://coreui.io/answers/how-to-fix-memory-leaks-in-vue/) — the
-  practical teardown checklist; community write-ups converge on uncleaned intervals, listeners, and
-  promise chains accumulating across route navigations.
+## Testing
 
-## About the code examples
+- [Vue testing](https://vuejs.org/guide/scaling-up/testing.html): test public behavior, avoid private
+  state/method assertions and snapshot-only suites, minimize component stubbing, and use Vitest with
+  Vite. The component good/bad pair is a minimized form of this documented guidance.
+- [Vue Test Utils async behavior](https://test-utils.vuejs.org/guide/advanced/async-suspense.html): await
+  Vue updates before assertions.
+- [Pinia testing](https://pinia.vuejs.org/cookbook/testing.html): unit and component-store setup.
+- [`eslint-plugin-vue` rules](https://eslint.vuejs.org/rules/): automated essential-rule coverage.
 
-Examples in this package are one of two things, and the text says which:
+## Deliberately omitted
 
-- **Lifted from the source** — the framework's own documented example, or a worked case from a cited
-  article. These are marked inline, because "this is how the maintainers show it" is stronger evidence
-  than anything a skill can assert.
-- **Synthesised to isolate one failure** — written here to show a specific trap with nothing else in
-  the frame. These are the package's own judgement, and the surrounding prose gives the mechanism so a
-  reader can evaluate rather than trust.
-
-Every ✅/❌ pair states the failure the ❌ produces. An example that only says "prefer this" is not
-worth the space.
-
-**Examples are version-gated where the behaviour is.** Where a pattern only works above a floor, or
-behaved differently below it, the text says so — silently correct-looking code that misbehaves on an
-older version is worse than no example.
-
-JavaScript examples in this package were syntax-checked with `node --check`, each ✅ and ❌ variant
-independently.
-
-## What this package deliberately does not cite
-
-- Vue 2 and Options API material, except where naming a migration.
-- Tutorials predating Pinia 4, Vue Router 5, or Nuxt 4 without saying so. Most stale Vue advice online
-  is version drift, not error.
-- Folder-structure opinions presented as requirements. Vue mandates no structure; where this package
-  takes a position it says so and gives the failure it prevents.
-- Benchmark posts without a published method, and Vapor Mode performance claims applied to stable Vue.
+- API inventories and general Vue/Nuxt setup documentation.
+- Unmeasured performance rankings, arbitrary list-size thresholds, and prerelease performance claims.
+- Folder structures or state-scope preferences presented as framework requirements.
+- Advice whose source only proves that an API exists, without a failure or preferred replacement.

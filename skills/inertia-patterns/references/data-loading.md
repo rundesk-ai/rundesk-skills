@@ -1,183 +1,99 @@
 # Inertia data loading
 
-Read this when an Inertia page is slow, sends too much, or needs data that should not block the first
-render. This is where most Inertia performance work actually lives.
+Read this when a page sends too much, runs avoidable queries, or needs secondary data after the first
+render.
 
-## The prop evaluation matrix
+## Choose prop evaluation deliberately
 
-Knowing this table is most of the skill. It decides what the server computes and what it sends.
-
-| Server-side form | Sent on a normal visit | Sent on a partial reload | Evaluated |
+| Server form | Standard visit | Partial reload | Evaluation |
 |---|---|---|---|
-| `'users' => User::all()` | always | only if requested | **always** |
-| `'users' => fn () => User::all()` | always | only if requested | only when needed |
-| `Inertia::optional(fn () => ...)` | **never** | only if requested | only when needed |
-| `Inertia::defer(fn () => ...)` | in a follow-up request | only if requested | only when needed |
-| `Inertia::always(...)` | always | **always** | always |
-| `Inertia::once(fn () => ...)` | first time, then cached client-side | on request | when not remembered |
+| `User::all()` | included | if requested | always |
+| `fn () => User::all()` | included | if requested | only when needed |
+| `Inertia::optional(fn () => ...)` | excluded | if requested | only when needed |
+| `Inertia::defer(fn () => ...)` | follow-up request | if requested | only when needed |
+| `Inertia::always(...)` | included | included | always |
+| `Inertia::once(fn () => ...)` | first resolution, then remembered | when requested | when not remembered |
 
-The first row is the trap. **A bare value is computed on every request, even when the client asked for
-something else.** Wrapping it in a closure costs nothing and means a partial reload of one prop no
-longer runs the other five queries.
-
-> Rule of thumb: **make every non-trivial prop a closure.** Then choose `optional`, `defer`, or `once`
-> deliberately for the ones that need it.
-
-`Inertia::optional()` was `Inertia::lazy()` in v2.
-
-## Shared data — the default performance leak
-
-Inertia's own warning: **"Shared data should be used sparingly as all shared data is included with
-every response."**
-
-`HandleInertiaRequests::share()` runs on every single request. Anything in it — the full user object,
-a permissions matrix, notification counts, a menu tree — is computed and shipped on every navigation,
-forever, whether the page uses it or not.
-
-Fix it in this order:
-
-1. **Move it to the pages that need it.** Most shared data is shared because it was easy.
-2. **Make it a closure**, so it is not computed when a partial reload does not need it.
-3. **Make it `Inertia::once()`** if it rarely changes.
-4. **Use flash data for flash messages**, not a shared prop.
+The costly trap is confusing reduced response data with reduced server work:
 
 ```php
-public function share(Request $request): array
-{
-    return [
-        ...parent::share($request),
-        'auth' => [
-            'user' => fn () => $request->user()?->only('id', 'name', 'avatar_url'),
-        ],
-        'plans' => Inertia::once(fn () => Plan::all())->shareOnce(),
-    ];
-}
+// Good: an `only: ['users']` reload can skip the companies query.
+'companies' => fn () => Company::orderBy('name')->get()
+
+// Bad: the query runs even when `companies` is omitted from the partial response.
+'companies' => Company::orderBy('name')->get()
 ```
 
-Note `->only(...)` on the user. Sharing `$request->user()` ships every column of the users table to
-the browser on every request — including columns added next year.
+Use closures for expensive props that partial reloads may skip. Use `optional` only for data that the
+initial page can omit, `defer` for data that may arrive after render, and `once` only for data that is
+safe to remember until its expiry or explicit refresh. In v2, `optional` was named `lazy`.
 
-## Once props
+## Keep shared data small
 
-New and genuinely useful: send data on the first request, remember it client-side, and stop sending
-it.
+Shared data is included with every response. Use it for small values needed across many pages, such
+as a shaped authenticated-user summary—not as a convenient home for menus, full models, reports, or
+page-specific collections.
 
 ```php
-'plans' => Inertia::once(fn () => Plan::all()),
-'rates' => Inertia::once(fn () => Rate::current())->until('1 hour'),
-'config' => Inertia::once(fn () => $config)->as('app-config'),
+// Good: small, lazy, and explicitly public.
+'auth.user' => fn () => $request->user()?->only('id', 'name')
+
+// Bad: every serializable user field is resolved and sent on every navigation.
+'auth.user' => $request->user()
 ```
 
-- Re-sent when explicitly requested via `router.reload({ only: [...] })`, when the expiry passes, when
-  you navigate to a page without the prop, and on first load.
-- `fresh()` forces re-resolution; `until()` sets expiry; `as()` shares one cache key across
-  differently-named props; `shareOnce()` registers it globally in middleware.
-- **Conditional props must return `null` rather than being omitted.** A once prop for the authenticated
-  user that disappears on logout would otherwise leave the previous user's value remembered on the
-  client. Returning `null` overwrites it. This is a real security consideration, not a nicety.
+Move page-specific data back to the page response. For stable global data, use a once prop only when
+you also define how it becomes fresh after a mutation.
 
-## Deferred props
+## Overwrite conditional once props
 
-For data the page can render without.
+A remembered once prop can outlive the condition that produced it. Return `null` explicitly when the
+condition becomes false:
 
 ```php
-return Inertia::render('Dashboard', [
-    'stats'       => fn () => $this->cheapStats(),
-    'permissions' => Inertia::defer(fn () => Permission::all()),
-    'revenue'     => Inertia::defer(fn () => $this->slowReport(), 'reports'),
-    'churn'       => Inertia::defer(fn () => $this->otherSlowReport(), 'reports'),
-]);
+'auth' => $request->user()
+    ? Inertia::once(fn () => $request->user()->only('id', 'name'))
+    : null
 ```
 
-- Ungrouped deferred props load together in one follow-up request. **Named groups fetch in parallel**,
-  so put slow independent things in separate groups and related things in the same one.
-- The `<Deferred>` component takes a `data` key (or array), a `fallback` slot, a `reloading` flag, and
-  a `rescue` slot for failures.
-- `rescue: true` suppresses the exception, reports it through Laravel's handler, and omits the prop —
-  right for a non-essential widget, wrong for anything the page needs.
+Omitting `auth` after logout leaves the remembered user on the client; `null` overwrites it.
 
-Use it for the expensive panel below the fold. Do not defer the thing the page is about; you have then
-added a round trip to the critical path.
+## Defer only secondary work
 
-## Partial reloads
+Defer content the page can render without, not the page's main subject. Group related deferred props
+when they should share a follow-up request; use separate groups when they should resolve in parallel.
+If a non-essential deferred prop may fail independently, use its rescue behavior and render the
+failure state. Do not rescue data required for a correct page.
+
+## Make partial reload assumptions explicit
+
+Partial reloads work only when visiting the same page component. The client merges returned props
+with the current page, so accepting stale omitted props must be intentional.
 
 ```js
-router.reload({ only: ['users'] })
-router.reload({ except: ['sidebar'] })
-router.visit(url, { only: ['results'], preserveState: true, preserveScroll: true })
+router.reload({
+  only: ['users'],
+  preserveErrors: true,
+})
 ```
 
-The point of partial reloads is refreshing one region without re-running the whole controller — which
-only works if the other props are closures. With bare values you save bandwidth and nothing else.
+Use `preserveErrors` only when existing client errors should survive an empty server error bag. Test
+both the requested props and the expensive closures that should not run.
 
-Remember `errors` is an `always` prop, so a partial reload returning no errors clears client-side ones
-unless you pass `preserveErrors: true`.
+## Bound repeated requests and merged state
 
-## Prefetching
+| Trap | Preferred replacement | Failure prevented |
+|---|---|---|
+| Polling when only one prop changes | `usePoll(..., { only: ['notifications'] })` | Recomputing and transferring unrelated props each interval |
+| Disabling background throttling by habit | Keep the default; use `keepAlive` only when required | Full-rate polling in background tabs |
+| Prefetch cache surviving a mutation | Invalidate the relevant cache tags | Rendering known-stale prefetched data |
+| Changing filters on a merged collection | Visit with `reset: ['users']` | New results merging into the previous filter's results |
+| Multiple scrollers sharing a query key | Give each paginator a distinct `pageName` | One scroller changing another's page state |
+| Endless automatic loading where a boundary is required | Set `manualAfter` or use pagination | Ignoring the product's intended load boundary |
 
-```vue
-<Link href="/users" prefetch>Users</Link>
-<Link href="/users" :prefetch="['mount', 'hover']" cache-for="1m">Users</Link>
-```
+Inertia already throttles polling by 90% in background tabs. Prefetch on `mount`, `hover`, or `click`
+according to actual navigation intent and choose a finite cache lifetime; do not add every strategy
+by default.
 
-- Strategies: `hover` (default, after 75ms), `click` (on mousedown), `mount`.
-- `cacheFor` defaults to 30 seconds. A tuple gives stale-while-revalidate: `['30s', '1m']` serves fresh
-  for 30s, serves stale while revalidating up to 1m, expires after.
-- `cacheTags` plus `router.flushByCacheTags()` — and `invalidateCacheTags` on forms — keep the cache
-  honest after a mutation.
-
-Prefetch high-intent navigation: the row a user is hovering, the next step of a wizard. Prefetching
-everything on mount turns one page view into a dozen server-side renders; the docs do not warn about
-this, so it is on you to bound it.
-
-## Polling
-
-```js
-usePoll(5000, { only: ['notifications'] })
-```
-
-Always scope polling with `only`, or every interval re-runs the entire controller. Stop polling when
-the tab is hidden. For anything busier than a slow counter, use broadcasting instead — polling is a
-per-user constant load on the server.
-
-## Merging props and infinite scroll
-
-```php
-return Inertia::render('Users/Index', [
-    'users' => Inertia::scroll(fn () => User::paginate()),
-]);
-```
-
-`Inertia::scroll()` works with `paginate()`, `simplePaginate()`, `cursorPaginate()`, and API resources.
-The `<InfiniteScroll>` component uses intersection observers and **merges** rather than replaces.
-
-- Use `itemsElement` when items are not direct children of the root, so each item can be tagged with
-  its page number for URL sync.
-- `manualAfter` switches to a button after N pages — worth doing, because unbounded infinite scroll
-  grows the DOM and the history state until the tab struggles.
-- `reset: ['users']` on a filter change, or the new results merge into the old ones.
-- Multiple scrollers on one page need distinct `pageName` values.
-- The URL updates with the visible page. Disable with `preserve-url` for secondary content.
-- Prefer `cursorPaginate()` for large or fast-changing sets: offset pagination both drifts as rows are
-  inserted and gets slower the deeper it goes.
-
-## A diagnostic order for a slow Inertia page
-
-1. Open the network tab and read the **response size and prop names**. The offender is usually visible
-   immediately, and is usually shared data.
-2. Count queries with Telescope, Debugbar, or Pulse. An N+1 inside a prop closure is still an N+1.
-3. Check which props are bare values that could be closures.
-4. Move below-the-fold data to `defer`, rarely-changing data to `once`, and page-specific data out of
-   `share()`.
-5. Scope every poll and every reload with `only`.
-6. Only then consider SSR or prefetching — they change perceived latency, not the amount of work.
-
-## Sources
-
-- [Shared data](https://inertiajs.com/docs/v3/data-props/shared-data) — the "used sparingly" warning
-- [Once props](https://inertiajs.com/docs/v3/data-props/once-props) — including the null-overwrite rule
-- [Deferred props](https://inertiajs.com/docs/v3/data-props/deferred-props) · [Load when visible](https://inertiajs.com/docs/v3/data-props/load-when-visible)
-- [Partial reloads](https://inertiajs.com/docs/v3/data-props/partial-reloads) — the evaluation matrix and the errors warning
-- [Prefetching](https://inertiajs.com/docs/v3/data-props/prefetching) · [Polling](https://inertiajs.com/docs/v3/data-props/polling)
-- [Merging props](https://inertiajs.com/docs/v3/data-props/merging-props) · [Infinite scroll](https://inertiajs.com/docs/v3/data-props/infinite-scroll)
-- [Inertia.js once props](https://jump24.co.uk/journal/inertiajs-once-props-stop-sending-the-same-data-over-and-over-again) — Jump24 on the shared-data problem once props solve
+The evaluation rules and practitioner evidence for repeated shared payloads are mapped in
+[`sources.md`](sources.md).

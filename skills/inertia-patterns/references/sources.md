@@ -1,98 +1,91 @@
 # Inertia source basis
 
-This package is a Rundesk synthesis of the Inertia documentation, the reference application the
-project itself calls best practice, and community writing. Use this file to audit or update a claim.
+Use this mapping to verify a lesson before changing it. Documentation establishes current contracts;
+maintainer examples and community reports show the failures those contracts prevent. Last checked
+7 August 2026.
 
-**Read in this order of authority.** The documentation states the protocol and the API; Ping CRM shows
-the intended shape in working code; community sources carry the judgement and the traps.
+## Props, security, and the protocol
 
-## Versions, checked against the registries
+- [Responses](https://inertiajs.com/docs/v3/the-basics/responses) establishes minimum page data,
+  browser-visible props, explicit `only(...)` shaping, `withViewData()`, and history-state limits.
+  It supports the good/bad prop pair in `SKILL.md` and the routed default in `core.md`.
+- [The protocol](https://inertiajs.com/docs/v3/core-concepts/the-protocol) establishes page objects,
+  Inertia request/response headers, partial data, redirects, and asset versions.
+- [Authorization](https://inertiajs.com/docs/v3/security/authorization) and
+  [Laravel authorization with Inertia](https://laravel.com/docs/13.x/authorization#authorization-and-inertia)
+  establish server-side enforcement and permission props for UI rendering.
+- [Ping CRM](https://github.com/inertiajs/pingcrm) is a maintained reference application for
+  inspecting concrete response shapes. It is an example, not proof that every local convention is a
+  universal best practice.
 
-Checked on **7 August 2026**, against the registries rather than documentation prose — the two halves
-version independently and the docs do not state either number.
+## Visits, forms, and validation
 
-| Package | Latest | Source |
-|---|---|---|
-| `@inertiajs/vue3` (and React/Svelte siblings) | **3.6.1**, 2026-07-07 | [npm](https://registry.npmjs.org/@inertiajs/vue3) |
-| `inertiajs/inertia-laravel` | **3.3.1**, 2026-08-04 | [Packagist](https://repo.packagist.org/p2/inertiajs/inertia-laravel.json) |
-| npm `legacy` tag (v2 line) | 2.3.27, 2026-06-25 | npm |
+- [Forms](https://inertiajs.com/docs/v3/the-basics/forms),
+  [validation](https://inertiajs.com/docs/v3/the-basics/validation), and
+  [redirects](https://inertiajs.com/docs/v3/the-basics/redirects) establish redirect-based form
+  success and validation, automatic errors, checkbox values, remembered-password exclusion, manual
+  router submissions, and the distinction between visits and non-Inertia submissions.
+- [HTTP requests](https://inertiajs.com/docs/v3/the-basics/http-requests) explicitly permits
+  `useHttp`, XHR, or `fetch` for standalone requests. This corrects the earlier unsupported blanket
+  ban on Axios/fetch.
+- [File uploads](https://inertiajs.com/docs/v3/the-basics/file-uploads) establishes automatic
+  `FormData` conversion and Laravel method spoofing for multipart `PUT`/`PATCH` updates.
+- [Partial reloads](https://inertiajs.com/docs/v3/data-props/partial-reloads) establishes Laravel's
+  `errors` as an `always` prop and `preserveErrors`. It also corrects the earlier false claim that an
+  Inertia validation flow receives a `422` response.
 
-```sh
-curl -sS https://registry.npmjs.org/@inertiajs/vue3 | python3 -c 'import sys,json;print(json.load(sys.stdin)["dist-tags"])'
-curl -sS https://repo.packagist.org/p2/inertiajs/inertia-laravel.json | python3 -c 'import sys,json;print(json.load(sys.stdin)["packages"]["inertiajs/inertia-laravel"][0]["version"])'
-```
+## Data-loading traps
 
-## Documentation
+- [Partial reloads](https://inertiajs.com/docs/v3/data-props/partial-reloads) provides the eager,
+  closure, optional, and always evaluation matrix and the same-component constraint. It supports the
+  good/bad query pair in `data-loading.md`.
+- [Shared data](https://inertiajs.com/docs/v3/data-props/shared-data) says shared data is included in
+  every response, shows lazy shaped auth data, recommends sparing use, and distinguishes flash data.
+- [Once props](https://inertiajs.com/docs/v3/data-props/once-props) establishes remembrance,
+  refreshing, expiry, and the explicit-null pattern that prevents stale authenticated-user data.
+- [Deferred props](https://inertiajs.com/docs/v3/data-props/deferred-props) establishes request
+  grouping, parallel groups, rescue behavior, and reload state.
+- [Polling](https://inertiajs.com/docs/v3/data-props/polling),
+  [prefetching](https://inertiajs.com/docs/v3/data-props/prefetching), and
+  [infinite scroll](https://inertiajs.com/docs/v3/data-props/infinite-scroll) establish background
+  throttling, request options, cache invalidation, merged-prop reset, distinct page names, and
+  `manualAfter`.
+- Jump24's practitioner report,
+  [Once props: stop sending the same data over and over](https://jump24.co.uk/journal/inertiajs-once-props-stop-sending-the-same-data-over-and-over-again),
+  documents repeated shared payloads as the problem once props solve.
+- The Laracasts community discussion
+  [Inertia shared data best practice?](https://laracasts.com/discuss/channels/inertia/inertia-shared-data-best-practice)
+  narrows the lesson: unnecessary shared data is the trap; small genuinely global data is valid.
 
-- [Inertia v3 documentation](https://inertiajs.com/docs/v3/) · [full page index](https://inertiajs.com/docs/llms.txt).
-- [Responses](https://inertiajs.com/docs/v3/the-basics/responses) — **"all data returned from the
-  controllers will be visible client-side, so be sure to omit sensitive information"**, prop
-  serialization, `withViewData`, and the browser history-state size limit.
-- [Shared data](https://inertiajs.com/docs/v3/data-props/shared-data) — **"shared data should be used
-  sparingly as all shared data is included with every response"**, and flash data as the alternative
-  for toasts.
-- [Partial reloads](https://inertiajs.com/docs/v3/data-props/partial-reloads) — the prop evaluation
-  matrix, and the warning that `errors` is an `always` prop so an empty bag overwrites client-side
-  errors.
-- [Once props](https://inertiajs.com/docs/v3/data-props/once-props) — the API, re-send rules, and the
-  conditional-prop `null` rule that prevents stale cached authentication state.
-- [Deferred props](https://inertiajs.com/docs/v3/data-props/deferred-props) · [Load when visible](https://inertiajs.com/docs/v3/data-props/load-when-visible) · [Prefetching](https://inertiajs.com/docs/v3/data-props/prefetching) · [Polling](https://inertiajs.com/docs/v3/data-props/polling) · [Merging props](https://inertiajs.com/docs/v3/data-props/merging-props) · [Infinite scroll](https://inertiajs.com/docs/v3/data-props/infinite-scroll).
-- [Forms](https://inertiajs.com/docs/v3/the-basics/forms) — `<Form>` versus `useForm`, the checkbox
-  `"on"` trap, automatic `FormData` conversion, the password/history-state prompt, precognition
-  debouncing and file exclusion, and what breaks when you submit with fetch or axios.
-- [Validation](https://inertiajs.com/docs/v3/the-basics/validation) · [File uploads](https://inertiajs.com/docs/v3/the-basics/file-uploads) · [Flash data](https://inertiajs.com/docs/v3/data-props/flash-data).
-- [Authorization](https://inertiajs.com/docs/v3/security/authorization) — "authorization is best
-  handled server-side in your application's authorization policies."
-- [History encryption](https://inertiajs.com/docs/v3/security/history-encryption) — the back-button
-  problem, key rotation, and the `window.crypto.subtle` secure-context requirement.
-- [Asset versioning](https://inertiajs.com/docs/v3/advanced/asset-versioning) — mismatch behaviour,
-  why background requests do not force a reload, and the failure mode when unset.
-- [SSR](https://inertiajs.com/docs/v3/advanced/server-side-rendering) — dev-mode SSR without a Node
-  process, the Node 22 floor, browser-API errors, and the **silent fallback to client rendering**.
-- [Testing](https://inertiajs.com/docs/v3/advanced/testing) — `assertInertia`, `has`/`where`/`missing`/
-  `etc`, `reloadOnly`, `loadDeferredProps`, flash assertions.
-- [Upgrade guide for v3.0](https://inertiajs.com/docs/v3/getting-started/upgrade-guide) — every rename,
-  floor, dependency removal, and configuration move.
-- [The protocol](https://inertiajs.com/docs/v3/core-concepts/the-protocol) — what is actually on the
-  wire, which settles most arguments about what Inertia "is".
+## History, assets, SSR, and tests
 
-## The reference application
+- [History encryption](https://inertiajs.com/docs/v3/security/history-encryption) establishes the
+  back-button risk, key rotation through `clearHistory()`, and the secure-context requirement.
+- [Asset versioning](https://inertiajs.com/docs/v3/advanced/asset-versioning) establishes Vite's
+  automatic version, full-page refresh behavior, and the v3.6.0 background-request exception.
+- [SSR](https://inertiajs.com/docs/v3/advanced/server-side-rendering) establishes browser-global
+  failures, production supervision and restart, client-render fallback, and test-only
+  `throw_on_error`.
+- Maintainer discussion
+  [`document is not defined` when starting SSR](https://github.com/inertiajs/inertia/discussions/1849)
+  records the browser-global symptom in a real integration and resolution by fixing the incompatible
+  dependency/version rather than hiding the error.
+- [Testing](https://inertiajs.com/docs/v3/advanced/testing) establishes prop-shape, missing-field,
+  partial-reload, deferred-prop, and flash assertions.
 
-- [Ping CRM](https://github.com/inertiajs/pingcrm) — the demo the project maintains, and the closest
-  thing to a canonical style guide: the community consensus is that **most of the approaches taken in
-  Ping CRM are Inertia best practices**. Read it rather than inventing a convention.
-  [Discussion #360](https://github.com/inertiajs/inertia/discussions/360) is its introduction.
-- Ports demonstrate that Inertia is not Laravel-specific and are useful when the adapter differs:
-  [Svelte](https://github.com/inertiajs/pingcrm-svelte) ·
-  [React](https://github.com/liorocks/pingcrm-react) ·
-  [Rails](https://github.com/ledermann/pingcrm).
-- [Demo application](https://inertiajs.com/docs/v3/getting-started/demo-application) — the docs' own
-  pointer to it.
+## Migration and versions
 
-## Community
+- The [v3 upgrade guide](https://inertiajs.com/docs/v3/getting-started/upgrade-guide) is the source of
+  the runtime floors, ESM/ES2022 boundary, removed dependencies, API renames, configuration changes,
+  JSON initial-page data, and React layout caveat in `migration.md`.
+- [npm](https://registry.npmjs.org/@inertiajs/vue3) and
+  [Packagist](https://repo.packagist.org/p2/inertiajs/inertia-laravel.json) establish that the client
+  adapter and Laravel adapter publish independently. Query them at review time; do not copy a dated
+  "latest" number into guidance.
+- [Laravel News on Inertia 3.0](https://laravel-news.com/inertia-3-0-0) is practitioner release
+  coverage for `useHttp`, optimistic updates, layout props, and the Axios removal. The official
+  upgrade guide remains authoritative for compatibility and breaking changes.
 
-- [Inertia GitHub Discussions](https://github.com/inertiajs/inertia/discussions) and
-  [issues](https://github.com/inertiajs/inertia/issues) — where a behaviour that looks like a bug gets
-  settled. Search before assuming.
-- [Inertia.js v3.0.0 is here](https://laravel-news.com/inertia-3-0-0) — Laravel News on `useHttp`,
-  optimistic updates, layout props, and the Axios removal.
-- [Inertia.js once props: stop sending the same data over and over](https://jump24.co.uk/journal/inertiajs-once-props-stop-sending-the-same-data-over-and-over-again) —
-  Jump24, on the shared-data bloat problem that once props exist to solve. A practitioner framing of
-  the single most common Inertia performance fault.
-- [Type-safe shared data and page props in Inertia.js](https://laravel-news.com/type-safe-shared-data-and-page-props-in-inertiajs) —
-  Laravel News, on typing the prop contract so a shape change fails at build rather than at runtime.
-
-## Related skills
-
-Inertia sits between a backend and a client framework, and this package deliberately covers only the
-seam:
-
-- `laravel-patterns` — the server side, when the adapter is Laravel.
-- `vue-patterns` — the client side, when the adapter is Vue.
-- `debugging-code` → `vue.md` for diagnosing a page that will not update.
-
-## What this package deliberately does not cite
-
-- v2-era tutorials without saying so. Most are structurally right and name renamed APIs.
-- Blog posts that reimplement something the protocol already provides — hand-rolled deferred loading,
-  Axios interceptors for progress — except as an example of what not to do.
+Omitted on purpose: generic framework introductions, uncited listicles, v2 tutorials presented as
+current, and community claims that could not be tied to a reproduced failure or a documented
+replacement.

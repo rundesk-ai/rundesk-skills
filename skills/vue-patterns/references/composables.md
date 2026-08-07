@@ -1,137 +1,49 @@
 # Composables
 
-Read this when extracting reusable logic, or reviewing a `use*` function.
+Read this when extracting or reviewing reusable stateful logic.
 
-A composable is a function that uses Vue's reactivity to encapsulate stateful logic. It is the unit of
-reuse that replaced mixins, and the place most component logic should end up.
+## Make inputs stay reactive
 
-## The conventions
-
-```ts
-export function useUserSearch(query: MaybeRefOrGetter<string>) {
-  const results = shallowRef<User[]>([])
-  const loading = ref(false)
-  const error = ref<Error | null>(null)
-
-  watch(() => toValue(query), async (q) => {
-    if (!q) { results.value = []; return }
-    const controller = new AbortController()
-    onWatcherCleanup(() => controller.abort())
-
-    loading.value = true
-    try {
-      results.value = await searchUsers(q, controller.signal)
-      error.value = null
-    } catch (e) {
-      if (e.name !== 'AbortError') error.value = e as Error
-    } finally {
-      loading.value = false
-    }
-  }, { immediate: true })
-
-  return { results, loading, error }
-}
-```
-
-Every rule below is visible in that example.
-
-## Naming
-
-`camelCase`, starting with `use`. Vue: "it is a convention to name composable functions with camelCase
-names that start with `use`." Anthony Fu's community convention extends it: `useXxx` for composables,
-`createXxx` for factories, `onXxx` for event-shaped helpers.
-
-## Accept refs, getters, or values
-
-Take `MaybeRefOrGetter<T>` and normalize with `toValue()`. Vue: "if you are writing a composable that
-may be used by other developers, it's a good idea to handle the case of input arguments being refs or
-getters instead of raw values."
-
-Then make sure it is *tracked*: "if your composable creates reactive effects when the input is a ref
-or a getter, make sure to either explicitly watch the ref / getter with `watch()`, or call `toValue()`
-inside a `watchEffect()`." Calling `toValue()` once at the top of the function reads it exactly once
-and tracks nothing — a common mistake.
-
-## Return a plain object of refs
-
-Vue: "the recommended convention is for composables to always return a plain, non-reactive object
-containing multiple refs. This allows it to be destructured in components while retaining reactivity."
-
-Return a `reactive()` object and every consumer that destructures gets dead values.
-
-Where a composable produces one primary value, VueUse's convention is to return the value directly and
-offer a `controls: true` option for the fuller shape — one obvious return for the common case, an
-escape hatch for the rest.
-
-## Own your side effects, and clean them up
-
-Vue permits side effects in composables with two conditions:
-
-1. **SSR safety** — "perform DOM-specific side effects in post-mount lifecycle hooks, e.g.
-   `onMounted()`. These hooks are only called in the browser."
-2. **Cleanup** — "remember to clean up side effects in `onUnmounted()`."
-
-A composable that adds a listener removes it. A composable that opens a socket closes it. The caller
-should never have to know an effect exists, and a composable that leaks is worse than inline code
-because it leaks everywhere it is used.
-
-## Call them synchronously, in `setup`
-
-Vue: "composables should only be called in `<script setup>` or the `setup()` hook. They should also be
-called **synchronously** in these contexts."
-
-The reason is mechanical: Vue must know the active component instance so lifecycle hooks and watchers
-can be registered to it "and disposed when the instance is unmounted to prevent memory leaks."
-
-So:
+Accept `MaybeRefOrGetter<T>` when callers may pass a value, ref, or getter. Normalize with `toValue`
+inside the tracking scope. Reading once before the effect loses future changes.
 
 ```ts
-// ❌ conditional, in a handler, in a callback, after a non-setup await
-if (cond) { const { x } = useThing() }
-onClick(() => useThing())
+// Bad: one snapshot; a ref or getter is not tracked.
+const url = toValue(source)
+watchEffect(() => fetch(url))
 
-// ✅ top level, unconditional
-const { x } = useThing()
+// Good: the read becomes an effect dependency.
+watchEffect(() => fetch(toValue(source)))
 ```
 
-The one exception: `<script setup>` is "the only place where you can call composables **after** using
-`await`" — the compiler restores the instance context for you.
+When returning several values, return a plain object of refs. A consumer may safely destructure it;
+destructuring properties from a returned `reactive()` object disconnects them.
 
-## Keep the scope one concern
+## Own every effect
 
-- One composable, one concern. `useUser` that also handles routing and toasts is three composables.
-- Composables compose — call one from another rather than growing a large one.
-- If a function needs no reactivity, make it a plain function in `utils/`, not a `use*`. A composable
-  that never touches a ref is a utility wearing a costume, and it cannot be tested without a component
-  context that it does not need.
-- Design for composition. Anthony Fu's framing: "think your functions like LEGO, there should have
-  many different ways of composing them."
+A composable that registers a listener, timer, observer, socket, or request also registers its
+cleanup. Put DOM-specific setup in `onMounted` for SSR safety and teardown in `onUnmounted`; cancel
+stale watcher work with `onWatcherCleanup` (Vue 3.5+) or positional `onCleanup`.
 
-## Shared state: the SSR trap
+Bryce Andy's watcher case study shows the practical symptoms: growing heap, lingering network work,
+and stacked handlers after repeated changes. The replacement is not merely “remember cleanup”; make
+cleanup part of the composable's contract.
 
-```ts
-// ❌ module-level state — one instance shared by every request on the server
-export const useCart = () => { /* closes over a module-scope ref */ }
-```
+## Call with an active Vue scope
 
-A module is initialized once per server process, so module-level reactive state is shared across every
-user's request. This is the same cross-request pollution Vue documents for SSR generally, and it is the
-single most dangerous composable mistake.
+Call composables synchronously in `setup()` or `<script setup>` so Vue can associate hooks and
+watchers with the component. A lifecycle hook is also valid when the composable specifically needs
+that phase. `<script setup>` is the documented exception after `await` because the compiler restores
+the active instance. If creation must be deferred, create the watcher now and make its body
+conditional, or manually stop what you create.
 
-Either scope the state per app with a `create*` + `provide`/`inject` plugin pattern, or use Pinia,
-which scopes state to the request by design. See [`state-and-routing.md`](state-and-routing.md).
+## Keep one concern
 
-## Why not mixins
+Use `useX` for reactive stateful logic, `createX` for a factory, and an ordinary function for pure
+transformation. Anthony Fu's VueUse guidance is to keep composables small, composable, and
+self-cleaning. A function with no reactivity or lifecycle does not gain anything from a `use` name.
 
-Mixins have three problems composables fix: the source of a property is invisible at the use site,
-namespaces collide silently, and there is no way to pass arguments or take multiple instances. A
-composable is a function call with an explicit return — every one of those disappears.
+Do not hoist user-specific refs to module scope in an SSR application. The module is reused between
+requests; create app-scoped state with `createX` plus provide/inject, or use Pinia.
 
-## Sources
-
-- [Composables](https://vuejs.org/guide/reusability/composables.html) — naming, `toValue`, return shape, side effects, and the synchronous call-site rule
-- [Reactivity utilities](https://vuejs.org/api/reactivity-utilities) — `toValue`, `toRefs`, `unref`
-- [Composable Vue](https://antfu.me/posts/composable-vue-vueday-2021) — Anthony Fu: `MaybeRef`, flexible arguments, self-cleaning effects, SSR-friendly shared state
-- [VueUse guidelines](https://vueuse.org/guidelines) — options objects, `controls`, `isSupported`, configurable `flush`/`immediate`, `tryOnScopeDispose`
-- [Good practices and design patterns for Vue composables](https://dev.to/jacobandrewsky/good-practices-and-design-patterns-for-vue-composables-24lk)
-- [SSR: cross-request state pollution](https://vuejs.org/guide/scaling-up/ssr.html)
+Evidence: [composable lessons in sources.md](sources.md#composables-and-effect-lifetimes).

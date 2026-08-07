@@ -1,155 +1,141 @@
-# Laravel and Inertia source basis
+# Laravel source map
 
-This package is a Rundesk synthesis of the Laravel and Inertia documentation plus a small number of
-practitioner sources. The operational guidance is in the other references; use this file to audit or
-update any claim.
+Use this file to audit a lesson, not as additional workflow. Framework docs establish behavior;
+maintainer and practitioner sources establish conventions Laravel intentionally leaves open.
 
-**Read in this order of authority.** Framework documentation states the rules; practitioner sources
-carry conventions and judgement the docs deliberately leave open. Never present the second as the
-first — Laravel says explicitly that "Laravel imposes almost no restrictions on where any given class
-is located."
+Verified 7 August 2026 against Laravel 13 documentation and the linked source pages. Versioned
+advice is marked in the owning reference instead of maintaining a patch/support ledger here.
 
-Verified against these sources in **August 2026**, against **Laravel 13** and **Inertia v3**. Both had
-a major release in March 2026, so anything checked against an older copy of these docs is suspect.
+## Core routing and skeleton
 
-## Version and support facts
+- [`SKILL.md`: inspect the installed version](https://laravel.com/docs/13.x/releases) — framework
+  release notes establish feature and PHP-version boundaries; the installed Composer package remains
+  the source for the application under review.
+- [`SKILL.md`: Laravel 11+ minimal skeleton](https://laravel.com/docs/13.x/structure) and
+  [middleware registration](https://laravel.com/docs/13.x/middleware#registering-middleware) — current
+  directories and `bootstrap/app.php` configuration.
+- [Spatie's Laravel/PHP guidelines](https://github.com/spatie/guidelines.spatie.be/blob/master/content/code-style/laravel-php.md#about-laravel)
+  — practitioner default: follow Laravel's documented path unless the deviation has a reason.
 
-- [Laravel release notes](https://laravel.com/docs/13.x/releases): the support table, PHP floors, and
-  every Laravel 13 feature named here — the AI SDK, JSON:API resources, `PreventRequestForgery`,
-  `Queue::route()`, the expanded PHP attributes (`#[Middleware]`, `#[Authorize]`, `#[Tries]`,
-  `#[Backoff]`, `#[Timeout]`, `#[FailOnTimeout]`), `Cache::touch()`, and vector search.
-- [Inertia v3 documentation](https://inertiajs.com/docs/v3/): v3 released 26 March 2026; v2 bug fixes
-  to 26 September 2026, security to 26 March 2027.
-- [Inertia upgrade guide for v3.0](https://inertiajs.com/docs/v3/getting-started/upgrade-guide): every
-  rename and breaking change, the framework floors, the Axios/`qs`/`lodash-es` removals, and the
-  ESM-only output.
-- [Laravel starter kits](https://laravel.com/docs/13.x/starter-kits): React, Svelte, Vue on Inertia +
-  TypeScript + shadcn/ui + Tailwind; Livewire on Flux UI + Volt. Breeze and Jetstream are no longer
-  updated.
+## Where logic belongs
 
-## Structure and configuration
+- [Laravel News' worked controller refactor](https://laravel-news.com/controller-refactor) — source
+  for the minimized fat-controller pair, extraction options, observer visibility tradeoff, and the
+  caveat that project structure is a choice.
+- [Brent Roose, Queueable actions in Laravel](https://stitcher.io/blog/laravel-queueable-actions) —
+  source for actions as reusable business operations and jobs as asynchronous transport.
+- [Spatie's controller guidelines](https://github.com/spatie/guidelines.spatie.be/blob/master/content/code-style/laravel-php.md#controllers)
+  — keep controllers to resource actions and extract a new controller when responsibilities diverge.
+- [Laravel directory structure](https://laravel.com/docs/13.x/structure) — Laravel imposes few class
+  location restrictions. Therefore this catalog presents actions/services as conditional
+  practitioner judgment, never framework law.
+- [Eloquent events](https://laravel.com/docs/13.x/eloquent#events) — mass update/delete event gaps
+  establish why observers cannot guarantee behavior for every write path.
 
-- [Directory structure](https://laravel.com/docs/13.x/structure): `app/` ships with `Http`, `Models`,
-  `Providers` only; `routes/` with `web.php` and `console.php`; `api.php` and `channels.php` come from
-  `install:api` / `install:broadcasting`.
-- [Middleware](https://laravel.com/docs/13.x/middleware): registration in `bootstrap/app.php` — there
-  is no `Http/Kernel.php` — plus the default `web` and `api` groups, aliases, and priority.
-- [Configuration](https://laravel.com/docs/13.x/configuration): **the `config:cache` / `env()`
-  warning**, the `APP_DEBUG` warning, maintenance mode, and that queued jobs do not run during it.
+## Eloquent and database lessons
 
-## Eloquent and the database
+- [Strictness and lazy-loading violations](https://laravel.com/docs/13.x/eloquent-relationships#preventing-lazy-loading)
+  and [discarded-attribute protection](https://laravel.com/docs/13.x/eloquent#mass-assignment-exceptions)
+  — source for the non-production strictness example.
+- [Eager loading](https://laravel.com/docs/13.x/eloquent-relationships#eager-loading) — N+1 example,
+  eager-load key requirements, aggregates, and model-level `$with` behavior.
+- [Framework PR #49695](https://github.com/laravel/framework/pull/49695) and
+  [Laravel News' maintainer-sourced announcement](https://laravel-news.com/eager-load-limit) — native
+  per-parent eager-load limits arrived in Laravel 11 from `eloquent-eager-limit`.
+- [Chunking and lazy collections](https://laravel.com/docs/13.x/eloquent#chunking-results) and
+  [cursors](https://laravel.com/docs/13.x/eloquent#cursors) — source for the filter-mutation trap,
+  grouped conditions, inability to eager load with `cursor()`, and PDO buffering.
+- [Aggregates](https://laravel.com/docs/13.x/queries#aggregates) — source for the
+  `get()->count()` / query `count()` pair.
+- [Mass assignment](https://laravel.com/docs/13.x/eloquent#mass-assignment) — fillable/guarded write
+  boundary and silent-discard behavior.
+- [Mass updates](https://laravel.com/docs/13.x/eloquent#mass-updates) and
+  [mass deletes](https://laravel.com/docs/13.x/eloquent#deleting-models-using-queries) — model events do
+  not run when models are not retrieved. The bulk-update pair is this catalog's minimized application
+  of that documented failure.
+- [Upserts](https://laravel.com/docs/13.x/eloquent#upserts) — unique-index requirement and MySQL /
+  MariaDB `uniqueBy` behavior.
+- [Transactions](https://laravel.com/docs/13.x/database#database-transactions) — automatic rollback
+  and deadlock retry count. Keeping transactions clear of external calls is the catalog's lock-scope
+  conclusion, not a quoted Laravel rule.
+- [Migrations: online index creation](https://laravel.com/docs/13.x/migrations#online-index-creation)
+  — large index builds can block reads/writes and support is database-specific.
+- [Mastering Laravel: migrations during early development](https://masteringlaravel.io/daily/2024-02-20-how-we-use-migrations-during-early-product-development)
+  — Joel Clermont distinguishes disposable pre-launch migrations from the new forward migrations
+  used after launch. His [production `down()` rule](https://masteringlaravel.io/daily/2023-11-13-a-good-rule-around-down-migrations)
+  documents why an apparently reversible migration can destroy data after users depend on the new
+  schema. The owning reference therefore asks for honest reversibility instead of a universal
+  `down()` rule.
 
-- [Eloquent: Getting Started](https://laravel.com/docs/13.x/eloquent): `preventLazyLoading`,
-  `preventSilentlyDiscardingAttributes`, chunk vs `chunkById` vs `lazy` vs `cursor` (including "cannot
-  eager load relationships" and PDO buffering), mass assignment, `upsert` index requirements, pruning
-  force-deletes, and the mass update/delete **event** warnings.
-- [Eloquent: Relationships](https://laravel.com/docs/13.x/eloquent-relationships): eager loading,
-  `withCount`, existence queries, the "always include the `id` column and any relevant foreign key
-  columns" warning, and the cross-database limitation.
-- [Eager load limit is coming to Laravel 11](https://laravel-news.com/eager-load-limit) and
-  [`eloquent-eager-limit`](https://github.com/staudenmeir/eloquent-eager-limit) — Jonas Staudenmeir's
-  package, absorbed into the framework in 11. The reason `limit()` inside an eager-load constraint is
-  version-gated, and what it silently did before.
-- [Query Builder](https://laravel.com/docs/13.x/queries) · [Migrations](https://laravel.com/docs/13.x/migrations) · [Transactions](https://laravel.com/docs/13.x/database#database-transactions) · [Mutators and casting](https://laravel.com/docs/13.x/eloquent-mutators) · [Pagination](https://laravel.com/docs/13.x/pagination)
+## HTTP, validation, and authorization lessons
 
-## HTTP layer
+- [Scoped bindings](https://laravel.com/docs/13.x/routing#implicit-model-binding-scoping) constrain
+  nested model lookup; [policy authorization](https://laravel.com/docs/13.x/authorization#authorizing-actions-using-policies)
+  checks the current user. The good/bad pair combines these separate contracts; scoping is not a user
+  authorization decision.
+- [Validation](https://laravel.com/docs/13.x/validation#rule-unique) — exact warning against user
+  input in `unique()->ignore()`. The same page's `extensions`, `image`, and array validation sections
+  establish the extension-only, SVG/XSS, and permitted-key traps.
+- [Spatie's validation guidelines](https://github.com/spatie/guidelines.spatie.be/blob/master/content/code-style/laravel-php.md#validation)
+  — community source for array rule syntax.
+- [Policy filters](https://laravel.com/docs/13.x/authorization#policy-filters) — `before()` is not
+  called without a matching ability method; `null` falls through.
+- [API resource conditional relationships](https://laravel.com/docs/13.x/eloquent-resources#conditional-relationships)
+  and [Laravel Daily's reproduced N+1 case](https://laraveldaily.com/post/laravel-api-resources-relations-when-methods)
+  — source for the `whenLoaded()` pair and the requirement to eager load at the query site.
+- [CSRF protection](https://laravel.com/docs/13.x/csrf#excluding-uris-from-csrf-protection) — narrow
+  route exclusion rather than application-wide disablement.
 
-- [Routing](https://laravel.com/docs/13.x/routing) · [Controllers](https://laravel.com/docs/13.x/controllers) · [Eloquent: API Resources](https://laravel.com/docs/13.x/eloquent-resources)
-- [Validation](https://laravel.com/docs/13.x/validation): `validated()` vs `all()`, form request
-  `authorize()`, array vs pipe syntax, nested and array rules, and the **`Rule::unique()->ignore()` SQL
-  injection**, **SVG/XSS**, and **file-extension** warnings.
-- [Authorization](https://laravel.com/docs/13.x/authorization): gates vs policies, discovery, the
-  `#[UsePolicy]` and `#[Authorize]` attributes, `Response::deny`/`denyAsNotFound`, guest handling, and
-  **the `before()` filter warning**. Also carries Laravel's own Inertia authorization example.
-- [CSRF protection](https://laravel.com/docs/13.x/csrf): `PreventRequestForgery` in Laravel 13.
+## Queue lessons
 
-## Queues
+- [Jobs and database transactions](https://laravel.com/docs/13.x/queues#jobs-and-database-transactions)
+  — before-commit race, connection-wide `after_commit`, per-dispatch `afterCommit()`, and rollback
+  discard behavior.
+- [Queued relationships](https://laravel.com/docs/13.x/queues#queued-relationships) — relations enlarge
+  payloads and reload without prior constraints; `withoutRelations` / `WithoutRelations` are the
+  documented replacement. [Class structure](https://laravel.com/docs/13.x/queues#class-structure)
+  establishes identifier re-fetch, binary-data encoding, and current-state semantics.
+  [Missing models](https://laravel.com/docs/13.x/queues#ignoring-missing-models) establishes Laravel
+  13's `DeleteWhenMissingModels` attribute and its silent-discard behavior.
+- [Timeouts](https://laravel.com/docs/13.x/queues#timeout) and
+  [`retry_after`](https://laravel.com/docs/13.x/queues#job-expirations-and-timeouts) — timeout must be
+  shorter or a job may be processed twice; IO clients also need their own timeouts.
+- [Unique jobs](https://laravel.com/docs/13.x/queues#unique-jobs),
+  [debounced jobs](https://laravel.com/docs/13.x/queues#debounced-jobs), and
+  [overlap middleware](https://laravel.com/docs/13.x/queues#preventing-job-overlaps) — shared locks,
+  batch exclusion, and debounce/unique incompatibility.
+- [Amazon Builders' Library: retries and idempotency](https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/)
+  — practitioner/operational basis for making externally visible retries idempotent instead of
+  relying only on queue locks.
+- [Job chains](https://laravel.com/docs/13.x/queues#job-chaining),
+  [batches](https://laravel.com/docs/13.x/queues#defining-batchable-jobs), and
+  [Redis blocking](https://laravel.com/docs/13.x/queues#blocking) — delete does not stop a chain,
+  callback serialization, implicit commits, and `block_for=0` signal handling.
+- [Queue workers and deployment](https://laravel.com/docs/13.x/queues#queue-workers-and-deployment) and
+  [maintenance mode](https://laravel.com/docs/13.x/configuration#maintenance-mode) — worker restart
+  and pause behavior.
 
-- [Queues](https://laravel.com/docs/13.x/queues) is the single densest source in this package. Every
-  quoted warning in `queues-and-jobs.md` comes from it: the **transaction/`afterCommit`** warning,
-  relationship serialization and `withoutRelations`, base64 for binary data, **`timeout` <
-  `retry_after`**, `FailOnTimeout` behaviour, `ShouldBeUnique` lock-driver and batch limits, the
-  multi-server cache requirement, `DebounceFor` vs `ShouldBeUnique` exclusivity, `WithoutOverlapping`,
-  chain `delete()` semantics, batch implicit-commit warning, `block_for => 0` and `SIGTERM`, and the
-  unsupported Redis `serializer`/`compression` options.
-- [Cache: atomic locks](https://laravel.com/docs/13.x/cache#atomic-locks): which drivers support the
-  locks unique and non-overlapping jobs require.
+## Performance and deployment lessons
 
-## Performance, deployment, monitoring
+- [Configuration caching](https://laravel.com/docs/13.x/configuration#configuration-caching) and
+  [debug mode](https://laravel.com/docs/13.x/configuration#debug-mode) — exact basis for the `env()` /
+  `config()` pair and production debug warning.
+- [Deployment optimization](https://laravel.com/docs/13.x/deployment#optimization) — framework cache
+  commands. The application must still own ordering and zero-downtime mechanics.
+- [Cache atomic locks](https://laravel.com/docs/13.x/cache#atomic-locks) and
+  [stale-while-revalidate](https://laravel.com/docs/13.x/cache#stale-while-revalidate) — replacements
+  for stampedes and refreshes that need bounded staleness.
+- [Octane dependency injection](https://laravel.com/docs/13.x/octane#dependency-injection-and-octane)
+  and [memory leaks](https://laravel.com/docs/13.x/octane#managing-memory-leaks) — captured request /
+  container state and growing static arrays persist across requests.
 
-- [Deployment](https://laravel.com/docs/13.x/deployment): the `optimize` commands, `--no-dev` and the
-  Ignition overhead point, `--optimize-autoloader`, and the production driver recommendations
-  including "**the database driver is not suitable for production environments and is known to have
-  deadlock issues**".
-- [Octane](https://laravel.com/docs/13.x/octane): the static-state memory leak, the 500-request worker
-  restart, the container/request-in-singleton warning, and "Octane does not always know how to reset
-  the global state created by your application."
-- [Cache](https://laravel.com/docs/13.x/cache) · [Pulse](https://laravel.com/docs/13.x/pulse) · [Telescope](https://laravel.com/docs/13.x/telescope)
-- [The ultimate performance checklist for Laravel apps](https://laravel-news.com/performance-checklist) —
-  Laravel News.
+## Deliberate removals
 
-## Inertia
-
-Moved. The Inertia seam now has its own skill, **`inertia-patterns`**, with its own source basis — the
-v3 documentation, the Ping CRM reference application, and community writing. Use it alongside this
-skill.
-
-## Practitioner sources — conventions and judgement
-
-These carry opinion, not framework rules. Cited where the docs deliberately do not decide.
-
-- [Spatie: Laravel & PHP guidelines](https://github.com/spatie/guidelines.spatie.be/blob/master/content/code-style/laravel-php.md): "Laravel provides the
-  most value when you write things the way Laravel intended you to write… whenever you do something
-  differently, make sure you have a justification." Also array validation syntax, controller naming and
-  CRUD verbs, extracting a new controller rather than bloating one, early returns over `else`.
-- [Restructuring a Laravel controller using services, events, jobs, actions, and more](https://laravel-news.com/controller-refactor):
-  the worked fat-controller refactor, the caution that observers hide logic from a reader, and the
-  explicit caveat that "you are free to structure your project however you want."
-- [Queueable actions in Laravel](https://stitcher.io/blog/laravel-queueable-actions): actions as the
-  unit of business logic.
-- [Laravel News](https://laravel-news.com/): the ecosystem's paper of record — release coverage,
-  deprecations, and the practical write-ups referenced above.
-- [freek.dev](https://freek.dev/) — **Freek Van der Herten**, Spatie. Maintainer of a large part of the
-  package ecosystem; the [best practices](https://freek.dev/topics/best-practices) tag is the useful
-  entry point.
-- [Spatie's open-source packages](https://spatie.be/open-source) — worth checking before writing
-  something; several of these are the de facto answer for permissions, media, backups and health
-  checks, and reading one is a fast way to see idiomatic Laravel.
-- [Tighten's blog](https://tighten.com/insights/) — Matt Stauffer and team; long-form architecture and
-  upgrade experience.
-- [Laravel Daily](https://laraveldaily.com/) — Povilas Korop; short, concrete, heavy on the cases that
-  trip people up.
-- [Laracasts forum](https://laracasts.com/discuss) and the
-  [Laravel GitHub discussions](https://github.com/laravel/framework/discussions) — where a behaviour
-  that looks like a bug gets settled. Search before assuming.
-
-## About the code examples
-
-Examples in this package are one of two things, and the text says which:
-
-- **Lifted from the source** — the framework's own documented example, or a worked case from a cited
-  article. These are marked inline, because "this is how the maintainers show it" is stronger evidence
-  than anything a skill can assert.
-- **Synthesised to isolate one failure** — written here to show a specific trap with nothing else in
-  the frame. These are the package's own judgement, and the surrounding prose gives the mechanism so a
-  reader can evaluate rather than trust.
-
-Every ✅/❌ pair states the failure the ❌ produces. An example that only says "prefer this" is not
-worth the space.
-
-**Examples are version-gated where the behaviour is.** Where a pattern only works above a floor, or
-behaved differently below it, the text says so — silently correct-looking code that misbehaves on an
-older version is worse than no example.
-
-PHP examples here are not machine-checked — no interpreter is available in the authoring
-environment — so they are written to be read rather than pasted, and any that depends on a version
-floor says so.
-
-## What this package deliberately does not cite
-
-- Tutorials targeting Laravel 8–11 patterns without saying so. Most stale Laravel advice online is
-  version drift, not error.
-- Package recommendations for behaviour the framework provides.
-- Benchmark posts without a published method.
-- Architecture opinions presented as framework requirements. Where this package takes a position — for
-  example on where business logic belongs — it says so and gives the failure it prevents.
+- Inertia guidance lives in `inertia-patterns`; duplicating it here creates version drift.
+- Patch numbers and support countdowns were removed because they age faster than the workflow. Inspect
+  the installed package and current release notes instead.
+- The former claim that Laravel 13 documentation forbids the database queue in production was
+  removed. Current Laravel 13 deployment and queue docs do not make that statement.
+- Blanket rules to index every foreign key, always implement `down()`, forbid repositories, or ban
+  business logic from every model were weakened or removed because the cited sources do not justify
+  those absolutes.

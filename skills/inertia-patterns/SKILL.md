@@ -1,88 +1,57 @@
 ---
 name: inertia-patterns
-description: Use this skill when building, reviewing, debugging, or upgrading an Inertia.js application — page responses and props, shared data, partial reloads, deferred and once props, prefetching, polling, infinite scroll, forms and validation, file uploads, authorization exposure, asset versioning, history encryption, SSR, or migrating between Inertia majors. Applies with any adapter — Laravel, Rails, Phoenix, Django — and any of React, Vue or Svelte. Do not use it for a conventional SPA with its own API, or for Blade-only or Livewire work.
+description: Use when building, reviewing, debugging, or upgrading an Inertia.js application: page responses and props, visits and forms, partial or deferred data, shared state, authorization exposure, history, assets, SSR, or v2/v3 migration. It supplies provider-neutral defaults and source-backed failure patterns for server and client adapters. Do not use for conventional API SPAs, Blade-only pages, or Livewire work.
 ---
 
 # Inertia patterns
 
-Inertia is not an API and not a SPA framework. It is a protocol that lets a server-rendered
-application return a **page component name plus props** instead of HTML, and lets the client swap the
-component without a full page load.
+Treat Inertia as a server-driven page protocol:
 
-Three consequences decide everything else:
+- The server still owns routes, validation, authorization, and redirects.
+- Page props are a public wire format; send only the fields the page needs.
+- An Inertia mutation normally redirects to the next page response. Standalone HTTP calls are a
+  separate workflow.
 
-- **The controller is still the controller.** Routing, validation, authorization, redirects and flash
-  messages stay on the server. There is no client-side router to keep in sync and no API to version.
-- **Props are the wire format.** Everything in them is serialized to the browser.
-- **A redirect is the success response.** After a `POST`, redirect; Inertia follows it and renders the
-  next page. Returning JSON breaks the model.
-
-Use the backend's own skill alongside this one — `laravel-patterns` for Laravel — and the client
-framework's, such as `vue-patterns`.
-
-## Establish the versions first
-
-**The two halves version independently**, which is the first thing to check and a routine source of
-confusion. Checked against the registries on **7 August 2026**:
-
-| Package | Latest | Registry |
-|---|---|---|
-| `@inertiajs/vue3` (and the React/Svelte siblings) | **3.6.1** (2026-07-07) | npm |
-| `inertiajs/inertia-laravel` | **3.3.1** (2026-08-04) | Packagist |
-| npm `legacy` tag (the v2 line) | 2.3.27 (2026-06-25) | npm |
-
-Do not infer the client version from the adapter version or vice versa.
-
-```sh
-npm ls @inertiajs/vue3 @inertiajs/react @inertiajs/svelte 2>/dev/null
-composer show inertiajs/inertia-laravel 2>/dev/null | head -3
-curl -sS https://registry.npmjs.org/@inertiajs/vue3 | python3 -c 'import sys,json;print(json.load(sys.stdin)["dist-tags"])'
-```
-
-v3 renamed several APIs — most notably `Inertia::lazy()` became `Inertia::optional()`. Advice written
-for v2 is usually still structurally right and names things that no longer exist. See
-[`migration.md`](references/migration.md).
+Use the backend skill and the Vue, React, or Svelte skill with this one.
 
 ## Work in this order
 
-1. **Check the two versions.** Half the confusing advice online is v2 advice.
-2. **Decide what the page actually needs**, then choose the prop form. This is where Inertia
-   performance lives — see [`data-loading.md`](references/data-loading.md).
-3. **Keep authorization on the server.** Props that describe permissions are for rendering only.
-4. **Let the redirect do the work.** Do not reach for `fetch` to "just get the data".
-5. **Check the payload in the network tab** before optimizing anything.
+1. Record both the client package and server adapter versions. Their versions are independent, and
+   v2 examples contain names removed in v3.
+2. Inspect the actual page payload and decide which data is required now, later, or only on demand.
+3. Shape public props explicitly and enforce authorization on the server.
+4. Use Inertia visits for page-changing requests; use `useHttp` or plain HTTP only when no page visit
+   should occur.
+5. Test redirects, validation, partial reloads, excluded fields, and SSR output where enabled.
 
-## Rules that always hold
+## Prefer failure-preventing replacements
 
-- **Everything in props reaches the browser.** Inertia: "all data returned from the controllers will
-  be visible client-side, so be sure to omit sensitive information." Never pass a whole model.
-- **Never submit with `fetch` or `axios`.** The response is not an Inertia response: no page update,
-  no populated `errors`, no automatic `FormData`, no progress.
-- **Authorize on the server, always.** A `can` prop hides a button; it does not protect a route.
-- **Shared data is sent with every single response.** Use it sparingly, and prefer closures.
-- **Make every non-trivial prop a closure.** A bare value is computed even when a partial reload asked
-  for something else.
-- **Set an asset version.** Without it clients keep running an old bundle indefinitely, with no signal.
-- **Browser-only code must not run during SSR**, and SSR failures fall back silently.
+```php
+// Good: a stable, reviewable public shape.
+'user' => $user->only('id', 'name')
 
-## Read the reference the task needs
-
-| Area | Read for |
-|---|---|
-| [Core](references/core.md) | The mental model, responses, props, security, authorization, forms, SSR, testing |
-| [Data loading](references/data-loading.md) | The prop evaluation matrix, shared data, once, deferred, partial reloads, prefetching, infinite scroll |
-| [Migration](references/migration.md) | v2 → v3 renames and breaking changes, and how to plan the upgrade |
-| [Anti-patterns](references/anti-patterns.md) | The consolidated do / don't list |
-| [Sources](references/sources.md) | The citation basis |
-
-## Review output shape
-
-```text
-[HIGH] Whole model passed as a prop
-Location: app/Http/Controllers/OrderController.php:41 — 'customer' => $customer
-Evidence: the customers table has 23 columns including stripe_id and internal_notes; all 23 are in
-     the page payload, visible in the browser.
-Why: Inertia serializes props verbatim to the client, and a column added later ships automatically.
-Fix: $customer->only('id', 'name') or a CustomerResource.
-Check: assertInertia(...)->missing('customer.internal_notes') in the feature test.
+// Bad: every serialized model field reaches the browser, including fields added later.
+'user' => $user
 ```
+
+- Replace eager expensive props with closures before relying on partial reloads.
+- Replace broadly shared page data with page props; reserve shared data for small, genuinely global
+  values.
+- Replace a missing conditional once prop with explicit `null`, or stale remembered data survives.
+- Replace JSON success responses to Inertia visits with redirects.
+- Replace UI-only permission checks with matching server authorization.
+- Replace SSR assumptions with a test configuration that throws on SSR failure.
+
+These lessons and examples are mapped to primary and practitioner evidence in
+[`references/sources.md`](references/sources.md).
+
+## Read only the needed depth
+
+- Read [`references/core.md`](references/core.md) for props, forms, validation, authorization,
+  history, assets, SSR, and tests.
+- Read [`references/data-loading.md`](references/data-loading.md) for slow pages, partial reloads,
+  shared or once props, deferred data, polling, prefetching, or infinite scroll.
+- Read [`references/migration.md`](references/migration.md) before a v2/v3 upgrade or when an example
+  names a missing API.
+- Read [`references/anti-patterns.md`](references/anti-patterns.md) when diagnosing symptoms or
+  reviewing an existing application.

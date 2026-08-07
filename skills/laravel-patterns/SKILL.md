@@ -1,128 +1,92 @@
 ---
 name: laravel-patterns
-description: Use this skill when the user asks to build, review, debug, refactor, or advise on a Laravel application or API — routing, controllers, middleware, validation, authorization, Eloquent and queries, migrations, queues and jobs, caching, configuration, testing, deployment. It supplies version-accurate rules, the failure each convention prevents, and the documented warnings that are easy to miss. Do not use it for Livewire-specific or Blade-only frontend work; for the Inertia seam use `inertia-patterns` alongside this skill.
+description: Use when building, reviewing, debugging, or refactoring a Laravel application or API, including controllers, validation, authorization, Eloquent, migrations, queues, caching, testing, and deployment. It supplies version-aware Laravel defaults and source-backed replacements for common production traps. Do not use for Livewire- or Blade-only frontend work; use `inertia-patterns` alongside it at an Inertia boundary.
 ---
 
-# Laravel and Inertia patterns
+# Laravel patterns
 
-Follow the framework's own conventions and its documented warnings. Most Laravel bugs that reach
-production are not exotic — they are a documented `WARNING` block somebody had not read.
+Prefer Laravel's documented path. Deviate only when the codebase or measured behavior supplies a
+reason.
 
-## Establish the version before advising
-
-Advice that was correct two majors ago is the main source of wrong Laravel guidance. Read the actual
-versions first:
+## Inspect before changing
 
 ```sh
 php artisan --version
 php artisan about
-composer show laravel/framework inertiajs/inertia-laravel 2>/dev/null
-cat package.json | grep '@inertiajs'
+composer show laravel/framework
 ```
 
-| Release | Date | PHP | Bug fixes until | Security until |
-|---|---|---|---|---|
-| Laravel 11 | 12 Mar 2024 | 8.2–8.4 | 3 Sep 2025 | 12 Mar 2026 — **ended** |
-| Laravel 12 | 24 Feb 2025 | 8.2–8.5 | 13 Aug 2026 | 24 Feb 2027 |
-| **Laravel 13** | 17 Mar 2026 | 8.3–8.5 | Q3 2027 | 17 Mar 2028 |
+Then read the route, request, controller, model, migration, configuration, and tests involved. Check
+the installed major before using versioned APIs; do not copy a current-doc example into an older
+application.
 
-**Latest patch, checked against Packagist on 7 August 2026: `v13.24.0` (2026-08-04).** Check the pin,
-not just the major — the support table above says when a *line* stops, not whether you are current
-within it.
+For Laravel 11+, configure middleware and exceptions in `bootstrap/app.php`; the minimal skeleton has
+no `app/Http/Kernel.php` or `app/Exceptions/Handler.php`. Generate only the directories the change
+needs.
 
-```sh
-curl -sS https://repo.packagist.org/p2/laravel/framework.json \
-  | python3 -c 'import sys,json;print(json.load(sys.stdin)["packages"]["laravel/framework"][0]["version"])'
-```
+## Apply these defaults
 
-Laravel 11 is out of support entirely. Laravel 12 leaves bug-fix support on **13 August 2026** and is
-security-only after that; flag it when you see it.
+| Avoid | Prefer | Failure prevented |
+|---|---|---|
+| `env()` outside `config/` | Read `config('...')` | `config:cache` stops loading `.env`, so local-only success becomes a production `null` |
+| `APP_DEBUG=true` in production | `APP_DEBUG=false` | Debug pages can expose configuration values |
+| Persisting `$request->all()` | Validate, authorize, then persist `validated()` into an explicitly fillable model | Extra client fields crossing the write boundary |
+| User input in `Rule::unique()->ignore(...)` | Pass the resolved model or its system-generated key | Laravel documents the former as an SQL-injection vector |
+| Lazy-loading relations in loops | Eager load and enable non-production strictness | N+1 queries stay visible during development |
+| `all()` / unbounded `get()` on growing data | Paginate user views; use `lazy()` or `chunkById()` for batch work | Memory growth tracks table growth |
+| Dispatching inside a transaction | Enable `after_commit` or call `afterCommit()` | A worker can run before the row exists |
+| Queue `timeout >= retry_after` | Keep timeout several seconds shorter | The same job can run twice concurrently |
 
-## The skeleton is not what older guides describe
+These are framework-documented failure modes, not style preferences. The references give the exact
+conditions and sourced good/bad pairs.
 
-Since Laravel 11 there is **no `app/Http/Kernel.php` and no `app/Exceptions/Handler.php`**.
-Middleware, exception handling, and routing are configured in **`bootstrap/app.php`**:
+## Place behavior where callers can reach it
+
+Keep a small CRUD action in its controller. Extract an action or service when an operation has
+multiple entry points, multiple coordinated steps, or side effects. Jobs transport an operation;
+observers should not hide work required for correctness. Read
+[`where-logic-belongs.md`](references/where-logic-belongs.md) before introducing or reviewing those
+layers.
+
+## Make silent ORM failures loud
+
+In non-production environments, enable the strictness needed by the project:
 
 ```php
-->withMiddleware(function (Middleware $middleware): void {
-    $middleware->web(append: [EnsureUserIsSubscribed::class]);
-    $middleware->alias(['subscribed' => EnsureUserIsSubscribed::class]);
-})
+Model::preventLazyLoading(! app()->isProduction());
+Model::preventSilentlyDiscardingAttributes(! app()->isProduction());
 ```
 
-`app/` contains only `Http`, `Models`, and `Providers` by default; every other directory appears
-when a `make:` command creates its first class. `routes/` holds `web.php` and `console.php` —
-`api.php` and `channels.php` are installed with `php artisan install:api` and `install:broadcasting`.
-Do not scaffold directories nobody asked for, and do not tell somebody to edit a Kernel that is not
-there.
+This catches accidental lazy loads and discarded attributes during development without turning a
+missed eager load into a production outage.
 
-## Work in this order
+## Read only the needed depth
 
-1. **Read the real code before advising.** Read the model, the migration, and the controller
-   together; Laravel's behaviour depends on all three and none of them is inferable from the others.
-2. **Use the framework's own solution.** If there is a documented way, use it. Deviating needs a
-   stated reason — that is Spatie's rule and it is the right one.
-3. **Put the logic where every caller can reach it.** Controllers, jobs, commands, and observers are
-   entry points; business logic belongs in a service or action they all call. See
-   [`where-logic-belongs.md`](references/where-logic-belongs.md).
-4. **Make failures loud in development.** `Model::shouldBeStrict()` in a non-production environment
-   turns three classes of silent bug into exceptions.
-5. **Prove it with a test.** Laravel's testing surface is good enough that "I could not test it" is
-   almost always a design problem.
+- Read [`eloquent-and-database.md`](references/eloquent-and-database.md) for relationship loading,
+  large result sets, aggregates, mass operations, transactions, and migrations.
+- Read [`http-and-validation.md`](references/http-and-validation.md) for route binding, form
+  requests, file validation, policies, and API resources.
+- Read [`queues-and-jobs.md`](references/queues-and-jobs.md) before writing or debugging queued work.
+- Read [`performance-and-deployment.md`](references/performance-and-deployment.md) for configuration
+  caches, slow requests, data caches, Octane, and long-running workers.
+- Read [`anti-patterns.md`](references/anti-patterns.md) when triaging a review; it routes suspicious
+  code to the reference that owns the fix.
+- Read [`sources.md`](references/sources.md) when auditing or updating a claim or example.
 
-## Rules that always hold
+Use `inertia-patterns` alongside this skill for props, shared data, forms, partial reloads, SSR, or
+adapter-version changes. Authorize on the server even when an Inertia prop controls what the UI
+shows.
 
-- **Never call `env()` outside `config/`.** After `config:cache` the `.env` file is not loaded and
-  `env()` returns only real system variables — so the call returns `null` in production and nowhere
-  else. Read `config('...')` everywhere else.
-- **`APP_DEBUG=false` in production**, always. Laravel: "you risk exposing sensitive configuration
-  values to your application's end users."
-- **Validate, then persist only `validated()`.** `$request->all()` includes everything the client
-  sent. Keep `$fillable` set as well — validation and mass-assignment protection are two layers, not
-  one choice.
-- **Never pass user input to `Rule::unique()->ignore()`.** Laravel: "otherwise, your application will
-  be vulnerable to an SQL injection attack."
-- **Business logic never lives in a controller, a model, a job, or an observer.** Those are entry
-  points and persistence. Put the operation in a service or action so a command, a job, a test, and a
-  request can all reach it.
-- **Eager load, or turn lazy loading into an exception.** N+1 is the default failure mode of an ORM.
-- **Never load an unbounded result set.** `Model::all()` and `->get()` on a growing table are time
-  bombs. Paginate what a user sees; `chunkById()` or `lazy()` what a job processes. Choosing wrong
-  here is the difference between a job that runs and a worker killed by the memory limit.
-- **Dispatch after commit.** A job dispatched inside a transaction can run before the transaction
-  commits, against rows that do not exist yet.
-- **Everything in Inertia props reaches the browser.** Inertia: "all data returned from the
-  controllers will be visible client-side, so be sure to omit sensitive information."
-- **Authorize on the server.** Props that say what a user may do are for rendering, never for access
-  control.
-
-## Read the reference the task needs
-
-| Area | Read for |
-|---|---|
-| [Where logic belongs](references/where-logic-belongs.md) | Controllers vs services vs actions vs jobs vs observers; the fat-controller refactor |
-| [Eloquent and the database](references/eloquent-and-database.md) | Models, strictness, N+1, chunking, query performance, mass assignment, transactions, migrations |
-| [HTTP layer](references/http-and-validation.md) | Routing, controllers, Laravel 13 attributes, form requests, validation, gates and policies, API resources |
-| [Queues and jobs](references/queues-and-jobs.md) | Serialization, transactions, uniqueness, timeouts, batches, chains — the documented warnings |
-| [Performance and deployment](references/performance-and-deployment.md) | Caches, the optimize command, drivers, Octane, indexes, what to measure |
-| [Anti-patterns](references/anti-patterns.md) | The consolidated do / don't list, and the failure each one prevents |
-| [Sources](references/sources.md) | The citation basis, to audit or update any claim above |
-
-Building on **Inertia**? Use **`inertia-patterns`** alongside this skill — it owns props, shared data,
-partial reloads, forms, SSR and the v2→v3 migration, and it applies to any adapter rather than only
-Laravel.
-
-## Review output shape
+## Report findings as failures
 
 ```text
-[HIGH] Job dispatched inside a transaction without afterCommit
+[HIGH] Job can run before its transaction commits
 Location: app/Actions/CreateOrder.php:38
-Evidence: DB::transaction() wraps Order::create() and ProcessOrder::dispatch(); the queue
-connection in config/queue.php does not set after_commit.
-Why: the worker can pick the job up before the commit and load a row that does not exist yet.
-Fix: set 'after_commit' => true on the connection, or dispatch()->afterCommit().
-Check: a test that dispatches inside a transaction and asserts the job sees the committed row.
+Evidence: ProcessOrder is dispatched inside DB::transaction(); after_commit is false.
+Impact: the worker may query an order that has not committed.
+Replacement: enable after_commit or append ->afterCommit().
+Verification: cover the dispatch boundary and the job's lookup in a queue-backed test.
 ```
 
-Name the failure, not just the rule. A recommendation whose reason is "best practice" is one nobody
-can evaluate.
+Separate correctness and security defects from structure preferences. Never call a recommendation
+"best practice" without naming the failure it prevents.
