@@ -40,6 +40,7 @@ Removal requires a second `--yes` invocation and is refused while any declared s
 - `postgres-patterns`
 - `python-patterns`
 - `python-testing`
+- `reviewing-code`
 - `seo`
 - `sqlite-patterns`
 - `vue-patterns`

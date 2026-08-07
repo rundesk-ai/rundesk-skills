@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -39,6 +39,10 @@
     {
       "name": "python-testing",
       "path": "skills/python-testing"
+    },
+    {
+      "name": "reviewing-code",
+      "path": "skills/reviewing-code"
     },
     {
       "name": "seo",
