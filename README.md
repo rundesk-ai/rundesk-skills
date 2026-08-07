@@ -52,6 +52,7 @@ agent no longer needs it.
 - `testing-code`
 - `vue-patterns`
 - `writing-plans`
+- `writing-prds`
 - `writing-technical-docs`
 
 ## Manifest contract

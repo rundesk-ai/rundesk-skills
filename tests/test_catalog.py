@@ -44,6 +44,7 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("pdf-creation", names)
         self.assertIn("researching-topics", names)
         self.assertIn("seo", names)
+        self.assertIn("writing-prds", names)
         self.assertIn("writing-technical-docs", names)
 
     def test_every_entry_is_a_complete_named_skill(self):
