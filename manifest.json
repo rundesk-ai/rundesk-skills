@@ -5,6 +5,10 @@
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
+      "name": "cpp-patterns",
+      "path": "skills/cpp-patterns"
+    },
+    {
       "name": "database-design",
       "path": "skills/database-design"
     },

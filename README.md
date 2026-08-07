@@ -33,6 +33,7 @@ agent no longer needs it.
 
 ## Included skills
 
+- `cpp-patterns`
 - `database-design`
 - `debugging-code`
 - `frontend-design`
