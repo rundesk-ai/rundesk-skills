@@ -38,6 +38,9 @@ taste. Report what the tools already flag before adding judgement of your own.
 - Read [references/documented-traps.md](references/documented-traps.md) when reviewing unfamiliar
   code, debugging behavior nobody can explain, or checking a change against the failures Python's own
   FAQ and the ecosystem's linters have already catalogued.
+- Read [references/anti-patterns.md](references/anti-patterns.md) when reviewing design rather than
+  correctness: abstraction, interfaces, error-handling shape, idiom, state, and the cost each choice
+  imposes later. Traps are defects; these are judgements, and the page says how to rank them.
 - Read [references/typing.md](references/typing.md) when adding or reviewing annotations, choosing
   between `Protocol`, `TypedDict`, `Literal`, and a dataclass, or configuring a type checker.
 - Read [references/security.md](references/security.md) when code runs a subprocess, deserializes,

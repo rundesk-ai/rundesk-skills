@@ -85,6 +85,15 @@ are common, not merely style opinions.
   [PEP 649 — Deferred annotation evaluation](https://peps.python.org/pep-0649/),
   [PEP 695 — Type parameter syntax](https://peps.python.org/pep-0695/).
 
+## Design anti-patterns
+
+- [Python anti-patterns catalog](https://docs.quantifiedcode.com/python-anti-patterns/): the
+  community catalog of correctness, maintainability, readability, security, and performance
+  anti-patterns behind the idiom tables.
+- [Stop Writing Classes](https://www.youtube.com/watch?v=o9pEzgHorH0): **Jack Diederich**, PyCon 2012.
+  The case that a class with an `__init__` and one method is a function. Frequently misattributed to
+  Raymond Hettinger, whose *The Art of Subclassing* is the complementary talk.
+
 ## Practitioner sources
 
 Maintainer writing, cited where the documentation states a mechanism but not a judgement.
