@@ -12,7 +12,7 @@ prevention — do not present a Priority B or C preference as a defect.
 Verified in **August 2026**. Vue 3.6, Pinia 4, Vue Router 5 and Nuxt 4 all moved within the preceding
 twelve months, so anything checked against an older copy of these docs is suspect.
 
-## Versions, verified against the npm registry
+## Versions, verified against the npm registry on 7 August 2026
 
 | Package | Latest | Published |
 |---|---|---|

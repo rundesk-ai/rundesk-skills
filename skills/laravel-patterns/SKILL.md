@@ -1,6 +1,6 @@
 ---
 name: laravel-patterns
-description: Use this skill when the user asks to build, review, debug, refactor, or advise on a Laravel application or API — routing, controllers, middleware, validation, authorization, Eloquent and queries, migrations, queues and jobs, caching, configuration, testing, deployment — or on an Inertia.js frontend built on Laravel, including props, shared data, partial reloads, forms, SSR, and asset versioning. It supplies version-accurate rules, the failure each convention prevents, and the documented warnings that are easy to miss. Do not use it for Livewire-specific or Blade-only frontend work with no Inertia involved.
+description: Use this skill when the user asks to build, review, debug, refactor, or advise on a Laravel application or API — routing, controllers, middleware, validation, authorization, Eloquent and queries, migrations, queues and jobs, caching, configuration, testing, deployment. It supplies version-accurate rules, the failure each convention prevents, and the documented warnings that are easy to miss. Do not use it for Livewire-specific or Blade-only frontend work; for the Inertia seam use `inertia-patterns` alongside this skill.
 ---
 
 # Laravel and Inertia patterns
@@ -25,11 +25,18 @@ cat package.json | grep '@inertiajs'
 | Laravel 11 | 12 Mar 2024 | 8.2–8.4 | 3 Sep 2025 | 12 Mar 2026 — **ended** |
 | Laravel 12 | 24 Feb 2025 | 8.2–8.5 | 13 Aug 2026 | 24 Feb 2027 |
 | **Laravel 13** | 17 Mar 2026 | 8.3–8.5 | Q3 2027 | 17 Mar 2028 |
-| Inertia v2 | — | — | 26 Sep 2026 | 26 Mar 2027 |
-| **Inertia v3** | 26 Mar 2026 | — | current | — |
 
-Laravel 11 is out of support entirely. Laravel 12 leaves bug-fix support on **13 August 2026** and
-is security-only after that; flag it when you see it.
+**Latest patch, checked against Packagist on 7 August 2026: `v13.24.0` (2026-08-04).** Check the pin,
+not just the major — the support table above says when a *line* stops, not whether you are current
+within it.
+
+```sh
+curl -sS https://repo.packagist.org/p2/laravel/framework.json \
+  | python3 -c 'import sys,json;print(json.load(sys.stdin)["packages"]["laravel/framework"][0]["version"])'
+```
+
+Laravel 11 is out of support entirely. Laravel 12 leaves bug-fix support on **13 August 2026** and is
+security-only after that; flag it when you see it.
 
 ## The skeleton is not what older guides describe
 
@@ -97,11 +104,13 @@ there.
 | [Eloquent and the database](references/eloquent-and-database.md) | Models, strictness, N+1, chunking, query performance, mass assignment, transactions, migrations |
 | [HTTP layer](references/http-and-validation.md) | Routing, controllers, Laravel 13 attributes, form requests, validation, gates and policies, API resources |
 | [Queues and jobs](references/queues-and-jobs.md) | Serialization, transactions, uniqueness, timeouts, batches, chains — the documented warnings |
-| [Inertia](references/inertia.md) | The mental model, responses, forms, validation, security, SSR, versioning, testing |
-| [Inertia data loading](references/inertia-data-loading.md) | Shared data, once, deferred, optional, partial reloads, prefetching, polling, infinite scroll |
 | [Performance and deployment](references/performance-and-deployment.md) | Caches, the optimize command, drivers, Octane, indexes, what to measure |
 | [Anti-patterns](references/anti-patterns.md) | The consolidated do / don't list, and the failure each one prevents |
 | [Sources](references/sources.md) | The citation basis, to audit or update any claim above |
+
+Building on **Inertia**? Use **`inertia-patterns`** alongside this skill — it owns props, shared data,
+partial reloads, forms, SSR and the v2→v3 migration, and it applies to any adapter rather than only
+Laravel.
 
 ## Review output shape
 

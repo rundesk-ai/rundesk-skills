@@ -86,35 +86,9 @@ a major release in March 2026, so anything checked against an older copy of thes
 
 ## Inertia
 
-- [Inertia v3 docs](https://inertiajs.com/docs/v3/), full index at
-  [llms.txt](https://inertiajs.com/docs/llms.txt).
-- [Responses](https://inertiajs.com/docs/v3/the-basics/responses): **"all data returned from the
-  controllers will be visible client-side"**, prop serialization, `withViewData`, and the Firefox
-  16 MiB history-state limit.
-- [Shared data](https://inertiajs.com/docs/v3/data-props/shared-data): **"shared data should be used
-  sparingly as all shared data is included with every response"**, and flash data as the alternative
-  for toasts.
-- [Partial reloads](https://inertiajs.com/docs/v3/data-props/partial-reloads): the prop evaluation
-  matrix, and the `errors`-are-`always` warning that an empty error bag overwrites client-side errors.
-- [Once props](https://inertiajs.com/docs/v3/data-props/once-props): the API, re-send rules, and the
-  **conditional-prop `null` rule** that prevents stale cached auth state.
-- [Deferred props](https://inertiajs.com/docs/v3/data-props/deferred-props) · [Load when visible](https://inertiajs.com/docs/v3/data-props/load-when-visible) · [Prefetching](https://inertiajs.com/docs/v3/data-props/prefetching) · [Polling](https://inertiajs.com/docs/v3/data-props/polling) · [Merging props](https://inertiajs.com/docs/v3/data-props/merging-props) · [Infinite scroll](https://inertiajs.com/docs/v3/data-props/infinite-scroll)
-- [Forms](https://inertiajs.com/docs/v3/the-basics/forms): `<Form>` vs `useForm`, the checkbox `"on"`
-  trap, automatic `FormData` conversion, the password/history-state prompt, precognition debouncing and
-  file exclusion, and what breaks when you submit with fetch or axios.
-- [Validation](https://inertiajs.com/docs/v3/the-basics/validation) · [File uploads](https://inertiajs.com/docs/v3/the-basics/file-uploads) · [Flash data](https://inertiajs.com/docs/v3/data-props/flash-data)
-- [Authorization](https://inertiajs.com/docs/v3/security/authorization): "authorization is best handled
-  server-side in your application's authorization policies."
-- [History encryption](https://inertiajs.com/docs/v3/security/history-encryption): the back-button
-  problem, key rotation, and the `window.crypto.subtle` secure-context requirement.
-- [Asset versioning](https://inertiajs.com/docs/v3/advanced/asset-versioning): mismatch behaviour, why
-  background requests do not force a reload, and the failure mode when unset.
-- [SSR](https://inertiajs.com/docs/v3/advanced/server-side-rendering): dev-mode SSR without a Node
-  process, Node 22 requirement, browser-API errors, silent fallback to client rendering, clustering.
-- [Testing](https://inertiajs.com/docs/v3/advanced/testing): `assertInertia`, `has`/`where`/`missing`/
-  `etc`, `reloadOnly`, `loadDeferredProps`, flash assertions.
-- [Inertia.js v3.0.0 is here](https://laravel-news.com/inertia-3-0-0) — Laravel News on `useHttp`,
-  optimistic updates, layout props, and the Axios removal.
+Moved. The Inertia seam now has its own skill, **`inertia-patterns`**, with its own source basis — the
+v3 documentation, the Ping CRM reference application, and community writing. Use it alongside this
+skill.
 
 ## Practitioner sources — conventions and judgement
 
@@ -129,8 +103,21 @@ These carry opinion, not framework rules. Cited where the docs deliberately do n
   explicit caveat that "you are free to structure your project however you want."
 - [Queueable actions in Laravel](https://stitcher.io/blog/laravel-queueable-actions): actions as the
   unit of business logic.
-- [Inertia.js once props](https://jump24.co.uk/journal/inertiajs-once-props-stop-sending-the-same-data-over-and-over-again):
-  Jump24 on the shared-data-bloat problem once props solve.
+- [Laravel News](https://laravel-news.com/): the ecosystem's paper of record — release coverage,
+  deprecations, and the practical write-ups referenced above.
+- [freek.dev](https://freek.dev/) — **Freek Van der Herten**, Spatie. Maintainer of a large part of the
+  package ecosystem; the [best practices](https://freek.dev/topics/best-practices) tag is the useful
+  entry point.
+- [Spatie's open-source packages](https://spatie.be/open-source) — worth checking before writing
+  something; several of these are the de facto answer for permissions, media, backups and health
+  checks, and reading one is a fast way to see idiomatic Laravel.
+- [Tighten's blog](https://tighten.com/insights/) — Matt Stauffer and team; long-form architecture and
+  upgrade experience.
+- [Laravel Daily](https://laraveldaily.com/) — Povilas Korop; short, concrete, heavy on the cases that
+  trip people up.
+- [Laracasts forum](https://laracasts.com/discuss) and the
+  [Laravel GitHub discussions](https://github.com/laravel/framework/discussions) — where a behaviour
+  that looks like a bug gets settled. Search before assuming.
 
 ## What this package deliberately does not cite
 
