@@ -1,6 +1,6 @@
 ---
 name: cpp-patterns
-description: Use this skill when writing, reviewing, debugging, organizing, or building C++ — headers and modules, ownership and lifetime, RAII and smart pointers, undefined behavior, const correctness, CMake targets, compiler warnings, sanitizers, or a slow or misbehaving build. Also use it for games built on the Axmol engine, including its reference-counting memory model, scene graph, and shader pipeline. Do not use it for C, or for another language that merely links a C++ library.
+description: Use this skill when writing, reviewing, debugging, organizing, or building C++ — headers and modules, ownership and lifetime, RAII and smart pointers, undefined behavior, const correctness, CMake targets, compiler warnings, sanitizers, or a slow or misbehaving build. Do not use it for C, or for another language that merely links a C++ library; for a game on the Axmol engine use `axmol-patterns` alongside this skill.
 ---
 
 # C++ patterns
@@ -67,9 +67,12 @@ without being asked.
 | [Undefined behavior](references/undefined-behavior.md) | The trap catalog: iterator invalidation, slicing, overflow, init order |
 | [Tooling](references/tooling.md) | Sanitizers, clang-tidy, warning sets, debugging a C++ process |
 | [Build loop traps](references/build-loop-traps.md) | Stale artifacts, ninja concurrency, phantom failures, trusting an exit code |
-| [Axmol](references/axmol.md) | The engine: reference counting, scene graph, resolution, shaders, its documented gotchas |
 | [Anti-patterns](references/anti-patterns.md) | The consolidated do / don't list |
 | [Sources](references/sources.md) | The citation basis |
+
+Building a game on the **Axmol** engine? Use **`axmol-patterns`** alongside this skill — it covers the
+engine's reference-counted memory model, scene graph, resolution rects, shaders, and migrations. This
+skill still owns the language, CMake, and the build loop underneath it.
 
 ## Review output shape
 

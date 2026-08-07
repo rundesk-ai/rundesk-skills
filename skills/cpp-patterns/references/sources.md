@@ -67,28 +67,42 @@ get wrong; project experience supplies the traps no document lists. Verified in 
   [Include What You Use](https://include-what-you-use.org/) ·
   [LLDB command map](https://lldb.llvm.org/use/map.html).
 
+## Practitioner sources
+
+Documentation says what the language does; these say what working teams learned about using it.
+
+- [Abseil C++ Tips of the Week](https://abseil.io/tips/) — Google's internal C++ guidance, published.
+  Cited by number in code review thousands of times a week, which makes it the closest thing the
+  ecosystem has to shared shorthand. Directly relevant here: **TotW #1** `string_view`, **#77**
+  temporaries, moves and copies, **#88** initialization with `=`, `()` and `{}`, **#141** implicit
+  conversions to `bool`, **#176** prefer return values to output parameters, **#180** avoiding
+  dangling references, **#182** initialize your ints, **#227** empty containers and unsigned
+  arithmetic, **#234** pass by value, pointer, or reference.
+- [Guru of the Week](https://herbsutter.com/gotw/) — **Herb Sutter**. Problem-and-answer format on the
+  cases that are genuinely subtle: exception safety, the rule of five, `const` correctness, and object
+  lifetime.
+- [C++ Best Practices](https://github.com/lefticus/cppbestpractices) — **Jason Turner**. A
+  collaborative, opinionated collection covering build setup, warning flags, static analysis and
+  sanitizers as a coherent programme rather than a menu.
+- [Fluent C++](https://www.fluentcpp.com/) — Jonathan Boccara ·
+  [Arthur O'Dwyer's blog](https://quuxplusone.github.io/blog/) — deep on lifetime, value semantics and
+  the standard library's edges.
+- [hacking C++ — community resources](https://hackingcpp.com/cpp/community) and
+  [blogs](https://hackingcpp.com/cpp/blogs) · [cpplinks](https://github.com/MattPD/cpplinks) — curated
+  indexes when a topic here is not covered.
+
 ## Axmol
 
-- [Axmol](https://github.com/axmolengine/axmol) — C++20 requirement, supported platforms and render
-  backends, v2 LTS versus the v3 development branch.
-- [Axmol FAQ](https://github.com/axmolengine/axmol/wiki/FAQ) — **reference counting with no smart
-  pointers planned**, `setup.ps1` and axslcc troubleshooting, the `AXLOGD`-family logging change at
-  v2.1.3, glob regeneration when adding a source file, and the Android multi-touch gesture
-  interception.
-- [Cocos2d-x migration guide](https://github.com/axmolengine/axmol/wiki/Cocos2d%E2%80%90x-migration-guide) —
-  the `ax` namespace, `USING_NS_AX`, renamed types, deprecated Cocos types in favour of the standard
-  library, and the `axmol-migrate` tool's v4.0-only scope.
-- [Axmol vs Cocos2d-x](https://github.com/axmolengine/axmol/wiki/Axmol-vs-Cocos2d%E2%80%90x) ·
-  [Axmol manual](https://axmol.dev/manual/latest/) ·
-  [DevSetup](https://github.com/axmolengine/axmol/blob/dev/docs/DevSetup.md).
-- [Apple: Launch Services](https://developer.apple.com/documentation/coreservices/launch_services) —
-  bundle-identifier registration, the mechanism behind the duplicate-bundle trap.
+Moved. Engine guidance now lives in the **`axmol-patterns`** skill, with its own source basis — the
+engine wiki, GitHub Discussions, and the community tutorials index. Use it alongside this skill for a
+game on that engine.
 
 ## Recorded project experience
 
 Several items here are not in any vendor document. They were recorded during development of two
-independent 2D games on **Axmol v2.11.x** with CMake and Ninja on macOS, and are carried here
-generalized, without project identifiers:
+independent 2D games with CMake and Ninja on macOS, and are carried here generalized, without project
+identifiers. All are general to a CMake + Ninja project; the engine-specific ones moved to
+`axmol-patterns`.
 
 - **Ninja is not concurrency-safe on one build directory** — corrupted dependency logs causing full
   rebuilds, reconfigure loops from inconsistent stamps, and zero-byte archives from concurrent `ar`.
@@ -99,14 +113,7 @@ generalized, without project identifiers:
   edges**, so both can report success or a small step count for a build that did neither.
 - **Rapid edit/revert cycles on a widely-included header can leave translation units compiled against
   different header states** — an ODR violation surfacing as failures in unrelated suites.
-- **A `ClippingNode` nested inside another `ClippingNode` blanks the surrounding UI**, and camera,
-  HUD and hit-testing must share one full-frame rect rather than `getVisibleSize()`. Both were hit
-  independently in **both** projects, which is why this package states them as engine behaviour.
-- **Four Xcode-only Axmol build settings must be reproduced** in the project's own CMake for a Ninja
-  build on macOS to compile and launch.
-- **`EventListenerMouse` callbacks return `bool`** in v2.11.x.
-- **A shader's `#version` must be the first line**, and duplicated shader logic drifts unless shared
-  through `#include`, which axslcc supports.
+- **`ctest` captures a passing test's stdout**, so a probe that prints is silent by construction.
 - **A header owning containers of private incomplete types needs all used special members declared
   out of line**, not only the destructor.
 

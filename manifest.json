@@ -5,6 +5,10 @@
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
+      "name": "axmol-patterns",
+      "path": "skills/axmol-patterns"
+    },
+    {
       "name": "cpp-patterns",
       "path": "skills/cpp-patterns"
     },
