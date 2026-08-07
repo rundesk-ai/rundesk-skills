@@ -44,6 +44,7 @@ agent no longer needs it.
 - `managing-github`
 - `mysql-patterns`
 - `pdf-creation`
+- `performance-engineering`
 - `postgres-patterns`
 - `python-patterns`
 - `researching-topics`

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -47,6 +47,10 @@
     {
       "name": "pdf-creation",
       "path": "skills/pdf-creation"
+    },
+    {
+      "name": "performance-engineering",
+      "path": "skills/performance-engineering"
     },
     {
       "name": "postgres-patterns",
