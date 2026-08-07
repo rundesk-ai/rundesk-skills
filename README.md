@@ -33,13 +33,12 @@ Removal requires a second `--yes` invocation and is refused while any declared s
 
 - `database-design`
 - `debugging-code`
-- `filing-github-issues`
 - `frontend-design`
 - `laravel-patterns`
+- `managing-github`
 - `mysql-patterns`
 - `pdf-creation`
 - `postgres-patterns`
-- `publishing-github-releases`
 - `python-patterns`
 - `python-testing`
 - `reviewing-code`
@@ -47,7 +46,6 @@ Removal requires a second `--yes` invocation and is refused while any declared s
 - `sqlite-patterns`
 - `testing-code`
 - `vue-patterns`
-- `writing-github-pull-requests`
 - `writing-plans`
 
 ## Manifest contract
