@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -11,6 +11,10 @@
     {
       "name": "cpp-patterns",
       "path": "skills/cpp-patterns"
+    },
+    {
+      "name": "creating-design-assets",
+      "path": "skills/creating-design-assets"
     },
     {
       "name": "database-design",

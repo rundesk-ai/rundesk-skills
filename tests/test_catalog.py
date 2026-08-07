@@ -42,6 +42,7 @@ class CatalogContract(unittest.TestCase):
     def test_general_catalog_contains_required_specialties(self):
         names = {entry["name"] for entry in self.manifest["skills"]}
         self.assertIn("pdf-creation", names)
+        self.assertIn("creating-design-assets", names)
         self.assertIn("researching-topics", names)
         self.assertIn("seo", names)
         self.assertIn("writing-prds", names)
