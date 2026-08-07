@@ -32,6 +32,7 @@ Removal requires a second `--yes` invocation and is refused while any declared s
 ## Included skills
 
 - `database-design`
+- `debugging-code`
 - `filing-github-issues`
 - `frontend-design`
 - `laravel-patterns`
@@ -43,6 +44,7 @@ Removal requires a second `--yes` invocation and is refused while any declared s
 - `reviewing-code`
 - `seo`
 - `sqlite-patterns`
+- `testing-code`
 - `vue-patterns`
 - `writing-github-pull-requests`
 - `writing-plans`

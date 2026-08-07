@@ -1,6 +1,6 @@
 ---
 name: python-testing
-description: Apply standard-library unittest patterns for cases, discovery, cleanup, subtests, mocking, and async tests. Use when writing, reviewing, debugging, or organizing unittest-based Python tests.
+description: Use this skill when writing, reviewing, debugging, or organizing tests built on Python's standard-library unittest framework. It supplies unittest-specific patterns and commands for discovery, cleanup, subtests, mocking, async cases, isolation, and selection. Pair it with testing-code for language-neutral strategy and reliability.
 ---
 
 # Python unittest
