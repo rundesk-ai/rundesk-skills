@@ -46,6 +46,10 @@ a major release in March 2026, so anything checked against an older copy of thes
 - [Eloquent: Relationships](https://laravel.com/docs/13.x/eloquent-relationships): eager loading,
   `withCount`, existence queries, the "always include the `id` column and any relevant foreign key
   columns" warning, and the cross-database limitation.
+- [Eager load limit is coming to Laravel 11](https://laravel-news.com/eager-load-limit) and
+  [`eloquent-eager-limit`](https://github.com/staudenmeir/eloquent-eager-limit) — Jonas Staudenmeir's
+  package, absorbed into the framework in 11. The reason `limit()` inside an eager-load constraint is
+  version-gated, and what it silently did before.
 - [Query Builder](https://laravel.com/docs/13.x/queries) · [Migrations](https://laravel.com/docs/13.x/migrations) · [Transactions](https://laravel.com/docs/13.x/database#database-transactions) · [Mutators and casting](https://laravel.com/docs/13.x/eloquent-mutators) · [Pagination](https://laravel.com/docs/13.x/pagination)
 
 ## HTTP layer
@@ -118,6 +122,28 @@ These carry opinion, not framework rules. Cited where the docs deliberately do n
 - [Laracasts forum](https://laracasts.com/discuss) and the
   [Laravel GitHub discussions](https://github.com/laravel/framework/discussions) — where a behaviour
   that looks like a bug gets settled. Search before assuming.
+
+## About the code examples
+
+Examples in this package are one of two things, and the text says which:
+
+- **Lifted from the source** — the framework's own documented example, or a worked case from a cited
+  article. These are marked inline, because "this is how the maintainers show it" is stronger evidence
+  than anything a skill can assert.
+- **Synthesised to isolate one failure** — written here to show a specific trap with nothing else in
+  the frame. These are the package's own judgement, and the surrounding prose gives the mechanism so a
+  reader can evaluate rather than trust.
+
+Every ✅/❌ pair states the failure the ❌ produces. An example that only says "prefer this" is not
+worth the space.
+
+**Examples are version-gated where the behaviour is.** Where a pattern only works above a floor, or
+behaved differently below it, the text says so — silently correct-looking code that misbehaves on an
+older version is worse than no example.
+
+PHP examples here are not machine-checked — no interpreter is available in the authoring
+environment — so they are written to be read rather than pasted, and any that depends on a version
+floor says so.
 
 ## What this package deliberately does not cite
 

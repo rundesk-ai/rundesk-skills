@@ -30,7 +30,7 @@ effect." Component overhead matters in large lists and nowhere else.
 
 ### Prop stability
 
-Vue's own example. Give the child the answer, not the inputs:
+**This is Vue's own example**, from the performance guide. Give the child the answer, not the inputs:
 
 ```vue
 <!-- ❌ every ListItem re-renders when activeId changes -->
