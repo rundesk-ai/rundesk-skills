@@ -1,6 +1,6 @@
 ---
 name: database-design
-description: "Apply engine-independent data modelling — normalization, keys, relationship shapes, polymorphic associations, hierarchies, temporal history, audit trails, soft delete, optimistic locking, and keyset pagination. Use when designing a new schema or reviewing one someone proposed, modelling a many-to-many or parent-child relationship, deciding where a nullable column or a JSON blob belongs, keeping historical versions of a row, recording who changed what and when, choosing between deleting and retiring a record, handling two users editing the same row, or paginating a list that will get long."
+description: Design or review engine-independent relational data models covering normalization, identity, relationships, constraints, history, deletion, concurrency, and pagination. Apply when shaping a schema; modelling many-to-many, parent-child, polymorphic, hierarchical, or temporal data; deciding whether data belongs in columns, JSON, or separate tables; or adding audit trails, soft deletes, optimistic locking, and keyset pagination. Use the matching database-engine skill for engine-specific SQL and operations.
 ---
 
 # Database Design

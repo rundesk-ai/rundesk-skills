@@ -1,6 +1,6 @@
 ---
 name: vue-patterns
-description: Apply Vue 3 Composition API, component, reactivity, Pinia, Vue Router, and Nuxt SSR patterns. Use when writing, reviewing, or refactoring projects built with Vue, Nuxt, Pinia, or Vite.
+description: Apply Vue 3 Composition API patterns for components, reactivity, composables, Pinia, Vue Router, performance, testing, and Nuxt SSR. Use when writing, reviewing, debugging, or refactoring Vue or Nuxt applications, including .vue components, stores, routing, hydration, and Vue-version migrations. Do not use for non-Vue projects merely because they use Vite.
 ---
 
 # Vue.js Patterns and Best Practices

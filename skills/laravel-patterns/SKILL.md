@@ -1,6 +1,6 @@
 ---
 name: laravel-patterns
-description: Apply Laravel patterns for routes, controllers, Eloquent, services, queues, events, caching, and API resources. Use when building, reviewing, or refactoring Laravel apps or APIs.
+description: Apply Laravel patterns for routing, controllers, validation, authorization, Eloquent, migrations, services and actions, API resources, events, queues, caching, and configuration. Use when building, reviewing, debugging, or refactoring Laravel applications or APIs, including route binding, query behavior, transactions, background work, and response shaping.
 ---
 
 # Laravel Development Patterns

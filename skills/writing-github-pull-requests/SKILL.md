@@ -1,6 +1,6 @@
 ---
 name: writing-github-pull-requests
-description: Prepare, open, edit, or review evidence-rich GitHub pull requests under each repository's rules. Use for PR creation, drafting, write-ups, readiness checks, validation summaries, issue linkage, or review updates.
+description: Prepare, open, edit, or assess the readiness of evidence-rich GitHub pull requests under each repository's rules. Use for PR creation, drafts, write-ups, validation summaries, issue linkage, template compliance, updates, or pre-open and pre-review checks. Do not use it as a substitute for reviewing the implementation itself.
 ---
 
 # Writing a GitHub pull request

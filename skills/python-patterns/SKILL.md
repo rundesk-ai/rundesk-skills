@@ -1,6 +1,6 @@
 ---
 name: python-patterns
-description: Apply Pythonic idioms, PEP 8, type hints, and maintainable application patterns. Use when writing, reviewing, refactoring, or structuring Python code.
+description: Apply maintainable Python patterns for typing, errors, resources, iterators, data classes, decorators, concurrency, packaging, performance, and tooling. Use when writing, reviewing, debugging, refactoring, or structuring Python code, especially around API design, cleanup, async or concurrent work, project layout, and Python-version compatibility. Use python-testing for unittest-specific work.
 ---
 
 # Python Development Patterns
