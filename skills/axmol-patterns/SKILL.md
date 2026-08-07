@@ -22,14 +22,22 @@ git -C axmol describe --tags        # the pinned engine
 grep -rn 'AX_VERSION\|axmol' CMakeLists.txt | head
 ```
 
+Checked against the releases API on **7 August 2026** — not against documentation prose, which lags:
+
 | Line | Status |
 |---|---|
-| **v2 LTS** | Maintenance. **2.11.x is the final v2 release** — a stable place to sit, but no new features |
-| **v3** | Development branch. Notably, it **replaces the entire input system** — see [`migration.md`](references/migration.md) |
+| **v2 LTS** | Maintenance. Latest is **v2.11.4** (2026-07-06); **2.11.x is the final v2 minor** |
+| **v3** | Development branch. It **replaces the entire input system** — see [`migration.md`](references/migration.md) |
 
-A project pinned to 2.11.x is at the end of that line. That is a legitimate choice; just make it
-knowingly, and read the v3 input changes before planning an upgrade, because they are larger than a
-version bump usually implies.
+**Check the pin against the latest patch.** A project sitting on an earlier 2.11.x is missing patch
+releases within a line that will get no more minors — the cheapest upgrade available. Being at the end
+of the v2 line is a legitimate choice; just make it knowingly, and read the v3 input changes before
+planning that move, because they are larger than a version bump usually implies.
+
+```sh
+curl -sS 'https://api.github.com/repos/axmolengine/axmol/releases?per_page=5' \
+  | python3 -c 'import sys,json;[print(r["tag_name"], r["published_at"][:10]) for r in json.load(sys.stdin)]'
+```
 
 ## Work in this order
 

@@ -3,9 +3,25 @@
 This package is a Rundesk synthesis of the Axmol engine's own documentation plus failures recorded
 during real development on it. Use this file to audit or update any claim.
 
-**Read in this order of authority.** The engine wiki states what the engine does; recorded project
-experience supplies the traps no page lists. Verified in **August 2026**, against the **v2 LTS** line
-with **2.11.x** as its final release.
+**Read in this order of authority.** The engine wiki states what the engine does; GitHub Discussions
+is where problems get solved; recorded project experience supplies the traps no page lists.
+
+**Version facts, checked against the
+[releases API](https://api.github.com/repos/axmolengine/axmol/releases) on 7 August 2026** rather than
+against documentation prose:
+
+| Fact | Value |
+|---|---|
+| Latest v2 release | **v2.11.4**, published 2026-07-06 |
+| Preceding | v2.11.3 (2026-02-23), v2.11.2 (2026-01-15), v2.11.1, v2.11.0 (2025-12-19) |
+| Line status | v2 is LTS in maintenance; **2.11.x is its final minor**. v3 is the development branch |
+
+Re-check with:
+
+```sh
+curl -sS 'https://api.github.com/repos/axmolengine/axmol/releases?per_page=5' \
+  | python3 -c 'import sys,json;[print(r["tag_name"], r["published_at"][:10]) for r in json.load(sys.stdin)]'
+```
 
 Where a claim below is marked as recorded experience rather than documentation, treat it as evidence
 from practice — strong where it was reproduced independently, weaker where it was seen once.
@@ -89,21 +105,29 @@ before assuming a problem is yours.
 ## Community and learning resources
 
 The engine's own [Tutorials page](https://github.com/axmolengine/axmol/wiki/Tutorials) is the curated
-index, and points at:
+index. The individual resources, linked directly:
 
-- **Introduction to Game Dev using Axmol** — the beginner entry point.
-- **Code & Web Axmol tutorials** — physics with a physics editor, sprite-sheet animation, 2D dynamic
-  lighting.
-- **Anivale Games** — a Cocos2d-x porting account from someone who did it.
-- **Real Gear Inc.** — an Android Studio setup walkthrough.
-- **Android EGL context loss** — a platform failure mode worth knowing before it happens.
-- **SteamInput implementation** — a community contribution.
-- **cpp-tests**, playable as a WebAssembly build with source available — the most useful reference in
-  practice, because every subsystem has a runnable example.
+- [Introduction to Game Dev using Axmol](https://github.com/axmolengine/axmol/wiki/Introduction-to-Game-Dev-using-Axmol) —
+  the beginner entry point.
+- **Code & Web** — third-party tutorials written against Axmol specifically:
+  [Axmol + TexturePacker](https://www.codeandweb.com/texturepacker/tutorials/axmol) ·
+  [a physics-enabled game with PhysicsEditor](https://www.codeandweb.com/physicseditor/tutorials/how-to-create-a-physics-enabled-game-with-axmol-engine) ·
+  [animations and sprite sheets](https://www.codeandweb.com/texturepacker/tutorials/animations-and-spritesheets-in-axmol-engine) ·
+  [2D dynamic light effects](https://www.codeandweb.com/spriteilluminator/tutorials/how-to-use-light-effects-with-axmol-engine).
+- [How to port a Cocos2d-x game to Axmol](https://anivalegames.com/2023/03/04/how-to-port-cocos2d-x-game-to-axmol-game-engine/) —
+  Anivale Games. A first-hand porting account rather than a guide.
+- [Android Studio setup walkthrough](https://www.youtube.com/watch?v=cr_lJovFaDI) — Real Gear Inc.
+- [Options for handling EGL context loss on Android](https://github.com/axmolengine/axmol/wiki/Options-for-handling-EGL-Context-loss-on-Android) —
+  a platform failure mode worth reading before it happens rather than after.
+- [Adding external libraries and frameworks](https://github.com/axmolengine/axmol/wiki/Adding-External-Libraries-and-Frameworks).
+- [AxmolSteamInput](https://github.com/rudiHammad/AxmolSteamInput) — a community integration.
+- [cpp-tests as a WebAssembly build](https://axmol.netlify.app/wasm/cpp-tests/cpp-tests), with source
+  in the repository. **The most useful reference in practice**, because every subsystem has a runnable
+  example you can read and diff against your own.
 - For the surrounding skills the page recommends [LearnCpp](https://www.learncpp.com/),
   [cppreference](https://en.cppreference.com/), the
   [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines), the CMake
-  tutorials, and [The Book of Shaders](https://thebookofshaders.com/).
+  tutorials, and [The Book of Shaders](https://thebookofshaders.com/). Those belong to `cpp-patterns`.
 
 ## Recorded project experience
 
