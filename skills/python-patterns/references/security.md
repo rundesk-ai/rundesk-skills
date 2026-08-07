@@ -5,17 +5,6 @@ The classes of vulnerability that static analysis already knows how to find. Rul
 
 Run the check rather than relying on review: `ruff check --select S` finds most of this in a second.
 
-## Contents
-
-- [Executing things](#executing-things)
-- [Deserializing things](#deserializing-things)
-- [Secrets and randomness](#secrets-and-randomness)
-- [Files and paths](#files-and-paths)
-- [Network and transport](#network-and-transport)
-- [Parsing untrusted input](#parsing-untrusted-input)
-- [Validation that disappears](#validation-that-disappears)
-- [Review order](#review-order)
-
 ## Executing things
 
 **`subprocess` with `shell=True` and any untrusted input is command injection.** The subprocess docs:

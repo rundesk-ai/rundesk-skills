@@ -3,15 +3,6 @@
 Read this before debugging C++ by hand. The tools find in one run what reading finds in a week, and
 several classes of bug are effectively undiagnosable without them.
 
-## Contents
-
-- [Sanitizers](#sanitizers)
-- [Static analysis](#static-analysis)
-- [Warnings that earn their place](#warnings-that-earn-their-place)
-- [Debugging a running process](#debugging-a-running-process)
-- [Performance](#performance)
-- [A working CI shape](#a-working-ci-shape)
-
 ## Sanitizers
 
 Compiler instrumentation that catches at runtime what the language does not check. **This is the

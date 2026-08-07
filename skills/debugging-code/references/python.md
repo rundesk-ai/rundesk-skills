@@ -3,17 +3,6 @@
 Mechanics for the workflow in `SKILL.md`. Python gives you an unusually good traceback and a debugger
 in the standard library — most Python debugging goes wrong by not using either.
 
-## Contents
-
-- [Read the traceback properly](#read-the-traceback-properly)
-- [Turn on the checks the runtime already has](#turn-on-the-checks-the-runtime-already-has)
-- [Use the debugger, not print](#use-the-debugger-not-print)
-- [Post-mortem: debug the failure that already happened](#post-mortem-debug-the-failure-that-already-happened)
-- [Symptom to first tool](#symptom-to-first-tool)
-- [Debugging tests](#debugging-tests)
-- [Traps that send you the wrong way](#traps-that-send-you-the-wrong-way)
-- [Don't](#dont)
-
 ## Read the traceback properly
 
 The traceback is the highest-information artifact you will get. Read it in this order:

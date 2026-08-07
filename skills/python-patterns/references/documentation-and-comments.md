@@ -4,16 +4,6 @@ Document the contract a caller cannot infer from the signature, and comment on i
 reasoning the code cannot express. Follow the repository's existing docstring dialect and prose
 style before applying any fallback here.
 
-## Contents
-
-- [Choose docstring, comment, or neither](#choose-docstring-comment-or-neither)
-- [Write useful docstrings](#write-useful-docstrings)
-- [Document each object at its boundary](#document-each-object-at-its-boundary)
-- [Keep types and behavior separate](#keep-types-and-behavior-separate)
-- [Write comments for reasoning](#write-comments-for-reasoning)
-- [Make TODOs actionable](#make-todos-actionable)
-- [Review documentation failures](#review-documentation-failures)
-
 ## Choose docstring, comment, or neither
 
 | Need | Put it in | Do not put it in |

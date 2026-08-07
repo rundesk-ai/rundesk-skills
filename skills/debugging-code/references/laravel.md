@@ -3,15 +3,6 @@
 Mechanics for the workflow in `SKILL.md`. The hypothesis loop does not change; this is where to look
 and what already recorded the answer.
 
-## Contents
-
-- [Establish which install you are debugging](#establish-which-install-you-are-debugging)
-- [See what actually happened](#see-what-actually-happened)
-- [Narrow to the layer](#narrow-to-the-layer)
-- [Symptom to first place to look](#symptom-to-first-place-to-look)
-- [Traps that send you the wrong way](#traps-that-send-you-the-wrong-way)
-- [Don't](#dont)
-
 ## Establish which install you are debugging
 
 Before forming a hypothesis, confirm what is actually running. Most "impossible" Laravel bugs are a

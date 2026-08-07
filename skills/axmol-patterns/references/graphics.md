@@ -2,15 +2,6 @@
 
 Read this for shaders, sprite sheets, batching, and text rendering.
 
-## Contents
-
-- [Shaders and axslcc](#shaders-and-axslcc)
-- [Batching and draw calls](#batching-and-draw-calls)
-- [Sprite sheets](#sprite-sheets)
-- [Texture filtering](#texture-filtering)
-- [Text and SDF](#text-and-sdf)
-- [Verifying visual work](#verifying-visual-work)
-
 ## Shaders and axslcc
 
 Axmol 2.x compiles shaders at **build time** through `axslcc` (a fork of `glslcc`), producing

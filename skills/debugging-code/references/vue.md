@@ -4,16 +4,6 @@ Mechanics for the workflow in `SKILL.md`. Most Vue bugs are one of three things:
 reactive**, **an effect that runs at an unexpected time**, or **the server and client disagreeing**.
 Establish which before reading any component code.
 
-## Contents
-
-- [See what actually happened](#see-what-actually-happened)
-- [Is it state, or is it render?](#is-it-state-or-is-it-render)
-- [Find what triggered a render](#find-what-triggered-a-render)
-- [Symptom to first place to look](#symptom-to-first-place-to-look)
-- [Debugging hydration](#debugging-hydration)
-- [Traps that send you the wrong way](#traps-that-send-you-the-wrong-way)
-- [Don't](#dont)
-
 ## See what actually happened
 
 **Vue DevTools is the primary instrument**, and each tab answers a different question:

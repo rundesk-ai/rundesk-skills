@@ -1,185 +1,179 @@
 # AGENTS
 
-Rules for every agent working in this repository. These rules are law; where they conflict with your
-general habits, this file wins.
+Rules for agents working in this repository.
 
-This repository publishes **Rundesk's general-purpose, guidance-only Agent Skills catalog** — the
-one shipped with every Rundesk install. It teaches; it does not run anything. `README.md` is what a
-person reads, `THIRD_PARTY_NOTICES.md` records what was adapted from elsewhere, and `RELEASING.md`
-is how a version ships. This file defines how you build here.
+This is the depended, general-purpose guidance catalog Rundesk fetches when absent. It teaches
+repeatable work; it does not run commands, call services, hold credentials, or replace provider
+documentation. Script-backed work belongs in `rundesk-skills-apple` or
+`rundesk-skills-integrations`. An offline install may complete without this catalog; Rundesk retries
+later and does not permit its removal.
 
-## Before you work
+## Start here
 
-1. **Read `README.md` and the `SKILL.md` of every package you are touching.** Read a file before
-   editing it.
-2. **Load the skill that governs the artifact you are about to write.** Each one is law for that
-   artifact, the same as this file:
+1. Read `README.md`, then every `SKILL.md` and `references/sources.md` you will touch. Read each file
+   before editing it.
+2. Load the rule for the artifact:
 
-   | Writing or changing | Follow |
+   | Change | Follow |
    |---|---|
-   | any `SKILL.md` | `writing-skills` |
-   | any Python in this repository | `python-patterns` |
-   | `tests/test_catalog.py` | `python-patterns` (testing) |
-   | a pull request | `managing-github` (pull requests) |
-   | a version bump, tag, or release | `RELEASING.md`, then `managing-github` (releases) |
+   | any skill | current Rundesk `writing-skills` |
+   | Python or `tests/test_catalog.py` | `python-patterns` |
+   | pull request | `managing-github` pull-request guidance |
+   | version, tag, or release | `RELEASING.md`, then `managing-github` release guidance |
 
-   An agent that does not hold one of these skills still follows the rule; say in your report which
-   ones you could not load, because silence reads as compliance.
-3. **Check whether an existing package already owns the subject** before adding one. A second skill
-   covering the same ground splits the guidance and neither half stays current.
-4. When the owner raises a concern, investigate before contradicting — evidence, not a hunch.
+   If a governing skill is unavailable, name it in the report; do not imply compliance.
+3. Search before adding a skill. Extend the existing owner instead of splitting one subject across
+   packages.
+4. Verify Rundesk commands and catalog behavior against the current `rundesk-cli` parser, tests, and
+   bundled `writing-skills` package. Never copy syntax from memory or an older installed release.
+5. Investigate an owner's concern before contradicting it. Bring evidence, not a hunch.
 
-## A skill is not a copy of the documentation
+## A skill is researched judgment
 
-**This is the rule the rest of the file serves.** A skill exists to help an agent *write something
-well* — consistently, idiomatically, and without walking into a failure somebody else already found.
-It is not a reference manual, and the reader already has the manual.
+A skill synthesizes traps, defaults, and decisions a capable agent would not reliably infer. It is
+not generated filler or a condensed manual.
 
-| A skill is | A skill is not |
+| Do | Don't |
 |---|---|
-| How to do the task well, in the order it is done | An enumeration of the API surface |
-| The default to reach for, and when to deviate | A list of every available option |
-| **Dos and don'ts, with the failure each prevents** | A restatement of what a function returns |
-| The gotcha that is not obvious from the signature | A paraphrase of a doc page |
-| Version facts that change the advice | A changelog |
-| Judgement the documentation deliberately leaves open | An opinion presented as a rule |
+| Teach the workflow in execution order | Enumerate an API or every option |
+| Give one strong default and when to deviate | Present preference as universal law |
+| Name the gotcha and the failure it causes | Use unexplained `always` or `never` |
+| Show a small good/bad pair | Add background prose |
+| Route conditional depth to one reference | Duplicate a rule across files |
+| Link to exhaustive upstream detail | Paraphrase the manual |
 
-Three tests before shipping a page:
+Keep a rule only when it changes execution, prevents a likely failure, or routes needed depth.
 
-1. **Would a competent practitioner learn something?** If it only tells them what they would find in
-   the first paragraph of the docs, delete it.
-2. **Does every rule name the failure it prevents?** "Use X" is unevaluable. "Use X, because Y silently
-   produces the wrong value after a reallocation" can be judged, argued with, and applied.
-3. **Could the reader act on this without the docs open?** A skill routes and decides; it links out
-   for the exhaustive detail rather than reproducing it.
+```markdown
+Good: Keep network calls outside the transaction; waiting on the network holds row locks and widens
+the deadlock window.
 
-Copying documentation is worse than omitting it: it doubles the maintenance surface, it goes stale
-invisibly, and it buries the guidance that only this package has.
+Bad: Always keep transactions short.
+```
 
-## Research before writing — every claim is sourced
+Before shipping, ask: would a competent practitioner learn more than the docs' first page; does
+each constraint name its failure; and can the agent act now? If not, research or cut it.
 
-**Never write a skill or a reference from memory.** A model's recollection of a framework is a
-snapshot of an average of old tutorials; it is confidently wrong about versions, renamed APIs, and
-anything that changed recently. Research first, then write only what the research supports.
+## Route precisely; spend context once
 
-**Every package carries a `references/sources.md`** recording where its content came from, and any
-claim a reader might challenge is traceable to a source from that file.
+Use only `name` and `description` in `SKILL.md` frontmatter.
 
-### Where the content must come from
+- `name` matches the directory: lowercase letters, digits, single hyphens, at most 64 characters.
+- `description` is the routing instruction. Start with `Use when`, `Apply when`, or equivalent and
+  name direct and indirect user goals. Follow with one short sentence naming the workflow or
+  knowledge supplied. Add `Do not use` only to exclude a likely near-miss. Keep it within 1,024
+  characters.
+- Put every trigger in the description; the body is unavailable until the skill triggers.
+- Keep core steps, defaults, and gotchas in `SKILL.md`. Put conditional depth and larger examples in
+  focused references, one level down.
+- Link each reference from `SKILL.md` with the exact condition for reading it. Keep one source of
+  truth for each instruction.
+- Do not add a table of contents to `SKILL.md` or a reference. The agent reads the complete file, so
+  repeating its headings spends context without improving routing.
+- Create no empty optional directory and no package README, changelog, installation guide, or
+  creation diary.
 
-Find the traps, gotchas, and failures **other people have already hit and solved.** That is the whole
-value of a skill — not a restatement of an API, which the reader can look up.
+```yaml
+# Good: intent and boundary are discoverable before loading.
+description: >
+  Use when designing or reviewing SQLite schemas, transactions, WAL behavior, backups, or query
+  plans. It supplies SQLite-specific defaults and failure modes for durable applications. Do not
+  use it for database-engine selection or generic data modeling.
 
-| Source | Use it for |
+# Bad: vague and impossible to route reliably.
+description: Helpful SQLite docs and reference files.
+```
+
+Treat 500 lines as a ceiling for `SKILL.md`, not a target. Every holder pays for the description on
+every turn; every trigger pays for the body.
+
+## Research first; synthesize, never invent
+
+Never draft a technical claim from model memory and source it afterward. Research first, then write
+only what evidence supports: traps people hit, approaches communities abandoned, version boundaries,
+and proven defaults.
+
+Every touched package has `references/sources.md`. Cite the specific page, discussion, rule, release,
+or study and state what it establishes. Use more than one source kind:
+
+| Source | Establishes |
 |---|---|
-| Official documentation | Version facts, exact APIs, and the **warnings the vendor wrote down** |
-| Lint and analyser rule catalogs | What the ecosystem thinks is worth failing a build over |
-| Issue trackers, GitHub Discussions, forums, mailing lists | The problem somebody already debugged, and the maintainer's answer |
-| Stack Overflow, when the answer is authoritative and current | Concrete failure modes with reproductions |
-| Practitioner blogs and talks by maintainers and recognized experts | Judgement the docs deliberately omit |
-| Published studies and measurements | Anything empirical, quoted with its sample and date |
-| Release notes, upgrade guides, deprecation schedules | What is about to break |
+| Official docs, specs, source, registries, releases | contracts and version facts |
+| Project issues, maintainer discussions, mailing lists, authoritative Q&A | reproduced failures and resolutions |
+| Linter and analyzer rule catalogs | mistakes the ecosystem automates against |
+| Named practitioners and studies with methods | judgment and empirical findings |
 
-### Documentation grounds a package; it must not be the whole of it
+```markdown
+Good: Official docs establish the contract; a maintainer issue explains the surprise; an analyzer
+rule shows the ecosystem guards against it.
 
-**A `sources.md` that is only vendor documentation is not finished research.** Documentation says how
-a thing is meant to work. It rarely says which part bites people, what the maintainer told somebody
-in a thread, or which recommended approach the community abandoned. A package built only from docs
-reproduces the manual and misses the reason the skill exists.
+Bad: Vendor docs alone, an anonymous listicle, another generated summary, or a homepage that does
+not contain the cited claim.
+```
 
-So every package cites **more than one kind of source**, and the non-documentation sources must be
-reputable and identifiable — a named maintainer, a project's own discussion forum, a recognized
-practitioner, a study with a method. An anonymous listicle is not a source.
+- A vendor-only source list is unfinished; add reputable community or practitioner evidence.
+- Verify version facts against a registry, source tag, or release page; record version and date.
+- For empirical claims, record author, date, sample, and method; label correlation as correlation.
+- Separate what a source states from this catalog's conclusion. Explain the failure behind local
+  judgment.
+- Quote only when exact wording matters; otherwise paraphrase and cite. Do not stretch a source.
+- Recorded first-hand experience must be labeled, scoped, and anonymized. Never publish a person,
+  customer, private project, secret, or absolute owner path.
+- Verify every link before completion and report any that could not be checked.
 
-### Rules
-
-- **Cite the specific page, not the site.** `sources.md` says what each source established.
-- **Quote a rule that a reader might otherwise soften.** A vendor's own `WARNING` in its own words
-  carries weight a paraphrase does not.
-- **Verify every link resolves** before committing, and say so in the pull request. Report any link
-  you could not verify rather than implying you did.
-- **Check version facts against a registry or release page**, never against documentation prose or
-  recollection. Say which version the package was verified against, and date it.
-- **Label empirical claims** with sample, date, and author, and mark them correlational when they are.
-  Never present a vendor's marketing figure as a finding.
-- **Separate what a source states from what you concluded.** If guidance is the package's own
-  judgement, say so and give the failure it prevents.
-- **Recorded first-hand experience is a legitimate source** and often the most valuable, because it is
-  what no document contains. Record it as such, say how strong the evidence is, and generalize it —
-  never name a person, customer, private project, or owner path.
-
-## Hard gates — require explicit approval
-
-- **An executable, a service adapter, or anything that needs a credential.** This catalog is
-  guidance only, and `tests/test_catalog.py` enforces it. Script-backed skills live in their own
-  repositories — `rundesk-skills-apple` and `rundesk-skills-integrations`.
-- **Deletions.** Do not delete a package or a file outside the task's immediate scope.
-- **Commits.** Do not commit or push unless told to.
-- **This file.** Never modify `AGENTS.md` without approval.
-
-## Never
-
-- **Never let the catalog's public surface drift.** Adding, removing, or renaming a skill changes
-  `manifest.json`, `README.md`, and the catalog suite **in the same commit**, plus
-  `THIRD_PARTY_NOTICES.md` when the package was adapted from someone else's work. A README naming
-  seven skills for a catalog of eight is how a reader learns the repository cannot be trusted, and
-  it hides in a diff that only adds files. `tests/test_catalog.py` enforces this, so the rule
-  survives an agent who forgets it.
-- **Never split a package.** Instructions, references, assets, and any package-local helper live
-  together under `skills/<name>/`, because a catalog update replaces that tree atomically.
-- **Never let `SKILL.md` frontmatter lie.** `name` is the containing directory, and `description`
-  names the concrete situations that should trigger it — an agent chooses a skill from that line
-  alone, so a vague one is a skill nobody reaches for.
-- **Never drop an attribution.** Adapted material keeps its upstream license file inside the
-  package and its entry in `THIRD_PARTY_NOTICES.md`, with the commit it was taken from.
-- **Never name a person, a customer, a private project, or an absolute owner path.** Every skill
-  here is published and read by agents that are not yours; keep it owner-neutral.
-
-## The package contract
+## Package and catalog contract
 
 ```text
 skills/<name>/
-├── SKILL.md          frontmatter `name` + `description`, then the guidance
-├── references/       depth read on demand, never inlined into SKILL.md
-└── assets/           templates and fixtures the guidance points at
+├── SKILL.md                   required: routing and core guidance
+├── references/sources.md     required for new or touched packages
+├── references/<topic>.md     optional: focused depth
+└── assets/                   optional: used templates or fixtures
 ```
 
-`manifest.json` is the catalog name, schema, version, and complete skill list. The catalog name is
-the install, update, and removal unit; each skill name is the grant and revoke unit.
+Keep a package inside its tree so catalog updates replace it atomically. No `scripts/`, executable,
+`rundesk.json`, credential, service adapter, or network call belongs here.
 
-## Tech stack
+Rundesk's manifest contract is only `schema`, `name`, `version`, and `description`; it discovers
+`skills/<name>/SKILL.md` from the tree. This repository also retains a legacy `skills` index that the
+CLI ignores but the repository suite requires. Keep that index, directory names, frontmatter names,
+and README list aligned until an approved migration removes the redundant index.
 
-- **Runtime:** Python 3.9+ — the floor CI pins, because it is the oldest a fresh macOS ships.
-- **Tests:** `unittest`, offline, run directly. Nothing here reaches the network.
+Semantic versioning labels this repository's releases; Rundesk compares catalog content, not the
+version, to decide whether an installed tree changes.
 
-## Build, test & run
+Adapted work keeps its upstream license in the package and an entry in `THIRD_PARTY_NOTICES.md` with
+the upstream commit.
+
+## Keep the public surface synchronized
+
+- Add, remove, or rename a skill: update `manifest.json`, `README.md`, and catalog assertions in
+  `tests/test_catalog.py`.
+- Adapt upstream work: update `THIRD_PARTY_NOTICES.md` and retain its license.
+- Change the release process: update `RELEASING.md`.
+- Change install, update, grant, or revoke examples: validate against current `rundesk-cli`.
+- Publish: bump `manifest.json` under `RELEASING.md`; let the workflow generate GitHub release notes.
+  Do not maintain a second release ledger.
+
+Do not duplicate deeper CLI documentation here; point to its live source of truth.
+
+## Ask first
+
+- Add an executable, service adapter, credential, or network behavior.
+- Delete a package or a file outside the immediate task.
+- Commit, tag, release, or push.
+- Modify this file.
+
+Never leave debug material, generated filler, unsupported claims, owner-specific content, or dropped
+attribution in a published package.
+
+## Validate
+
+The only runtime is the offline Python 3.9+ catalog test:
 
 ```sh
-python3 -m unittest discover -s tests -v      # the gate
+python3 -m unittest discover -s tests -v
 ```
 
-CI runs the same command on Ubuntu with Python 3.9, and nothing else is required to publish.
-
-## Documentation duties
-
-Keep the documentation true in the same task that changes reality.
-
-- A skill added, removed, or renamed → `manifest.json`, `README.md`, and the expected-skill
-  assertions in `tests/test_catalog.py`.
-- A package adapted from upstream work → `THIRD_PARTY_NOTICES.md` and the package's own license
-  file.
-- A change to the release process → `RELEASING.md`.
-- Depth belongs in the package's `references/`, never inlined into `SKILL.md`. `SKILL.md` carries
-  triggers, the shape of the work, and the judgment an agent could not infer.
-
-## Definition of done
-
-1. `python3 -m unittest discover -s tests -v` passes, and CI is green.
-2. Every rule here held — nothing executable, no credential, no owner-specific content.
-3. `README.md` and `manifest.json` agree with what the repository actually ships.
-4. The governing skills in **Before you work** were followed, or your report names the ones you
-   could not load.
-5. **The research rules held.** Every package touched has a `references/sources.md`; it cites more
-   than vendor documentation; every link was checked and any that could not be verified is named in
-   the report; and version facts were confirmed against a registry or release page, with the date
-   recorded.
+Completion requires a passing suite with discovered tests, green required CI, and every rule above
+satisfied. Report any governing skill or source link that could not be loaded or verified.

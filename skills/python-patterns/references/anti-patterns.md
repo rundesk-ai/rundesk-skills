@@ -10,17 +10,6 @@ is which is what makes a review credible.
 Flag an anti-pattern only when you can name the concrete cost. `reviewing-code` puts it well: flag
 complexity "only when it creates a concrete cost or defect risk."
 
-## Contents
-
-- [Structure and abstraction](#structure-and-abstraction)
-- [Interfaces and contracts](#interfaces-and-contracts)
-- [Error handling as design](#error-handling-as-design)
-- [Non-idiomatic Python](#non-idiomatic-python)
-- [State](#state)
-- [Testing](#testing)
-- [Performance](#performance)
-- [How to report these](#how-to-report-these)
-
 ## Structure and abstraction
 
 | Don't | Do | Because |

@@ -4,15 +4,6 @@ Load this reference only when the task actually involves concurrency, cancellati
 memory pressure, or measured performance. Follow the repository's supported versions and configured
 tools; do not install a preferred toolchain merely because it appears in an example elsewhere.
 
-## Contents
-
-- [Choose concurrency from the workload](#choose-concurrency-from-the-workload)
-- [Own tasks and shutdown](#own-tasks-and-shutdown)
-- [Protect shared state](#protect-shared-state)
-- [Measure before optimizing](#measure-before-optimizing)
-- [Use memory techniques deliberately](#use-memory-techniques-deliberately)
-- [Avoid advanced-pattern traps](#avoid-advanced-pattern-traps)
-
 ## Choose concurrency from the workload
 
 | Work | Default starting point | Main constraint |

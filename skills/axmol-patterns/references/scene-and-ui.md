@@ -3,16 +3,6 @@
 Read this for nodes, layout, resolution, input, and the interface layer. Almost every layout bug on
 this engine is one of two things: **the wrong rect**, or **a stencil conflict**.
 
-## Contents
-
-- [Resolution: the rect you must use](#resolution-the-rect-you-must-use)
-- [Clipping](#clipping)
-- [Node lifecycle](#node-lifecycle)
-- [Drawing vector UI](#drawing-vector-ui)
-- [Input](#input)
-- [Physics and content size](#physics-and-content-size)
-- [Diagnosing a layout bug](#diagnosing-a-layout-bug)
-
 ## Resolution: the rect you must use
 
 **`Director::getVisibleSize()` returns the design resolution rect, not the window.**

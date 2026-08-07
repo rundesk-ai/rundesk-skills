@@ -2,16 +2,6 @@
 
 Read this when setting up the engine, changing the build, or diagnosing a configure failure.
 
-## Contents
-
-- [The pinned engine](#the-pinned-engine)
-- [Generators: use Ninja](#generators-use-ninja)
-- [The Xcode-only settings a Ninja build must reproduce](#the-xcode-only-settings-a-ninja-build-must-reproduce)
-- [Extensions are modular — turn off what you do not use](#extensions-are-modular--turn-off-what-you-do-not-use)
-- [Build times](#build-times)
-- [Adding a source file](#adding-a-source-file)
-- [Configure failures, by message](#configure-failures-by-message)
-
 ## The pinned engine
 
 Treat the engine as a **pinned submodule you never edit**.

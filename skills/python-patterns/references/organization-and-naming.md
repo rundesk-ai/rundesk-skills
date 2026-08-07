@@ -4,17 +4,6 @@ Use these defaults when organizing Python code and the repository has no stronge
 PEP 8 explicitly prioritizes consistency with surrounding code when an existing project uses a
 different style.
 
-## Contents
-
-- [Choose boundaries by responsibility](#choose-boundaries-by-responsibility)
-- [Choose a project layout deliberately](#choose-a-project-layout-deliberately)
-- [Keep modules safe to import](#keep-modules-safe-to-import)
-- [Make the public API deliberate](#make-the-public-api-deliberate)
-- [Organize functions and classes](#organize-functions-and-classes)
-- [Name what the code means](#name-what-the-code-means)
-- [Keep imports explicit](#keep-imports-explicit)
-- [Review organization failures](#review-organization-failures)
-
 ## Choose boundaries by responsibility
 
 Group related classes and top-level functions in a module named for the capability they implement.

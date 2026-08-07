@@ -1,7 +1,8 @@
 # Releasing Rundesk Skills
 
-The manifest version is the version Rundesk installs and compares. A matching Git tag and
-GitHub Release make that published state immutable and give maintainers one release ledger.
+The manifest version labels the catalog Rundesk installs and reports; catalog content, not the
+version, decides whether an installed tree changes. A matching Git tag and GitHub Release make that
+published state immutable and give maintainers one release ledger.
 
 ## Prepare
 
@@ -36,6 +37,6 @@ gh run list --workflow release.yml --limit 1
 gh release view "v$version"
 ```
 
-Do not tag from a working tree with unmerged catalog changes. Rundesk downloads the repository
-and trusts `manifest.json` for upgrade ordering; the tag is the auditable snapshot of that same
-version, not a second version source.
+Do not tag from a working tree with unmerged catalog changes. Rundesk downloads the repository and
+treats its content as authoritative; the manifest version labels that content, and the tag is its
+auditable snapshot rather than a second version source.

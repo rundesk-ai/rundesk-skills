@@ -8,20 +8,6 @@ The two catalogs worth knowing exist: **flake8-bugbear** (`B0xx`, also Ruff's `B
 Python traps, and **flake8-bandit** (`S`) is the security equivalent — see
 [security.md](security.md). A rule exists in either because enough people hit the trap.
 
-## Contents
-
-- [Names, values, and mutation](#names-values-and-mutation)
-- [Definition time versus call time](#definition-time-versus-call-time)
-- [Loops and closures](#loops-and-closures)
-- [Exceptions](#exceptions)
-- [Classes, objects, and decorators](#classes-objects-and-decorators)
-- [Dataclasses](#dataclasses)
-- [Dates and times](#dates-and-times)
-- [Logging](#logging)
-- [Strings and collections](#strings-and-collections)
-- [Async](#async)
-- [Deprecations that bite](#deprecations-that-bite)
-
 ## Names, values, and mutation
 
 **Assignment never copies.** `y = x` binds a second name to the same object. CPython's FAQ: "doing

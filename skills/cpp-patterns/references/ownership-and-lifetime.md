@@ -3,16 +3,6 @@
 Read this when designing a type that holds a resource, or when something is freed twice, leaked, or
 read after it died. Most C++ defects are this page.
 
-## Contents
-
-- [Answer the ownership question first](#answer-the-ownership-question-first)
-- [RAII](#raii)
-- [The rule of zero, three, five](#the-rule-of-zero-three-five)
-- [Smart pointers, and which one](#smart-pointers-and-which-one)
-- [Passing parameters](#passing-parameters)
-- [Dangling: the four ways](#dangling-the-four-ways)
-- [Move semantics](#move-semantics)
-
 ## Answer the ownership question first
 
 For every object: **who owns it, and when does it die?** If the code cannot answer, no amount of

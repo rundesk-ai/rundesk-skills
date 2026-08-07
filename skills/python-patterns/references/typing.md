@@ -6,18 +6,6 @@ Annotations are static metadata. The `typing` docs are explicit: "the Python run
 function and variable type annotations." Nothing here changes behaviour at run time unless a library
 such as Pydantic reads the annotations and validates deliberately.
 
-## Contents
-
-- [Match the runtime floor](#match-the-runtime-floor)
-- [Annotate the boundary first](#annotate-the-boundary-first)
-- [Be liberal in, specific out](#be-liberal-in-specific-out)
-- [Use Protocol for structural typing](#use-protocol-for-structural-typing)
-- [Constrain values, not just shapes](#constrain-values-not-just-shapes)
-- [Keep Any and ignores accountable](#keep-any-and-ignores-accountable)
-- [Avoid import cycles with TYPE_CHECKING](#avoid-import-cycles-with-type_checking)
-- [Configure the checker](#configure-the-checker)
-- [Typing traps](#typing-traps)
-
 ## Match the runtime floor
 
 Annotation syntax is version-gated, and this is the most common way typed code breaks a supported

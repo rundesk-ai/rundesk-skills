@@ -7,16 +7,6 @@ the world, a failure in code you did not touch, or a binary that behaves like an
 compile-link-run loop has more places to go stale than most ecosystems, and every hour spent
 debugging a stale binary is spent on a bug that is not there.
 
-## Contents
-
-- [One writer per build directory](#one-writer-per-build-directory)
-- [Exactly one artifact](#exactly-one-artifact)
-- [Trusting an exit code](#trusting-an-exit-code)
-- [Phantom failures and the ODR](#phantom-failures-and-the-odr)
-- [When the cache is corrupt, reset it](#when-the-cache-is-corrupt-reset-it)
-- [A probe that prints is invisible](#a-probe-that-prints-is-invisible)
-- [The stale-build checklist](#the-stale-build-checklist)
-
 ## One writer per build directory
 
 **Ninja is not concurrency-safe on a single build directory.** Two builds at once — a developer's dev

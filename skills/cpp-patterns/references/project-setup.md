@@ -2,16 +2,6 @@
 
 Read this when creating a C++ project, adding a target, or changing how it builds.
 
-## Contents
-
-- [Think in targets, not directories](#think-in-targets-not-directories)
-- [The commands that replaced the old ones](#the-commands-that-replaced-the-old-ones)
-- [Build directories](#build-directories)
-- [The compile database](#the-compile-database)
-- [Warnings and standard](#warnings-and-standard)
-- [Dependencies](#dependencies)
-- [A layout that scales](#a-layout-that-scales)
-
 ## Think in targets, not directories
 
 Modern CMake is target-based. A target declares what *it* needs and what its *consumers* need, and

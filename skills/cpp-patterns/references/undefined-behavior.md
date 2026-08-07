@@ -10,17 +10,6 @@ is why "it works on my machine" is a genuine outcome rather than a joke.
 
 **Do not debug suspected UB by reading.** Build with sanitizers first; see [`tooling.md`](tooling.md).
 
-## Contents
-
-- [Lifetime](#lifetime)
-- [Containers and iterators](#containers-and-iterators)
-- [Inheritance](#inheritance)
-- [Integers and arithmetic](#integers-and-arithmetic)
-- [Initialization](#initialization)
-- [Multiple definitions and the ODR](#multiple-definitions-and-the-odr)
-- [Concurrency](#concurrency)
-- [Everyday sharp edges](#everyday-sharp-edges)
-
 ## Lifetime
 
 The largest category, covered in [`ownership-and-lifetime.md`](ownership-and-lifetime.md). In UB

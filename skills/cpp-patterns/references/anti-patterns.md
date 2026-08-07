@@ -6,16 +6,6 @@ Read this when reviewing C++. Each row names the failure, not just the rule.
 wrong answers or crashes at a distance. Style and idiom are preferences. Say which is which; in C++
 the gap between them is wider than in most languages.
 
-## Contents
-
-- [Ownership and lifetime](#ownership-and-lifetime)
-- [Classes](#classes)
-- [Correctness](#correctness)
-- [Interfaces and types](#interfaces-and-types)
-- [Build and project](#build-and-project)
-- [Performance](#performance)
-- [Process](#process)
-
 ## Ownership and lifetime
 
 | Don't | Do | Because |

@@ -6,16 +6,6 @@ C++ organization is unusual in one respect: **how you split files changes your b
 of magnitude**, because a header edit recompiles every translation unit that includes it. Structure
 is a performance decision here, not only a readability one.
 
-## Contents
-
-- [Headers and sources](#headers-and-sources)
-- [Include hygiene](#include-hygiene)
-- [Forward declarations and PIMPL](#forward-declarations-and-pimpl)
-- [Namespaces](#namespaces)
-- [Layering, enforced](#layering-enforced)
-- [Interfaces](#interfaces)
-- [Naming](#naming)
-
 ## Headers and sources
 
 A header is a **contract**; a source file is an implementation. Put in the header only what a caller

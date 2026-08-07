@@ -3,17 +3,6 @@
 Use this reference for `unittest` mechanics. Follow the repository's test layout, naming, and
 commands; use the language-neutral `testing-code` skill to decide what behavior and risk need tests.
 
-## Contents
-
-- [Start with observable behavior](#start-with-observable-behavior)
-- [Choose useful assertions](#choose-useful-assertions)
-- [Own cleanup and isolation](#own-cleanup-and-isolation)
-- [Use subtests deliberately](#use-subtests-deliberately)
-- [Mock the lookup boundary](#mock-the-lookup-boundary)
-- [Test async code](#test-async-code)
-- [Run and select tests](#run-and-select-tests)
-- [Avoid unittest traps](#avoid-unittest-traps)
-
 ## Start with observable behavior
 
 Write a failing case that proves the requested behavior or reproduces the defect. Run that case,
