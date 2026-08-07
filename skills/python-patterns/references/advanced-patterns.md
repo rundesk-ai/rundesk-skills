@@ -1,313 +1,125 @@
-# Advanced Python patterns
+# Advanced Python concurrency and performance
 
-## Concurrency Patterns
+Load this reference only when the task actually involves concurrency, cancellation, shared state,
+memory pressure, or measured performance. Follow the repository's supported versions and configured
+tools; do not install a preferred toolchain merely because it appears in an example elsewhere.
 
-### Threading for I/O-Bound Tasks
+## Contents
 
-```python
-import concurrent.futures
-import threading
+- [Choose concurrency from the workload](#choose-concurrency-from-the-workload)
+- [Own tasks and shutdown](#own-tasks-and-shutdown)
+- [Protect shared state](#protect-shared-state)
+- [Measure before optimizing](#measure-before-optimizing)
+- [Use memory techniques deliberately](#use-memory-techniques-deliberately)
+- [Avoid advanced-pattern traps](#avoid-advanced-pattern-traps)
 
-def fetch_url(url: str) -> str:
-    """Fetch a URL (I/O-bound operation)."""
-    import urllib.request
-    with urllib.request.urlopen(url, timeout=10) as response:
-        return response.read().decode()
+## Choose concurrency from the workload
 
-def fetch_all_urls(urls: list[str]) -> dict[str, str]:
-    """Fetch multiple URLs concurrently using threads."""
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        future_to_url = {executor.submit(fetch_url, url): url for url in urls}
-        results = {}
-        for future in concurrent.futures.as_completed(future_to_url):
-            url = future_to_url[future]
-            try:
-                results[url] = future.result()
-            except Exception as e:
-                results[url] = f"Error: {e}"
-    return results
-```
+| Work | Default starting point | Main constraint |
+|---|---|---|
+| Existing async application with concurrent I/O | `asyncio` | Every blocking call can stall the event loop |
+| Blocking I/O with synchronous libraries | Bounded threads | Cancellation cannot forcibly stop arbitrary thread work |
+| CPU-bound independent work | Processes | Inputs and results must cross process boundaries |
+| Small sequential workload | No concurrency | Coordination may cost more than the work |
 
-### Multiprocessing for CPU-Bound Tasks
+Do not mix models without naming the boundary. Calling blocking I/O directly from an async function
+is not asynchronous; on an ordinary GIL-enabled CPython build, creating more threads does not make
+CPU-bound Python bytecode scale reliably.
 
 ```python
-def process_data(data: list[int]) -> int:
-    """CPU-intensive computation."""
-    return sum(x ** 2 for x in data)
+# Good: the caller owns the executor and its shutdown.
+with ThreadPoolExecutor(max_workers=8) as executor:
+    results = list(executor.map(fetch_one, urls))
 
-def process_all(datasets: list[list[int]]) -> list[int]:
-    """Process multiple datasets using multiple processes."""
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        results = list(executor.map(process_data, datasets))
-    return results
+# Bad: work outlives the function and shutdown is unspecified.
+executor = ThreadPoolExecutor()
+for url in urls:
+    executor.submit(fetch_one, url)
 ```
 
-### Async/Await for Concurrent I/O
+## Own tasks and shutdown
+
+Every task needs an owner that observes its result, handles failure, and completes or cancels it
+during shutdown. Do not create fire-and-forget tasks whose references and exceptions disappear.
+
+Use the structured primitive available at the runtime floor. `asyncio.TaskGroup` requires Python
+3.11; on older versions, retain task references and define explicit collection and cancellation.
+Treat version-specific concurrency syntax as a compatibility decision, not a cosmetic rewrite.
+
+Make cancellation part of the contract:
+
+- propagate `CancelledError` unless the current boundary is responsible for cleanup;
+- put cleanup in `finally` or an async context manager;
+- bound waits with a timeout chosen from product requirements;
+- decide whether one child failure cancels siblings or permits partial results;
+- do not retry cancellation, validation failures, or permanent errors as transient work.
+
+## Protect shared state
+
+Do not rely on the apparent atomicity of a built-in operation. Interpreter details change, and a
+multi-step invariant is never protected by one atomic-looking mutation.
+
+Prefer passing immutable messages through a queue. When state must be shared, give it one owner or
+protect the whole invariant with the appropriate lock:
 
 ```python
-import asyncio
+# Good: the read-modify-write decision is one locked operation.
+with self._lock:
+    if key not in self._values:
+        self._values[key] = build_value(key)
+    return self._values[key]
 
-async def fetch_async(url: str) -> str:
-    """Fetch a URL asynchronously."""
-    import aiohttp
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            return await response.text()
-
-async def fetch_all(urls: list[str]) -> dict[str, str]:
-    """Fetch multiple URLs concurrently."""
-    tasks = [fetch_async(url) for url in urls]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-    return dict(zip(urls, results))
+# Bad: two threads can both observe a miss and create competing values.
+if key not in self._values:
+    self._values[key] = build_value(key)
+return self._values[key]
 ```
 
-## Package Organization
+Create process-owned clients and connections inside the worker unless the resource explicitly
+documents inheritance across the selected process start method.
 
-### Standard Project Layout
+## Measure before optimizing
 
-```
-myproject/
-├── src/
-│   └── mypackage/
-│       ├── __init__.py
-│       ├── main.py
-│       ├── api/
-│       │   ├── __init__.py
-│       │   └── routes.py
-│       ├── models/
-│       │   ├── __init__.py
-│       │   └── user.py
-│       └── utils/
-│           ├── __init__.py
-│           └── helpers.py
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py
-│   ├── test_api.py
-│   └── test_models.py
-├── pyproject.toml
-├── README.md
-└── .gitignore
-```
+First preserve a representative input and observable result. Then profile the relevant path and
+measure wall time, CPU, allocations, or I/O according to the suspected limit. Optimize the measured
+hotspot and repeat the same measurement.
 
-### Import Conventions
+Prefer algorithm and I/O improvements over local tricks. Removing repeated work or an unnecessary
+round trip usually matters more than replacing clear syntax with a micro-optimization.
 
 ```python
-# Good: Import order - stdlib, third-party, local
-import os
-import sys
-from pathlib import Path
+# Good when all pieces are already available.
+text = "".join(pieces)
 
-import requests
-from fastapi import FastAPI
-
-from mypackage.models import User
-from mypackage.utils import format_name
-
-# Good: Use isort for automatic import sorting
-# pip install isort
-```
-
-### __init__.py for Package Exports
-
-```python
-# mypackage/__init__.py
-"""mypackage - A sample Python package."""
-
-__version__ = "1.0.0"
-
-# Export main classes/functions at package level
-from mypackage.models import User, Post
-from mypackage.utils import format_name
-
-__all__ = ["User", "Post", "format_name"]
-```
-
-## Memory and Performance
-
-### Using __slots__ for Memory Efficiency
-
-```python
-# Bad: Regular class uses __dict__ (more memory)
-class Point:
-    def __init__(self, x: float, y: float):
-        self.x = x
-        self.y = y
-
-# Good: __slots__ reduces memory usage
-class Point:
-    __slots__ = ['x', 'y']
-
-    def __init__(self, x: float, y: float):
-        self.x = x
-        self.y = y
-```
-
-### Generator for Large Data
-
-```python
-# Bad: Returns full list in memory
-def read_lines(path: str) -> list[str]:
-    with open(path) as f:
-        return [line.strip() for line in f]
-
-# Good: Yields lines one at a time
-def read_lines(path: str) -> Iterator[str]:
-    with open(path) as f:
-        for line in f:
-            yield line.strip()
-```
-
-### Avoid String Concatenation in Loops
-
-```python
-# Bad: O(n²) due to string immutability
-result = ""
+# Good for incremental writes from branches or callbacks.
+buffer = io.StringIO()
 for item in items:
-    result += str(item)
-
-# Good: O(n) using join
-result = "".join(str(item) for item in items)
-
-# Good: Using StringIO for building
-from io import StringIO
-
-buffer = StringIO()
-for item in items:
-    buffer.write(str(item))
-result = buffer.getvalue()
+    buffer.write(render(item))
+text = buffer.getvalue()
 ```
 
-## Python Tooling Integration
+Do not claim a complexity or speed improvement without evidence from the supported interpreter and
+representative data. CPython may optimize operations differently from another Python runtime.
 
-### Essential Commands
+## Use memory techniques deliberately
 
-```bash
-# Code formatting
-black .
-isort .
+- Use a generator when consumers can process values once and incrementally. Keep a collection when
+  callers need length, indexing, repeated traversal, or a stable snapshot.
+- Use `__slots__` only after measuring many long-lived instances. It changes attribute behavior,
+  inheritance, weak references, and serialization expectations.
+- Stream files and network bodies when the interface permits partial processing. Do not turn a
+  small, simple read into a state machine without measured need.
+- Bound queues, caches, result sets, and concurrency. An unbounded optimization is an eventual
+  memory policy whether or not it was named as one.
 
-# Linting
-ruff check .
-pylint mypackage/
+## Avoid advanced-pattern traps
 
-# Type checking
-mypy .
-
-# Testing
-pytest --cov=mypackage --cov-report=html
-
-# Security scanning
-bandit -r .
-
-# Dependency management
-pip-audit
-safety check
-```
-
-### pyproject.toml Configuration
-
-```toml
-[project]
-name = "mypackage"
-version = "1.0.0"
-requires-python = ">=3.9"
-dependencies = [
-    "requests>=2.31.0",
-    "pydantic>=2.0.0",
-]
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.4.0",
-    "pytest-cov>=4.1.0",
-    "black>=23.0.0",
-    "ruff>=0.1.0",
-    "mypy>=1.5.0",
-]
-
-[tool.black]
-line-length = 88
-target-version = ['py39']
-
-[tool.ruff]
-line-length = 88
-select = ["E", "F", "I", "N", "W"]
-
-[tool.mypy]
-python_version = "3.9"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "--cov=mypackage --cov-report=term-missing"
-```
-
-## Quick Reference: Python Idioms
-
-| Idiom | Description |
-|-------|-------------|
-| EAFP | Easier to Ask Forgiveness than Permission |
-| Context managers | Use `with` for resource management |
-| List comprehensions | For simple transformations |
-| Generators | For lazy evaluation and large datasets |
-| Type hints | Annotate function signatures |
-| Dataclasses | For data containers with auto-generated methods |
-| `__slots__` | For memory optimization |
-| f-strings | For string formatting (Python 3.6+) |
-| `pathlib.Path` | For path operations (Python 3.4+) |
-| `enumerate` | For index-element pairs in loops |
-
-## Anti-Patterns to Avoid
-
-```python
-# Bad: Mutable default arguments
-def append_to(item, items=[]):
-    items.append(item)
-    return items
-
-# Good: Use None and create new list
-def append_to(item, items=None):
-    if items is None:
-        items = []
-    items.append(item)
-    return items
-
-# Bad: Checking type with type()
-if type(obj) == list:
-    process(obj)
-
-# Good: Use isinstance
-if isinstance(obj, list):
-    process(obj)
-
-# Bad: Comparing to None with ==
-if value == None:
-    process()
-
-# Good: Use is
-if value is None:
-    process()
-
-# Bad: from module import *
-from os.path import *
-
-# Good: Explicit imports
-from os.path import join, exists
-
-# Bad: Bare except
-try:
-    risky_operation()
-except:
-    pass
-
-# Good: Specific exception
-try:
-    risky_operation()
-except SpecificError as e:
-    logger.error(f"Operation failed: {e}")
-```
-
-__Remember__: Python code should be readable, explicit, and follow the principle of least surprise. When in doubt, prioritize clarity over cleverness.
+- Do not add concurrency to hide slow I/O that should be batched, cached, or removed.
+- Do not swallow worker exceptions to keep a batch green; return or record an explicit per-item
+  result when partial failure is allowed.
+- Do not hold a lock across network I/O, user input, or an unbounded callback.
+- Do not share an async client, task, event loop, or synchronization primitive across unrelated
+  loop lifetimes unless its documentation permits it.
+- Do not add `__slots__`, caching, multiprocessing, or native extensions based on intuition alone.
+- Do not replace repository tooling with a generic formatter, linter, type checker, profiler, or
+  test runner. Use what the project configures and propose a tooling change separately.
