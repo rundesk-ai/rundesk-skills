@@ -15,6 +15,7 @@ herd sites       # every site Herd currently serves
 herd paths       # parked parent directories
 herd links       # explicit site-to-directory links
 herd parked      # sites discovered below parked paths
+herd site-information  # details for the site at this directory
 ```
 
 A parked path exposes its child directories by name; a link maps an explicit name to one directory.
@@ -82,7 +83,7 @@ which runtime launched the failing one.
 | 502 / Bad Gateway | `herd log nginx`; PHP-FPM status and site nginx config | Changing controller code |
 | Laravel exception | `storage/logs`, then `laravel.md` | Reconfiguring Herd first |
 | CLI and browser disagree | PHP binary, version, and ini on each path | A global PHP switch before comparison |
-| Database or Redis refused | `herd services:list` when using Herd Pro; resolved Laravel host/port | Creating or deleting a service speculatively |
+| Database or Redis refused | `herd services:list` when Herd Pro manages that service; resolved Laravel host/port | Creating or deleting a service speculatively |
 
 macOS uses dnsmasq for local site resolution; Windows writes Herd-managed entries through its
 helper service. Follow the platform-specific Herd troubleshooting page. Do not copy a hosts-file,
@@ -119,7 +120,7 @@ Herd reinstall, or certificate-trust bypass as an opening move.
 
 - Herd command line for [macOS](https://herd.laravel.com/docs/macos/advanced-usage/herd-cli) and
   [Windows](https://herd.laravel.com/docs/windows/advanced-usage/command-line) — site, PHP, TLS,
-  debugging, logging, and service commands
+  debugging, logging, and service commands; verified against Herd 1.28.0 on August 7, 2026
 - [Sites](https://herd.laravel.com/docs/macos/getting-started/sites) and
   [managing sites](https://herd.laravel.com/docs/macos/sites/managing-sites) — parked versus linked
   directories, per-site isolation, and the destructive Site Manager delete action; the

@@ -7,7 +7,7 @@ workflow; the per-framework references hold the mechanics. Use this file to audi
 **Read in this order of authority.** Framework documentation states what a tool reports; practitioner
 sources carry the judgement about which observation to make next. Verified in **August 2026**,
 against GCC 15.3, GDB 17.2, Clang/LLDB 24 development documentation, CMake 4.4, Laravel 13,
-Laravel Herd's current macOS and Windows command references, Vue 3.5 / Nuxt 4, and Python 3.14.
+Laravel Herd 1.28.0, Vue 3.5 / Nuxt 4, and Python 3.14.
 
 ## Debugging as a skill
 
@@ -47,7 +47,8 @@ Laravel Herd's current macOS and Windows command references, Vue 3.5 / Nuxt 4, a
   [Windows](https://herd.laravel.com/docs/windows/advanced-usage/command-line), plus
   [PHP versions](https://herd.laravel.com/docs/macos/technology/php-versions) — map the exact site,
   isolated PHP binary and ini, debugger, logs, TLS state, and service status before changing the
-  application. They support the good/bad runtime-identity pair in `herd.md`.
+  application. They support the good/bad runtime-identity pair in `herd.md`. Verified on August 7,
+  2026 against the Herd 1.28.0 command surface recorded by the changelog below.
 - [Sites](https://herd.laravel.com/docs/macos/getting-started/sites) and
   [managing sites](https://herd.laravel.com/docs/macos/sites/managing-sites) — parked directories,
   explicit links, per-site isolation, and the documented destructive Site Manager delete action;
