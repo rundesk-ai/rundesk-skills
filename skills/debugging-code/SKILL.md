@@ -1,6 +1,6 @@
 ---
 name: debugging-code
-description: Use this skill when asked to diagnose or fix software that crashes, hangs, regresses, behaves inconsistently, returns wrong results, or fails a test, build, or runtime check without a proven cause. It supplies a language-agnostic workflow to reproduce the failure, preserve evidence, isolate the responsible boundary, test causal hypotheses, find root cause, and prove the smallest safe correction, plus in-depth debugging references for C++, Laravel, Vue and Nuxt, and Python. Do not use it to review a completed change or explain a known cause.
+description: Use this skill when asked to diagnose or fix software that crashes, hangs, regresses, behaves inconsistently, returns wrong results, or fails a test, build, or runtime check without a proven cause. It supplies a language-agnostic workflow to reproduce the failure, preserve evidence, isolate the responsible boundary, test causal hypotheses, find root cause, and prove the smallest safe correction, plus in-depth debugging references for C++, Laravel and Herd, Vue and Nuxt, and Python. Do not use it to review a completed change or explain a known cause.
 ---
 
 # Debug code
@@ -16,6 +16,8 @@ stack's request or render path, which symptom points at which layer, and the tra
 diagnosis the wrong way.
 
 - [references/laravel.md](references/laravel.md) — Laravel and its queue, Eloquent, and cache layers.
+- [references/herd.md](references/herd.md) — Laravel Herd site mapping, PHP identity, services, TLS,
+  and local runtime logs. Load it only when Herd serves the failing application.
 - [references/vue.md](references/vue.md) — Vue and Nuxt: reactivity, render triggers, hydration.
 - [references/python.md](references/python.md) — tracebacks, `pdb`, development mode, hangs, leaks.
 - [references/cpp.md](references/cpp.md) — build identity, GDB/LLDB, sanitizers, cores, optimized code.

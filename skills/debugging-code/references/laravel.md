@@ -3,10 +3,13 @@
 Mechanics for the workflow in `SKILL.md`. The hypothesis loop does not change; this is where to look
 and what already recorded the answer.
 
+If Laravel is served by Herd, load `herd.md` first to prove the site mapping and PHP runtime. Return
+here after the request is known to enter the intended application.
+
 ## Establish which install you are debugging
 
-Before forming a hypothesis, confirm what is actually running. Most "impossible" Laravel bugs are a
-config cache, a stale worker, or a different environment than you think.
+Before forming a hypothesis, confirm what is actually running. A config cache, stale worker, or
+different environment can make the observed code disagree with the checkout.
 
 ```sh
 php artisan about                 # version, environment, cached config/routes/views, drivers
@@ -14,8 +17,8 @@ php artisan config:show database  # the resolved value, not what .env says
 php artisan route:list --path=orders
 ```
 
-`about` reports whether config, routes, events, and views are **cached**. That single line explains a
-large share of "my change did nothing."
+`about` reports whether config, routes, events, and views are **cached**. Check it before treating
+"my change did nothing" as an application-logic failure.
 
 ## See what actually happened
 
@@ -29,8 +32,8 @@ large share of "my change did nothing."
 | What a query actually compiles to | `->toSql()`, `->dd()`, `->explain()` |
 
 **Telescope is a development tool** — Laravel's own docs say it "is not recommended for production
-environments." **Pulse is the production one**; it answers "what is slow" rather than "what happened
-in this request."
+environments." **Pulse is designed for production monitoring**; it answers "what is slow" rather
+than "what happened in this request."
 
 To log every query on demand, without installing anything:
 
@@ -38,7 +41,7 @@ To log every query on demand, without installing anything:
 DB::listen(fn ($q) => logger($q->sql, ['bindings' => $q->bindings, 'ms' => $q->time]));
 ```
 
-Turn N+1 from a slow page into an exception, which is the fastest way to locate it:
+Turn N+1 from a slow page into an exception so the failing access is identified:
 
 ```php
 Model::preventLazyLoading(! app()->isProduction());   // AppServiceProvider::boot()
@@ -88,7 +91,8 @@ config, so you can call the action or the query directly with no HTTP layer in t
   variables — so `env()` outside `config/` returns `null` **in production and nowhere else**. This
   presents as a feature that works everywhere except the one place that matters.
 - **`dd()` inside a queued job** writes to the worker's output, not the browser. Log instead, or run
-  the job synchronously: `php artisan queue:work --once --stop-when-empty`.
+  one known disposable local job in the foreground with `php artisan queue:work --once`. This still
+  consumes and executes a real queued job; it is not a read-only or synchronous probe.
 - **The local `sync` queue hides the transaction race.** A job that runs inline always sees committed
   data. Reproduce with a real driver before concluding the code is correct.
 - **`APP_DEBUG=true` in production is not a debugging step**, it is an information disclosure. Read

@@ -7,7 +7,7 @@ workflow; the per-framework references hold the mechanics. Use this file to audi
 **Read in this order of authority.** Framework documentation states what a tool reports; practitioner
 sources carry the judgement about which observation to make next. Verified in **August 2026**,
 against GCC 15.3, GDB 17.2, Clang/LLDB 24 development documentation, CMake 4.4, Laravel 13,
-Vue 3.5 / Nuxt 4, and Python 3.14.
+Laravel Herd's current macOS and Windows command references, Vue 3.5 / Nuxt 4, and Python 3.14.
 
 ## Debugging as a skill
 
@@ -40,6 +40,29 @@ Vue 3.5 / Nuxt 4, and Python 3.14.
   mass operations firing no model events.
 - [Debugging and logging in Laravel applications](https://laravel-news.com/debugging-and-logging-in-laravel-applications) —
   Laravel News.
+
+## Laravel Herd
+
+- Herd command line for [macOS](https://herd.laravel.com/docs/macos/advanced-usage/herd-cli) and
+  [Windows](https://herd.laravel.com/docs/windows/advanced-usage/command-line), plus
+  [PHP versions](https://herd.laravel.com/docs/macos/technology/php-versions) — map the exact site,
+  isolated PHP binary and ini, debugger, logs, TLS state, and service status before changing the
+  application. They support the good/bad runtime-identity pair in `herd.md`.
+- [Sites](https://herd.laravel.com/docs/macos/getting-started/sites) and
+  [managing sites](https://herd.laravel.com/docs/macos/sites/managing-sites) — parked directories,
+  explicit links, per-site isolation, and the documented destructive Site Manager delete action;
+  the [changelog](https://herd.laravel.com/docs/macos/changelog/index) records `herd link`
+  updating `.env` `APP_URL` and later adding `--update-env` to force that rewrite.
+- Herd's [macOS](https://herd.laravel.com/docs/macos/troubleshooting/common-issues) and
+  [Windows](https://herd.laravel.com/docs/windows/troubleshooting/common-issues) troubleshooting
+  pages — a Herd 404, bad gateway, or DNS failure precedes Laravel; the underlying resolver and
+  helper differ by platform.
+- [Dumps](https://herd.laravel.com/docs/macos/debugging/dumps) — Herd's extension injects during
+  early bootstrap, supporting the disable-and-repeat experiment when capture changes behavior.
+- [Browser-versus-CLI PHP mismatch](https://github.com/beyondcode/herd-community/issues/831) and
+  [CLI ini mismatch](https://github.com/beyondcode/herd-community/issues/267) — Herd maintainers
+  traced reproduced failures to an older PHP earlier on `PATH` and to the wrong CLI ini; both
+  support comparing plain commands with Herd's site-aware proxies before changing code.
 
 ## Vue and Nuxt
 
