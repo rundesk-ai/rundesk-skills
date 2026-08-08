@@ -38,6 +38,7 @@ agent no longer needs it.
 - `creating-design-assets`
 - `database-design`
 - `debugging-code`
+- `executing-development-tasks`
 - `frontend-design`
 - `inertia-patterns`
 - `laravel-patterns`

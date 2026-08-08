@@ -25,6 +25,10 @@
       "path": "skills/debugging-code"
     },
     {
+      "name": "executing-development-tasks",
+      "path": "skills/executing-development-tasks"
+    },
+    {
       "name": "frontend-design",
       "path": "skills/frontend-design"
     },
