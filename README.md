@@ -42,6 +42,7 @@ agent no longer needs it.
 - `frontend-design`
 - `inertia-patterns`
 - `laravel-patterns`
+- `maintaining-task-briefs`
 - `managing-github`
 - `mysql-patterns`
 - `pdf-creation`

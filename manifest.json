@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "2.10.0",
+  "version": "2.11.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -39,6 +39,10 @@
     {
       "name": "laravel-patterns",
       "path": "skills/laravel-patterns"
+    },
+    {
+      "name": "maintaining-task-briefs",
+      "path": "skills/maintaining-task-briefs"
     },
     {
       "name": "managing-github",

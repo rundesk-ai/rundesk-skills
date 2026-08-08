@@ -29,9 +29,11 @@ Requirement | Work item or phase | Proof | State
 R1          | <coherent outcome>  | <observable result> | pending
 ```
 
-Do not create a new project-management artifact when the repository already provides a tracker or
-when a small task fits in working notes. The trace prevents a polished partial result from hiding a
-missed requirement; it is not a progress diary.
+Do not create a second project-management artifact when the repository already provides a tracker.
+Apply `maintaining-task-briefs` to choose and maintain the lightest useful task record, from a short
+working checklist to a disk brief that survives compaction, interruption, later turns, or delegated
+work. The trace prevents a polished partial result from hiding a missed requirement; it is not a
+progress diary.
 
 ## Scale the workflow to the task
 
@@ -53,6 +55,7 @@ Keep this skill as the execution owner; use the applicable specialist skill or r
 for technique:
 
 - use `writing-plans` for a plan artifact and dependency-level execution contract;
+- use `maintaining-task-briefs` for your task scope, active state, and resumption needs;
 - use `debugging-code` while an incorrect behavior has no proven cause;
 - use `testing-code` to choose and construct trustworthy automated proof;
 - use `frontend-design` for rendered UI, interaction, responsive, and accessibility inspection;
