@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "2.13.0",
+  "version": "2.14.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -15,6 +15,10 @@
     {
       "name": "creating-design-assets",
       "path": "skills/creating-design-assets"
+    },
+    {
+      "name": "conversion-landing-pages",
+      "path": "skills/conversion-landing-pages"
     },
     {
       "name": "database-design",

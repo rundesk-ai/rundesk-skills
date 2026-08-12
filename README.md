@@ -36,6 +36,7 @@ agent no longer needs it.
 - `axmol-patterns`
 - `cpp-patterns`
 - `creating-design-assets`
+- `conversion-landing-pages`
 - `database-design`
 - `debugging-code`
 - `executing-development-tasks`
