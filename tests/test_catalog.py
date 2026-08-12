@@ -47,6 +47,7 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("executing-development-tasks", names)
         self.assertIn("maintaining-task-briefs", names)
         self.assertIn("lead-compliance-gates", names)
+        self.assertIn("laravel-stripe-payments", names)
         self.assertIn("researching-topics", names)
         self.assertIn("seo", names)
         self.assertIn("working-as-an-assistant", names)
