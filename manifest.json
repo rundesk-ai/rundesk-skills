@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "2.14.0",
+  "version": "2.15.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -27,6 +27,10 @@
     {
       "name": "debugging-code",
       "path": "skills/debugging-code"
+    },
+    {
+      "name": "ecommerce-storefronts",
+      "path": "skills/ecommerce-storefronts"
     },
     {
       "name": "executing-development-tasks",

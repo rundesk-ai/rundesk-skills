@@ -39,6 +39,7 @@ agent no longer needs it.
 - `conversion-landing-pages`
 - `database-design`
 - `debugging-code`
+- `ecommerce-storefronts`
 - `executing-development-tasks`
 - `frontend-design`
 - `inertia-patterns`
