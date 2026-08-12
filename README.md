@@ -39,6 +39,10 @@ agent no longer needs it.
 - `conversion-landing-pages`
 - `database-design`
 - `debugging-code`
+- `designing-game-cameras-and-controls`
+- `designing-game-levels`
+- `designing-games`
+- `designing-player-experience`
 - `ecommerce-storefronts`
 - `executing-development-tasks`
 - `frontend-design`
@@ -51,7 +55,10 @@ agent no longer needs it.
 - `mysql-patterns`
 - `pdf-creation`
 - `performance-engineering`
+- `planning-game-production`
+- `playtesting-games`
 - `postgres-patterns`
+- `programming-gameplay`
 - `python-patterns`
 - `researching-topics`
 - `reviewing-code`

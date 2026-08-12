@@ -8,6 +8,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 ALLOWED = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+GAME_SKILLS = {
+    "designing-game-cameras-and-controls",
+    "designing-game-levels",
+    "designing-games",
+    "designing-player-experience",
+    "planning-game-production",
+    "playtesting-games",
+    "programming-gameplay",
+}
 
 
 class CatalogContract(unittest.TestCase):
@@ -45,11 +54,18 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("performance-engineering", names)
         self.assertIn("creating-design-assets", names)
         self.assertIn("conversion-landing-pages", names)
+        self.assertIn("designing-game-cameras-and-controls", names)
+        self.assertIn("designing-game-levels", names)
+        self.assertIn("designing-games", names)
+        self.assertIn("designing-player-experience", names)
         self.assertIn("ecommerce-storefronts", names)
         self.assertIn("executing-development-tasks", names)
         self.assertIn("maintaining-task-briefs", names)
         self.assertIn("lead-compliance-gates", names)
         self.assertIn("laravel-stripe-payments", names)
+        self.assertIn("planning-game-production", names)
+        self.assertIn("playtesting-games", names)
+        self.assertIn("programming-gameplay", names)
         self.assertIn("researching-topics", names)
         self.assertIn("seo", names)
         self.assertIn("working-as-an-assistant", names)
@@ -62,8 +78,24 @@ class CatalogContract(unittest.TestCase):
                 package = ROOT / entry["path"]
                 self.assertEqual(entry["name"], package.name)
                 page = (package / "SKILL.md").read_text(encoding="utf-8")
-                self.assertRegex(page, rf"(?m)^name: {re.escape(entry['name'])}$")
-                self.assertRegex(page, r"(?m)^description: .+\S$")
+                sections = page.split("---", 2)
+                self.assertEqual(3, len(sections), "SKILL.md needs YAML frontmatter")
+                frontmatter = [
+                    line for line in sections[1].strip().splitlines() if line.strip()
+                ]
+                keys = [line.partition(":")[0] for line in frontmatter]
+                self.assertEqual(["name", "description"], keys)
+                self.assertEqual(f"name: {entry['name']}", frontmatter[0])
+                description = frontmatter[1].partition(":")[2].strip()
+                self.assertTrue(description)
+                self.assertLessEqual(len(description), 1024)
+
+    def test_game_portfolio_keeps_its_source_maps(self):
+        for name in GAME_SKILLS:
+            with self.subTest(skill=name):
+                self.assertTrue(
+                    (ROOT / "skills" / name / "references" / "sources.md").is_file()
+                )
 
     def test_catalog_contains_no_integration_commands(self):
         self.assertEqual([], list((ROOT / "skills").glob("*/scripts/**")))
