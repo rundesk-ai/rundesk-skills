@@ -1,17 +1,9 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "2.16.0",
+  "version": "3.0.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
-    {
-      "name": "axmol-patterns",
-      "path": "skills/axmol-patterns"
-    },
-    {
-      "name": "cpp-patterns",
-      "path": "skills/cpp-patterns"
-    },
     {
       "name": "creating-design-assets",
       "path": "skills/creating-design-assets"
@@ -27,22 +19,6 @@
     {
       "name": "debugging-code",
       "path": "skills/debugging-code"
-    },
-    {
-      "name": "designing-game-cameras-and-controls",
-      "path": "skills/designing-game-cameras-and-controls"
-    },
-    {
-      "name": "designing-game-levels",
-      "path": "skills/designing-game-levels"
-    },
-    {
-      "name": "designing-games",
-      "path": "skills/designing-games"
-    },
-    {
-      "name": "designing-player-experience",
-      "path": "skills/designing-player-experience"
     },
     {
       "name": "ecommerce-storefronts",
@@ -93,20 +69,8 @@
       "path": "skills/performance-engineering"
     },
     {
-      "name": "planning-game-production",
-      "path": "skills/planning-game-production"
-    },
-    {
-      "name": "playtesting-games",
-      "path": "skills/playtesting-games"
-    },
-    {
       "name": "postgres-patterns",
       "path": "skills/postgres-patterns"
-    },
-    {
-      "name": "programming-gameplay",
-      "path": "skills/programming-gameplay"
     },
     {
       "name": "python-patterns",

@@ -8,17 +8,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 ALLOWED = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-GAME_SKILLS = {
-    "designing-game-cameras-and-controls",
-    "designing-game-levels",
-    "designing-games",
-    "designing-player-experience",
-    "planning-game-production",
-    "playtesting-games",
-    "programming-gameplay",
-}
-
-
 class CatalogContract(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -54,18 +43,11 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("performance-engineering", names)
         self.assertIn("creating-design-assets", names)
         self.assertIn("conversion-landing-pages", names)
-        self.assertIn("designing-game-cameras-and-controls", names)
-        self.assertIn("designing-game-levels", names)
-        self.assertIn("designing-games", names)
-        self.assertIn("designing-player-experience", names)
         self.assertIn("ecommerce-storefronts", names)
         self.assertIn("executing-development-tasks", names)
         self.assertIn("maintaining-task-briefs", names)
         self.assertIn("lead-compliance-gates", names)
         self.assertIn("laravel-stripe-payments", names)
-        self.assertIn("planning-game-production", names)
-        self.assertIn("playtesting-games", names)
-        self.assertIn("programming-gameplay", names)
         self.assertIn("researching-topics", names)
         self.assertIn("seo", names)
         self.assertIn("working-as-an-assistant", names)
@@ -89,13 +71,6 @@ class CatalogContract(unittest.TestCase):
                 description = frontmatter[1].partition(":")[2].strip()
                 self.assertTrue(description)
                 self.assertLessEqual(len(description), 1024)
-
-    def test_game_portfolio_keeps_its_source_maps(self):
-        for name in GAME_SKILLS:
-            with self.subTest(skill=name):
-                self.assertTrue(
-                    (ROOT / "skills" / name / "references" / "sources.md").is_file()
-                )
 
     def test_catalog_contains_no_integration_commands(self):
         self.assertEqual([], list((ROOT / "skills").glob("*/scripts/**")))

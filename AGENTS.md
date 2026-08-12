@@ -62,8 +62,9 @@ items.erase(it);
 ++it;
 ```
 
-Source: `skills/cpp-patterns/references/sources.md` maps this pair to cppreference's invalidation
-rules.
+Source: the `cpp-patterns` package in
+[`rundesk-skills-gamedev`](https://github.com/rundesk-ai/rundesk-skills-gamedev/tree/main/skills/cpp-patterns)
+maps this pair to cppreference's invalidation rules.
 
 Before shipping, ask: would a competent practitioner learn more than the docs' first page; does
 each constraint name its failure; and can the agent act now? If not, research or cut it.
