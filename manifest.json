@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {

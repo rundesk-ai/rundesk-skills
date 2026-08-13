@@ -51,6 +51,18 @@ Verified 7 August 2026 against the linked pages.
   can inform requirements, measures, testing objectives, and acceptance criteria. The package uses
   quality categories as a coverage prompt and explicitly rejects enumerating every quality for every
   product.
+- Eric Evans' [Domain-Driven Design Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf)
+  (March 2015) supports the one-term-per-concept rule. Its Ubiquitous Language pattern commits a team
+  to one language "in all communication within the team and in the code", holds that "a change in the
+  language is a change to the model", and expects domain experts to "object to terms or structures
+  that are awkward or inadequate to convey domain understanding". This package applies that to the
+  document's vocabulary only; identifier form in code and schemas belongs to `database-design`.
+  The measured cost of leaving a term unstated comes from
+  [Feitelson et al., "How Developers Choose Names", arXiv:2103.07487](https://arxiv.org/pdf/2103.07487)
+  (2021, 334 subjects): across 47 instances "the median probability" that two developers chose the
+  same name "was only 6.9%", so an unfixed term is resolved by guesswork rather than convention. The
+  study measures developers naming code, not stakeholders reading a PRD; it establishes the
+  divergence, not a PRD-specific effect size.
 - The Agile Alliance's [Definition of Done](https://agilealliance.org/glossary/definition-of-done/)
   is community guidance for one shared quality bar across product increments. It supports separating
   a team-wide done contract from feature-specific acceptance and post-release product success.
@@ -115,6 +127,9 @@ Verified 7 August 2026 against the linked pages.
   narrowed by the empirical studies' context-dependent findings.
 - Code-link, passing-suite, shipped-output, and post-launch mismatch pairs apply NASA verification
   and validation guidance, the DfE outcome principle, and SEBoK lifecycle management.
+- The shifting-term pair (`party` against the domain's own `buyer`) applies Evans' Ubiquitous
+  Language and the 6.9% naming-divergence finding, with INCOSE's unambiguous and consistent
+  characteristics as the requirement-level frame.
 - All angle-bracket examples are explicitly drafting templates, not generated customer facts.
 
 ## Deliberate exclusions
