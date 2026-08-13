@@ -1,7 +1,8 @@
 # Code-review source basis
 
 This package synthesizes review practice; it does not copy a provider's review UI or language manual.
-Use these sources to audit or revise a rule. Links and claims were checked on **2026-08-07**.
+Use these sources to audit or revise a rule. Links and claims were checked on **2026-08-07**, except
+the naming entry below, which was added and checked on **2026-08-13**.
 
 ## Review scope and judgment
 
@@ -19,6 +20,19 @@ Use these sources to audit or revise a rule. Links and claims were checked on **
   and repository style guides precedence over preference, and labels optional comments so they are
   not mistaken for blockers. Its comment examples explain the concrete cost and preferred direction,
   which supports impact-based severity and actionable findings.
+- [What to look for in a code review — Naming](https://google.github.io/eng-practices/review/reviewer/looking-for.html) —
+  Google lists naming as a review dimension in its own right: "Did the developer pick good names for
+  everything? A good name is long enough to fully communicate what the item is or does, without
+  being so long that it becomes hard to read." This is the basis for the trap row on names that pose
+  a question or name nothing, and it sets both bounds — a name that communicates nothing and a name
+  that has grown into a sentence are the same failure from opposite ends. The reportable threshold
+  stays the skill's own: a name is a finding when it hides what a value holds or breaks a repository
+  rule, not when a reviewer would have chosen differently. [Avidan and Feitelson, ICPC 2017](https://www.cs.huji.ac.il/~feit/papers/Names17ICPC.pdf)
+  supplies the impact — with 9 professional developers over 38 recorded sessions, 3 of 6 production
+  methods showed no comprehension difference between their real names and names replaced by
+  consecutive letters, "due to poor and even misleading variable names". The naming rule itself, its
+  evidence, and its ecosystem conflicts belong to the `database-design` package and are not restated
+  here.
 - [GitLab code-review guidelines](https://docs.gitlab.com/development/code_review/) — this
   open-source project's practitioner guidance starts with why the change exists, requires the entire
   diff to be read, recommends local validation when appropriate, and distinguishes blocking from

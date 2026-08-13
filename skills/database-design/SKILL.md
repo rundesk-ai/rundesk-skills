@@ -33,6 +33,10 @@ Read the reference for the pattern at hand — not both, and not all of either.
 | [references/advanced-patterns.md](references/advanced-patterns.md) | Polymorphic associations and inheritance, hierarchies (adjacency list, materialized path, closure table), temporal and bitemporal history, JSON columns, denormalization and summary tables, keyset pagination, and the shape of a safe schema change |
 | [references/security-examples.md](references/security-examples.md) | Storing credentials or PII, multi-tenant isolation, roles and permissions tables, audit logs, immutable records, optimistic locking, retention and anonymization, and constraints that encode a business rule |
 
+Read [references/sources.md](references/sources.md) when auditing or changing a naming lesson in this
+package; it maps that section's rules to the standards, style guides, framework conventions, and
+studies behind them, and records where those conflict.
+
 Both reference files write their DDL in SQLite dialect, because it is the smallest and every engine
 reads it. The *shapes* are portable; the spellings are not — `datetime('now')` is `now()` in
 PostgreSQL and `NOW()` in MySQL, `TEXT` timestamps are `timestamptz` and `DATETIME`, and
@@ -50,6 +54,51 @@ are using.
   mistake: you cannot index them, constrain them, or join through them.
 - **Under-normalizing is the common failure, not over-normalizing.** The usual real symptom is one
   wide table carrying several entities' worth of columns, most of them null for most rows.
+
+## Naming
+
+A name designates a value; a sentence defines it. `how_a_lead_is_sold` is a definition sitting in the
+name's slot, and it leaves the values it gestures at — an account, a channel, a timestamp — unnamed
+and usually unmodelled.
+
+- **Name the value, not the question it answers.** Compose the name from the entity, its property,
+  and a representation term, in that order: `sale_channel`, `sold_at`, `buyer_account_id`.
+  Interrogatives (`who`, `why`, `when`, `how`) and connecting words (`a`, `the`, `of`, `is`) belong to
+  no name. Each maps to a value instead: the actor to `buyer_account_id`, the event time to
+  `sold_at`, the reason to `cancellation_reason_id`, the mechanism to `sale_channel`.
+- **A generic word is a suffix, never a whole name.** `publication_status` and `sale_amount` are
+  well-formed, because the trailing term says how the value is represented. Bare `status`, `value`,
+  `state`, or `type` name nothing a reader can act on. `data`, `info`, `details`, `meta`, and `thing`
+  do not even work as suffixes — `product_info` is a `product`, `name_string` is a `name`.
+- **A bare `type` column is a behaviour change, not just a vague one.** Rails reads it as
+  single-table inheritance. Qualify it — `payment_method_type` — and the ambiguity goes with it.
+- **Take the words from the domain's own vocabulary.** The business says "buyer" and "account"; a
+  schema that says `party` or `entity` has invented a superordinate nobody speaks, so every
+  conversation about it now carries a translation step. When the domain's word changes, rename the
+  model to match rather than keeping a synonym alive in the schema.
+- **Model the connection; do not describe it.** If "how a lead is sold" is a real fact, it is a row —
+  `lead_sales(lead_id, buyer_account_id, sale_channel, sold_at)` — and the foreign key carries the
+  connection. A column holding prose about the sale cannot be joined, constrained, or aggregated.
+- **Read `table.column` aloud as a fact about one row.** `orders.buyer_account_id` is one. If stating
+  what the column holds takes a sentence, either the name is wrong or the column is on the wrong
+  table.
+
+The conventions below are ecosystem conventions, not universals, and they disagree with each other.
+Follow whichever one the stack already uses, and never mix two inside one schema:
+
+| Element | Usual form | Where it comes from, and what it costs |
+|---|---|---|
+| Foreign key | `<singular_parent>_id` — `account_id` | Rails, Laravel, and Django all derive this automatically. A role prefix (`buyer_account_id`) is the right call when one table links to the same parent twice, but it breaks that derivation and needs the relation configured by hand. |
+| Primary key | `id` | The three frameworks mandate it; `sqlstyle.guide` argues the opposite, that a bare `id` should be avoided in favour of `account_id`. Pick the one your stack enforces. |
+| Timestamps | `<past-tense verb>_at` — `sold_at` | Rails and Laravel convention, from `created_at`/`updated_at`. `sqlstyle.guide` uses `_date` instead; there is no cross-ecosystem winner. |
+| Booleans | `is_`/`has_` in most languages | Documented as a prefix by typescript-eslint — and forbidden in Ruby, where RuboCop wants `tall?`, not `is_tall`. Follow the language, not this table. |
+| Identifier case | `snake_case`, unquoted | PostgreSQL's own "Don't Do This" page: `NamesLikeThis` has to be quoted everywhere, forever. |
+| Table number | No consensus | Rails and Laravel pluralize, Django and WIPO ST.96 keep the singular, `sqlstyle.guide` prefers a collective noun (`staff` over `employees`). Consistency within the schema is the only rule that holds. |
+
+**No database linter checks any of this.** SQLFluff, schemalint, and Squawk cover casing, keyword
+collisions, and migration safety; meaning is left to review. If a mechanical guard is wanted, the
+precedent is a denylist — ESLint's `id-denylist`, Pylint's `bad-names` — and it exists in no SQL
+tool, so a name that survives the linter has not been checked.
 
 ## Keys and Identity
 

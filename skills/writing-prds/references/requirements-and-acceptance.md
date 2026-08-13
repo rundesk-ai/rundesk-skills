@@ -26,6 +26,19 @@ Good: R-4a — In <supported context>, <target user> can <notification behavior>
       R-4b — <Separate settings behavior, if actually required>.
 ```
 
+Name each actor, object, and event in the word the domain already uses, and keep one term per concept
+for the whole document. A PRD that calls the same person a buyer in one requirement, a client in the
+next, and a user in the third states three conditions nobody can check against each other, and the
+delivery team resolves the difference by guessing — in one study of how developers choose names, the
+median chance that two of them picked the same name was 6.9%. A broader term invented for the
+document costs the same clarity: `buyer` says who it is, `party` and `entity` do not.
+
+```text
+Bad:  R-7 — The relevant party is recorded, along with the reason.
+Good: R-7 — Each completed sale records <the buyer, in the domain's own word> and <the named
+      cancellation reason>, both visible on <the order record>.
+```
+
 ## Cover behavior, not an exhaustive catalog
 
 For each product flow, include only applicable cases:

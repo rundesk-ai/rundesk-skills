@@ -65,6 +65,7 @@ read when auditing or revising a rule. Angle brackets below are placeholders, no
 | Inflate uncertain concerns. | Rank reachable impact; mark uncertainty unverified. |
 | Promote preference or analyzer output. | Require policy or a reachable failure. |
 | Report each symptom. | Report one root cause and its affected paths. |
+| Wave through a name that poses a question or names nothing. | Flag it where it hides what a value holds or breaks a rule, and give the value it should name. |
 | Sample, then declare readiness. | Name scope; use `Cannot conclude` when omissions block judgment. |
 
 ## Prove and rank findings
