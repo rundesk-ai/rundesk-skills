@@ -4,7 +4,8 @@ Use this file to audit a lesson, not as another PRD procedure. This package synt
 practice, public-service guidance, systems standards, community methods, and empirical requirements
 research. It does not impose one organization's template.
 
-Verified 7 August 2026 against the linked pages.
+Verified 7 August 2026 against the linked pages, except the domain-vocabulary entry under
+"Requirement quality and acceptance", which was added and verified on 13 August 2026.
 
 ## Product intent and readable shape
 

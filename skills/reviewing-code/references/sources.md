@@ -1,7 +1,8 @@
 # Code-review source basis
 
 This package synthesizes review practice; it does not copy a provider's review UI or language manual.
-Use these sources to audit or revise a rule. Links and claims were checked on **2026-08-07**.
+Use these sources to audit or revise a rule. Links and claims were checked on **2026-08-07**, except
+the naming entry below, which was added and checked on **2026-08-13**.
 
 ## Review scope and judgment
 

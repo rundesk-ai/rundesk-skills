@@ -33,7 +33,10 @@ unsourced or as a claim that they are verified. Links and claims were checked on
   basis for excluding interrogatives and sentence-shaped names: `who`, `why`, and `when` are none of
   noun, adjective, or present-tense verb, and `how_a_lead_is_sold` carries both an article and a
   copula. **[GD-22]** removes a representation term that repeats the property term, which is why the
-  skill treats the generic word as a suffix rather than a separate ban.
+  skill treats the generic word as a suffix rather than a separate ban. **[GD-25]** — "Word(s) in a
+  name SHOULD be in singular form unless the concept itself is plural" — is the ST.96 half of the
+  table-number row in the skill's conventions table, and the reason that row reports no consensus
+  rather than following the frameworks.
 - [ISO/IEC 11179-4:2004, *Formulation of data definitions*](https://cdn.standards.iteh.ai/samples/35346/e1828b73c98b4fbca61fe950da0b7748/ISO-IEC-11179-4-2004.pdf) —
   clause 4.1 requires that a data **definition** "be stated as a descriptive phrase or sentence(s)"
   and clause 4.2 that it "be expressed without embedding rationale, functional usage, or procedural
@@ -73,8 +76,8 @@ unsourced or as a claim that they are verified. Links and claims were checked on
 ## Meaningless and misleading names
 
 - [Tim Ottinger, "Ottinger's Rules for Variable and Class Naming" (1997)](https://exelearning.org/wiki/OttingersNaming/) —
-  Rule 14, "No Noise Words", states plainly that "Info and Data are like 'stuff': basically
-  meaningless", with the pairs `ProductInfo`/`Product`, `CustomerObject`/`Customer`, and
+  Rule 14, "No Disambiguation without Differentiation", states plainly that "Info and Data are like
+  'stuff': basically meaningless", with the pairs `ProductInfo`/`Product`, `CustomerObject`/`Customer`, and
   `NameString`/`Name`; the skill's `product_info` and `name_string` examples are these, transposed to
   SQL. Rule 11 supplies the disinformation case — do not call something an `AccountList` unless it is
   a list. This is the documented antecedent of the naming chapter in Robert C. Martin's *Clean Code*
