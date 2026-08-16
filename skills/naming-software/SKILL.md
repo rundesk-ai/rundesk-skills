@@ -75,4 +75,3 @@ For a new or changed term:
 - Accessible names contain the visible control label and still distinguish the control.
 - Errors identify the affected subject and give the intended audience a useful recovery path.
 - Renames preserve stored data and published consumers for the promised compatibility window.
-

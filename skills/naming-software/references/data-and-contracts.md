@@ -59,4 +59,3 @@ intentional boundary mappings so later changes do not invent another synonym.
 - Verify case sensitivity and reserved-word behavior in the actual engine or protocol.
 - Test old and new readers during a compatibility window.
 - Inspect serialized output; passing internal tests does not prove the public name.
-

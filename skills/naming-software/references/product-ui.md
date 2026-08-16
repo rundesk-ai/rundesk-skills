@@ -74,4 +74,3 @@ successful state.
 - Navigate controls by keyboard and verify visible labels against accessible names.
 - Read repeated table headers, statuses, and errors as an operator scanning them many times.
 - Search for competing display terms and decide whether they represent synonyms or real distinctions.
-

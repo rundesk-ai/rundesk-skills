@@ -62,4 +62,3 @@ the contract it protects, not narrate its implementation.
 - Search callers before renaming a public identifier.
 - Check generated clients, serialization keys, reflection, templates, and configuration references.
 - Prefer a staged compatibility change over a mixed old/new vocabulary.
-

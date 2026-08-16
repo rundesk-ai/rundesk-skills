@@ -50,4 +50,3 @@ Duration unit: seconds
 
 Update the lexicon with a new recurring concept or approved rename. Periodically search avoided
 synonyms, then classify each hit before changing it.
-
