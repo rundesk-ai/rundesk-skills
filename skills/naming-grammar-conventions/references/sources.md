@@ -141,6 +141,12 @@ semantics, acronym casing, absence states, localization, lexicon scope, and code
   passes exposed ambiguity around title/button objects, role-gated recovery, deadline wording, and
   whether missing material facts block the modal; the product-interface and lexicon references now
   state those decisions directly.
+- In the final fresh regression pass, both Codex and Antigravity stayed below a 120-word limit, read
+  only the core skill and product-interface reference, rejected reassuring filler, withheld the
+  unknown title and confirm action, supplied only the verified availability sentence and `Cancel`,
+  and requested the material existing-use, deletion, recovery, permission, deadline, and action-verb
+  facts. This pass verifies the revised restraint and reference-routing behavior for that prompt on
+  those two adapters.
 - The reproduced failures led to explicit meaning, constraint, evidence, proportional-reporting,
   comment-factuality, boundary-mapping, orthogonal-state, nullable-override, localization, and
   high-level-lexicon guardrails in this package.
