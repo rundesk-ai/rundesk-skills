@@ -35,7 +35,11 @@ The governing rule from `SKILL.md` applies here as much as on screen: name value
 | `deleted` | `isDeleted` or `deletedAt` timestamp | If you need to know *when*, it was never a boolean |
 | `userType` (holding true/false) | `isInternal`, or an enum | A boolean pretending to be a category |
 
-**Don't keep a boolean that has grown a third state.** The moment a `bool` needs "unknown," "pending," or "partially," it is an enum. Convert it rather than adding a second boolean beside it, which is how `is_active` plus `is_archived` plus `is_draft` produces four impossible states.
+**Don't make one boolean carry a third meaning.** When a configured value can be enabled, disabled,
+or inherited, model and name the configured value separately from the effective computed condition.
+Use an enum when those meanings are mutually exclusive. Keep separate fields when the facts are
+orthogonal and can be true together; do not force a fraud hold and a billing pause into one enum
+merely because both affect availability.
 
 **Don't** name a boolean after the question it answers (`did_the_user_confirm`). Name it after the condition it asserts (`isConfirmed`).
 
@@ -93,7 +97,7 @@ Use the project's documented verb semantics. If none exist, start with the defau
 | `build` / `create` | Constructs a new value in memory. |
 | `save` / `store` / `persist` | Writes. Prefer one primary verb within a bounded API; preserve established public names until a compatible migration is planned. |
 | `compute` / `calculate` | Pure derivation from inputs. |
-| `ensure` | Idempotent. Makes a condition true; safe to call twice. |
+| `ensure` | Use only when the operation's contract is idempotent: it makes a condition true and is safe to call twice. It does not imply exactly-once delivery. |
 | `validate` | Returns errors. |
 | `assert` | Throws on failure. |
 | `to` / `as` | Converts. `toCents()`, `asJson()`. |
@@ -118,6 +122,12 @@ Record the chosen set in the lexicon file. The specific choices matter far less 
 
 **Do** name DTOs and view models after their purpose and shape: `InvoiceListItem`, `InvoiceCreateRequest`. Not `InvoiceDto2`.
 
+For ORM models and relationships, preserve the framework's derivation rules. A model name usually
+names one entity; relationship accessors reflect cardinality (`invoice` for one, `invoices` for
+many) in the language's convention. If a role-bearing relationship such as `approvedBy` no longer
+matches the inferred foreign key, configure that mapping explicitly rather than distorting the
+domain name to recover convention magic.
+
 ---
 
 ## Modules and files
@@ -130,7 +140,10 @@ Record the chosen set in the lexicon file. The specific choices matter far less 
 | `index.ts` holding logic | `index` re-exports; logic lives in named files |
 | `InvoiceController.php` containing line-item logic | Keep the file's contents matching its name |
 
-**A `utils` file is a naming failure with a directory entry.** Everything in it belongs to some concept; find the concept. If a helper truly serves several domains, name it for what it does (`retry.ts`, `pagination.ts`), not for the fact that it is a helper.
+Treat a growing `utils` file as a signal to find the concepts inside it. When the ecosystem or
+repository intentionally uses a shared utility module, preserve that convention and improve names
+within its boundary rather than creating churn for the label alone. If a helper serves several
+domains, prefer what it does (`retry.ts`, `pagination.ts`) over the fact that it is a helper.
 
 ---
 
@@ -213,6 +226,11 @@ Distinguish facts that occurred, actions requested, and the workers that perform
 
 **Do** name events for the business fact, not the table write. `invoice.paid` survives a schema change; `invoices_row_updated` does not.
 
+Keep delivery guarantees out of names unless the contract proves them. Retries keep the same command
+name; duplicate delivery keeps the same event name. Put attempt, event, and deduplication identifiers
+in the documented contract or structured fields, and define what `completed` means before using it
+in a log or operation name.
+
 ---
 
 ## Feature flags
@@ -266,11 +284,36 @@ The rule is **why, not what.** Code states what it does; comments explain contex
 |---|---|
 | `// increment the counter` above `counter++` | Nothing |
 | Narrating the algorithm in prose | Name the function well and delete the narration |
+| `// process the request` above a multi-stage workflow | State the stages, ordering constraint, and boundary that a future maintainer must preserve |
 | Em dashes, rhetorical questions, jokes | Plain declarative sentences |
 | Commented-out code left in place | Delete it; version control remembers |
 | `// TODO: fix this` | `// Remove after the address migration completes; tracked in the migration plan.` |
 
 **Do** comment: non-obvious business rules, the reason a constant has its value, deliberate deviations from a convention, known limitations, and anything a future reader would otherwise "fix" by breaking it.
+
+**Explain non-obvious flow at the level where the flow is owned.** A module, orchestration function,
+state machine, or boundary adapter may need a short comment that names:
+
+1. the stages and why their order matters;
+2. the state or invariant each stage hands to the next;
+3. the external side effect, retry, transaction, or compatibility boundary; and
+4. where the authoritative contract or longer design explanation lives.
+
+Write for the future developer or agent deciding whether a step can be moved, removed, retried, or
+renamed. Keep the comment next to the owning abstraction and update it with the behavior. Do not
+duplicate every implementation step; that creates a second program in prose that drifts from the
+code.
+
+Comment only facts established by the code, contract, or supplied requirements. Do not invent
+precedence, transaction timing, retry behavior, side effects, or invariants to make an example feel
+complete. When the flow is not known, use a structural placeholder such as `{why order matters}` in
+draft guidance or state that no factual comment can be written yet.
+
+```ts
+// Validate before reserving inventory: reservation emits a partner-visible event and must not run
+// for requests that will be rejected. Payment capture happens after the transaction commits so a
+// database rollback cannot leave a captured payment without an order.
+```
 
 **Docstrings** state the contract: what it returns, what it throws, what it mutates, what units it expects. Not a paraphrase of the signature.
 
@@ -305,5 +348,7 @@ The most common naming defect in a mature codebase is not a bad original name. I
 | A flag outlived its rollout | Remove the flag and the branch |
 | A term was renamed on screen only | Decide whether it is display-only or domain-wide; document the mapping or stage propagation across affected boundaries |
 
-**A wrong name is worse than a vague one.** `data` tells a reader nothing; `invoiceEmail` holding a phone number tells them something false, and they will act on it.
+**Do not replace uncertainty with false precision.** `data` tells a reader nothing; `invoiceEmail`
+holding a phone number tells them something false. Resolve the meaning when evidence is available;
+when it is not, state the uncertainty instead of inventing a precise domain name.
 **Do** inventory every layer a rename may cross: the column, migration, model attribute, API field, validation rule, form field, label, export header, saved filters or reports, and lexicon. Change private names atomically; stage stored and published contracts through their compatibility process. Document intentional differences so they do not become accidental drift.
