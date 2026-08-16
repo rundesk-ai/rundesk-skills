@@ -31,7 +31,7 @@ unsourced or as a claim that they are verified. Links and claims were checked on
   the present tense". **[GD-27]**: "Connecting words like 'and', 'of' and 'the' SHOULD NOT be used
   … unless they are part of the business terminology." GD-05 and GD-27 together are the evidentiary
   basis for excluding interrogatives and sentence-shaped names: `who`, `why`, and `when` are none of
-  noun, adjective, or present-tense verb, and `how_a_lead_is_sold` carries both an article and a
+  noun, adjective, or present-tense verb, and `how_an_invoice_is_paid` carries both an article and a
   copula. **[GD-22]** removes a representation term that repeats the property term, which is why the
   skill treats the generic word as a suffix rather than a separate ban. **[GD-25]** — "Word(s) in a
   name SHOULD be in singular form unless the concept itself is plural" — is the ST.96 half of the
@@ -56,7 +56,7 @@ unsourced or as a claim that they are verified. Links and claims were checked on
   schema's words from the domain rather than inventing a superordinate. The Domain Events summary
   separately notes that such an event "typically contains a timestamp for the time the event
   occurred and the identity of entities involved", which is the model-level shape behind
-  `sold_at` plus `buyer_account_id`. The publisher returns HTTP 403 to some clients; the document
+  `paid_at` plus `payer_account_id`. The publisher returns HTTP 403 to some clients; the document
   was retrieved directly and read.
 - [Martin Fowler, "Ubiquitous Language", 31 October 2006](https://martinfowler.com/bliki/UbiquitousLanguage.html) —
   a short attribution of the term to Evans and a statement of the practice. It establishes currency
@@ -116,8 +116,8 @@ The skill presents these as ecosystem conventions precisely because the sources 
   [Django 5.2, `ForeignKey`](https://docs.djangoproject.com/en/5.2/ref/models/fields/#django.db.models.ForeignKey) —
   all three derive a foreign-key column as the singular parent name plus `_id` (`order_id`,
   `post_id`, `manufacturer_id`) and all three assume a bare `id` primary key. This is what a role
-  prefix such as `buyer_account_id` costs: the derivation no longer applies and the relation must be
-  configured explicitly. Rails and Laravel supply the `created_at`/`updated_at` timestamps behind the
+  prefix such as `approved_by_user_id` costs: the derivation no longer applies and the relation must
+  be configured explicitly. Rails and Laravel supply the `created_at`/`updated_at` timestamps behind the
   `_at` convention, and Rails' reserved-column list is the source of the concrete failure behind the
   skill's `type` rule — Rails reads a `type` column as single-table inheritance. Rails and Laravel
   pluralize table names while Django's is `app_model`, singular; there is no consensus to report.
