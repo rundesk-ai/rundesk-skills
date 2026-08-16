@@ -122,6 +122,12 @@ Record the chosen set in the lexicon file. The specific choices matter far less 
 
 **Do** name DTOs and view models after their purpose and shape: `InvoiceListItem`, `InvoiceCreateRequest`. Not `InvoiceDto2`.
 
+For ORM models and relationships, preserve the framework's derivation rules. A model name usually
+names one entity; relationship accessors reflect cardinality (`invoice` for one, `invoices` for
+many) in the language's convention. If a role-bearing relationship such as `approvedBy` no longer
+matches the inferred foreign key, configure that mapping explicitly rather than distorting the
+domain name to recover convention magic.
+
 ---
 
 ## Modules and files

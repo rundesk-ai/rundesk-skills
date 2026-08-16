@@ -45,6 +45,12 @@ such as `invoice_id`; a field or API value holding a collection is plural, such 
 `invoices`. Table plurality is an ecosystem convention, not evidence that each row holds multiple
 values.
 
+Compose a stored name from the concept, property, and representation needed to make `table.column`
+read as one precise fact. Omit a repeated concept when the table supplies it unambiguously
+(`invoices.name`), but qualify a generic representation when the property would otherwise disappear
+(`publication_status`, `sale_amount`). Bare `status`, `type`, or `value` may be precise inside a
+tightly bounded model or may collide with framework behavior; inspect the owning model and framework.
+
 | Don't | Do | Failure prevented |
 |---|---|---|
 | `invoice_ids` holding one identifier | `invoice_id` | The plural falsely promises a collection. |
@@ -205,7 +211,9 @@ JSON columns are where naming discipline goes to die, because nothing enforces a
 
 ## Indexes and constraints
 
-**Form:** `{table}_{columns}_{type}`. Predictable, so the name can be derived rather than looked up.
+**Common explicit form:** `{table}_{columns}_{type}`. Prefer the framework or engine's generated form
+when the project relies on it; predictable generated names are part of that stack's convention, not
+drift to rewrite manually.
 
 ```
 invoices_name_unique
@@ -214,6 +222,25 @@ line_items_invoice_id_foreign
 ```
 
 Constraint names appear in raw database errors. A meaningful one lets you map a violation to a domain error and a user-facing message; `idx_4` does not.
+
+### Laravel / Eloquent convention profile
+
+Use this profile only in a Laravel application whose repository has not deliberately configured
+another form:
+
+| Element | Conventional form |
+|---|---|
+| Model | Singular `PascalCase`: `Invoice`, `AirTrafficController` |
+| Table | Plural `snake_case`: `invoices`, `air_traffic_controllers` |
+| Primary key | `id` |
+| Foreign key | Singular related model plus `_id`: `account_id`; configure role-bearing exceptions |
+| Relationship method | Singular for one, plural for many, in PHP method casing |
+| Managed timestamps | `created_at`, `updated_at` |
+| Migration | Framework timestamp plus descriptive schema operation |
+
+These spellings preserve Eloquent's inference and reduce configuration. They are Laravel defaults,
+not general SQL rules. Existing explicit table, key, timestamp, pivot, morph, or relationship-key
+configuration remains authoritative.
 
 ---
 

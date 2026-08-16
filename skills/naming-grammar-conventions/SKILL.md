@@ -143,6 +143,23 @@ Before writing any name or user-facing string:
    rationale for every layer. Omit executive summaries, status sections, checklists, and exhaustive
    layer tables unless the user asks for them or they materially clarify the decision.
 
+## Resolve the convention stack
+
+Consistency means each owner supplies one part of the name; it does not mean copying one layer's
+spelling into every other layer.
+
+1. The product lexicon supplies the canonical concept and meaningful distinctions.
+2. `database-design` supplies engine-independent value composition, cardinality, relationships, and
+   model shape.
+3. The active framework or ORM supplies derived forms such as model, table, key, relationship, and
+   timestamp conventions.
+4. The active database-engine skill supplies engine-specific identifier and migration constraints.
+5. Published, generated, vendor, regulated, and localized forms remain documented boundary mappings.
+
+Inspect the owning stack before recommending a spelling. Preserve one convention within each
+bounded layer, configure deliberate exceptions explicitly, and do not export Laravel, PostgreSQL,
+MySQL, SQLite, or another ecosystem's convention as a universal rule.
+
 ## Read the relevant reference
 
 Read the one that matches what you are writing. Read more than one when a change crosses layers, which most do.

@@ -45,6 +45,7 @@ Case (columns):      snake_case
 Case (API):          snake_case
 Case (code):         camelCase identifiers, PascalCase types
 Enum storage:        snake_case
+Framework / ORM:     Laravel defaults, with explicit exceptions recorded at the owning model
 Dates shown as:      Mar 4, 2026, 2:14 PM EST
 Currency:            integer minor units, column suffix _cents
 Null renders as:     —

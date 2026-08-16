@@ -55,6 +55,14 @@ rules are narrowed to the audience and ecosystem each source supports.
 - [Simon Holywell, SQL style guide](https://www.sqlstyle.guide/) is a practitioner convention for
   consistent, descriptive SQL identifiers and avoiding cryptic abbreviations. Its table plurality
   and casing choices are examples, not SQL requirements.
+- [Laravel 13.x, Eloquent model conventions](https://laravel.com/docs/13.x/eloquent#eloquent-model-conventions)
+  documents the singular model to plural `snake_case` table derivation, the default `id` primary
+  key, and managed `created_at` / `updated_at` timestamps. [Eloquent relationships](https://laravel.com/docs/13.x/eloquent-relationships)
+  documents inferred foreign keys and relationship methods. These support the Laravel profile only;
+  they do not establish universal SQL naming.
+- [PostgreSQL lexical structure](https://www.postgresql.org/docs/current/sql-syntax-lexical.html)
+  explains that unquoted identifiers fold to lower case and quoted identifiers remain case
+  sensitive. This supports deferring engine identifier mechanics to the active database skill.
 - [AlSuhaibani et al., method naming practices](https://arxiv.org/abs/2102.13555) surveys more than
   1,100 professional developers and reports broad agreement that method-naming standards matter and
   are applied. It supports treating naming as a reviewable engineering concern; it does not establish
@@ -95,3 +103,28 @@ failure.
 - Treat missing meaning as unresolved rather than completing the scenario with plausible domain
   behavior. This restraint applies to names and to example comments; otherwise illustrative text
   is easily mistaken for a verified contract.
+
+## Forward-test evidence
+
+Neo ran first-hand CLI trials on 16 August 2026 against Codex, Claude, Antigravity, and Grok provider
+adapters. Tasks covered cross-layer subscription vocabulary, published and vendor contracts,
+orthogonal states, nullable inheritance, accessibility labels, regulated wording, retry and event
+semantics, acronym casing, absence states, localization, lexicon scope, and code-flow comments.
+
+- Fresh blind Codex and Antigravity sessions discovered the installed skill without the task naming
+  it, then read the applicable references. This verifies provider-native discovery for those two
+  adapters in that Rundesk installation; it does not prove discovery for every provider or setup.
+- Claude and Grok applied the skill correctly in initial tasks. Their later adversarial passes reused
+  those sessions, so those passes test continued application rather than isolated discovery.
+- Fresh Codex and Antigravity sessions then loaded the revised branch artifact directly. Codex kept
+  the response bounded and left unknown operation names unresolved. Antigravity preserved contracts
+  but still invented internal identifiers, event targets, workflow precedence, and transaction
+  behavior, and it ignored the requested concise scope.
+- The reproduced failures led to explicit meaning, constraint, evidence, proportional-reporting,
+  comment-factuality, boundary-mapping, orthogonal-state, nullable-override, localization, and
+  high-level-lexicon guardrails in this package.
+
+These are qualitative forward tests, not a controlled benchmark or proof that wording alone governs
+every model. Retest fresh sessions after material instruction changes, keep prompts free of expected
+answers, and record whether a session was fresh, resumed, blind to the skill name, or given the
+artifact path.
