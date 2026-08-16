@@ -1,52 +1,94 @@
-# Product lexicon
+# Maintain the product lexicon
 
-Use a lexicon when domain terms recur across teams or layers, synonyms are already drifting, or a
-rename needs an explicit target. Do not require one for a small codebase with a clear existing owner.
+The conventions in this skill are defaults; each product's vocabulary is specific to its domain. Keep a lexicon when terms recur across teams or layers, and look terms up before coining synonyms.
 
-Keep it in a repository location agents and contributors already inspect, such as `docs/lexicon.md`
-or beside the schema. Link it from the repository's contributor instructions when it governs changes.
+This is the load-bearing artifact. Consistency is unreachable through better writing, because every file and screen written independently invents a fresh synonym for the same idea. Consistency is only reachable through lookup.
 
-Record one entry per concept, not one per file. Include only forms the product actually uses.
+## Where it lives
+
+Keep the lexicon in a repository location documented for contributors and agents, such as `docs/lexicon.md` or beside the schema.
+
+## Rules
+
+- When a recurring concept is missing, confirm the term from product evidence or an appropriate owner, then update the lexicon with the naming change.
+- One entry per concept, not per layer. The entry carries every layer's form of the term.
+- The **avoid list matters alongside the canonical term.** It makes known synonym drift reviewable while allowing contextual uses that carry another meaning.
+- Enum display values are lexicon entries.
+- When a term is renamed, update the lexicon with the implementation when feasible. For a staged migration, record current, target, and compatibility forms.
+- Requirements documents are not the lexicon. PRD prose describes mechanisms; the lexicon names values.
+
+---
+
+## Template
 
 ```markdown
-# Product lexicon
+# Lexicon
 
-## Decisions
+## Product decisions
 
-Interface register: operator
-Interface capitalization: sentence case
-Missing value: —
-Duration unit: seconds
+Register:            operator
+Case (UI):           sentence case everywhere
+Case (columns):      snake_case
+Case (API):          snake_case
+Case (code):         camelCase identifiers, PascalCase types
+Enum storage:        snake_case
+Dates shown as:      Mar 4, 2026, 2:14 PM EST
+Currency:            integer minor units, column suffix _cents
+Null renders as:     —
+Toasts:              archived when the result is visible on screen
+Persist verb:        save   (not store, not persist)
+Read verbs:          get (in-memory) / fetch (I/O) / find (may be empty)
 
 ## Terms
 
 ### Invoice
+display:     Invoice
+plural:      Invoices
+column:      invoice_id
+api:         invoice
+code:        Invoice, invoice
+definition:  A request for payment issued to an account.
+avoid:       bill, charge, payment request, "something here"
 
-- Display: Invoice; plural Invoices
-- Schema: `invoice_id`, `invoices`
-- API: `invoice`
-- Code: `Invoice`, `invoice`
-- Definition: A request for payment issued to an account.
-- Avoid: bill, charge, payment request
-- Intentional mappings: Provider API calls the same object `statement`.
+### Retry limit
+display:     Retry limit
+column:      retry_limit  (integer; bounds and default belong in the contract)
+api:         retry_limit
+code:        retryLimit
+definition:  Maximum attempts before an operation stops.
+avoid:       retries setting, attempt mode, "how retries are handled"
 
-### Payment status
+### Reason
+display:     Reason
+column:      reason  (text)
+api:         reason
+code:        reason
+definition:  Why a document was archived.
+avoid:       why, note, explanation, cause
 
-| Stored | Display | Meaning |
-|---|---|---|
-| `pending` | Pending | Submitted but not settled. |
-| `paid` | Paid | Settled successfully. |
-| `failed` | Failed | Reached a terminal failure. |
+## Enums
+
+### Document status
+stored       display        meaning
+active       Active         Available for normal work.
+paused       Paused         Temporarily unavailable. Configuration retained.
+archived     Archived       No longer in active use. Retained for history.
+avoid:       inactive, disabled, off, deleted, "turned off"
 ```
 
-## Build or repair it
+---
 
-1. Inventory schema entities, API resources, page titles, states, and recurring operational nouns.
-2. Find synonym clusters and overloaded terms. Decide whether they are drift or distinct meanings.
-3. Ask practitioners which term identifies the concept; do not let an accidental legacy column
-   decide the domain language by itself.
-4. Record canonical forms, definition, avoided synonyms, and intentional boundary mappings.
-5. Migrate incrementally. A lexicon records the target; it does not authorize breaking contracts.
+## Building the first lexicon for an existing product
 
-Update the lexicon with a new recurring concept or approved rename. Periodically search avoided
-synonyms, then classify each hit before changing it.
+1. **Inventory the nouns.** List every table, every top-level API resource, and every page title. That is most of the domain.
+2. **Find the collisions.** Grep for the obvious synonym clusters (`user` / `customer` / `client`, `delete` / `remove` / `archive`). Each cluster is one concept wearing several names, or two concepts sharing one. Both need deciding.
+3. **Ask practitioners and check the contracts.** Prefer the term people in the domain use consistently while checking user comprehension, accessibility, legal wording, and published compatibility. A legacy schema name does not decide the vocabulary by itself.
+4. **Record discouraged alternatives.** Build the avoid list from the synonym drift found in step 2 and state intentional exceptions.
+5. **Decide the product-level settings** at the top of the file once, so they are not re-litigated per screen.
+6. **Do not mass-rename without a migration plan.** Record current, target, and compatibility forms; then make bounded, compatibility-safe changes. An undocumented partial rename adds another vocabulary state.
+
+## Maintain the lexicon
+
+- Any pull request introducing a new domain concept updates the lexicon in the same change.
+- Any rename updates the lexicon in the same change as the migration.
+- Periodically search code and interface strings for entries on the avoid lists. Classify every hit as drift, an intentional distinct meaning, or a lexicon entry to revise.
