@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -59,6 +59,10 @@
     {
       "name": "mysql-patterns",
       "path": "skills/mysql-patterns"
+    },
+    {
+      "name": "naming-software",
+      "path": "skills/naming-software"
     },
     {
       "name": "pdf-creation",
