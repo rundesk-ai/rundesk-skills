@@ -134,6 +134,13 @@ semantics, acronym casing, absence states, localization, lexicon scope, and code
   restated supplied facts as verification, and added unneeded framework configuration and migration
   decisions. Proportional-output and evidence guardrails therefore remain explicit requirements,
   not merely style preferences.
+- Fresh Codex and Antigravity confirmation-copy passes both named the record, exact availability
+  change, existing-use effect, and recovery or irreversibility, and both refused exact copy when
+  those material facts were absent. Codex stayed bounded and read only the product-interface
+  reference; Antigravity loaded the whole package and returned redundant status scaffolding. The
+  passes exposed ambiguity around title/button objects, role-gated recovery, deadline wording, and
+  whether missing material facts block the modal; the product-interface and lexicon references now
+  state those decisions directly.
 - The reproduced failures led to explicit meaning, constraint, evidence, proportional-reporting,
   comment-factuality, boundary-mapping, orthogonal-state, nullable-override, localization, and
   high-level-lexicon guardrails in this package.

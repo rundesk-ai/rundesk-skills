@@ -163,6 +163,8 @@ MySQL, SQLite, or another ecosystem's convention as a universal rule.
 ## Read the relevant reference
 
 Read the one that matches what you are writing. Read more than one when a change crosses layers, which most do.
+Do not load the whole package for a single-layer task. `sources.md` is for auditing or changing a
+lesson, not routine application; a request to disclose files read does not make unrelated references relevant.
 
 | File | Covers |
 |---|---|

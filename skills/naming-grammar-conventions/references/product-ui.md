@@ -399,11 +399,16 @@ Never report a partial failure as a success. Never report it as a total failure.
 Suppress the toast entirely when the result is visible on screen. A row appearing in a table confirms itself. (Some teams prefer an explicit confirmation regardless; if so, record that in the lexicon file and be consistent.)
 
 ### Confirmation dialog
-- **Title:** the action as a question, using the real verb. `Delete this invoice?`
+- **Title:** the action as a question, using the real verb. Use `{Verb} {name}?` when the record name
+  is unique and the surrounding context makes its type clear (`Retire Starter?`). Add the entity type
+  when the name alone could be ambiguous (`Retire plan Starter?`). Use `this {entity}` only when no
+  useful record name exists (`Delete this invoice?`).
 - **Body:** name the record or value, the exact availability change, what happens to existing uses,
   and whether reversal is possible. Use short factual sentences; omit any consequence the product
   behavior does not establish.
-- **Confirm button:** repeats the verb and object. `Delete invoice`. Never `OK`, never `Yes`.
+- **Confirm button:** repeats the verb and entity type (`Retire plan`, `Delete invoice`). Use the
+  instance name only when it materially prevents choosing the wrong record or the product has chosen
+  that convention consistently. Never `OK`, never `Yes`.
 
 | Don't | Do |
 |---|---|
@@ -415,6 +420,16 @@ Do not use `it`, `everything`, `work`, `pointing at`, `permanent`, or `undo` as 
 actual entity, relationship, consequence, and recovery path. Do not claim an action is reversible
 unless a real restore path exists and is available to this user. Do not call it irreversible when
 the product can restore it.
+
+Name the recovery actor when restoration is role-gated: `An admin can restore North from Archived
+workspaces within 30 days.` Use `within {duration}` for a deadline to act; use `for {duration}` only
+when describing how long the system retains or offers something. If the acting user cannot recover
+the record, do not write `You can restore`.
+
+Missing facts that could change consent block exact confirmation copy. Before writing the modal,
+resolve unknown deletion, existing-use impact, irreversibility, recovery path, and actor permission
+when any applies to the action. Do not ship a shorter modal that hides an unresolved material
+consequence. Omit only consequences verified to be irrelevant.
 
 Reserve confirmation for destructive, irreversible, high-impact, regulated, or otherwise risky
 acts under the product's interaction policy. Reversibility alone does not prove that undo exists or

@@ -55,6 +55,7 @@ Null renders as:     —
 Absence states:      unknown / not applicable / withheld / redacted (product-defined display terms)
 Acronym casing:      repository or language convention; external forms mapped at the boundary
 Toasts:              archived when the result is visible on screen
+Confirmation button: verb + entity type (record name only when product convention requires it)
 Persist verb:        save   (not store, not persist)
 Read verbs:          get (in-memory) / fetch (I/O) / find (may be empty)
 
