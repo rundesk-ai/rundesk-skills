@@ -23,7 +23,8 @@ Keep the lexicon in a repository location documented for contributors and agents
 - The **avoid list matters alongside the canonical term.** It makes known synonym drift reviewable while allowing contextual uses that carry another meaning.
 - Put a word on an avoid list only for the named concept. The same word may be canonical for a
   distinct concept, such as `suspended` for an involuntary hold and `paused` for a voluntary break.
-- Enum display values are lexicon entries.
+- Shared, product-significant enum display values are lexicon entries. Local implementation enums
+  that already derive unambiguously from a canonical concept remain with their owning model.
 - Record fixed vendor, generated, regulated, localized, privacy-specific, and published legacy forms
   as mappings rather than treating them as drift or precedent for new first-party names.
 - When a term is renamed, update the lexicon with the implementation when feasible. For a staged migration, record current, target, and compatibility forms.

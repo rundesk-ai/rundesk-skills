@@ -48,7 +48,8 @@ Run these on any name or string before writing it.
 
 1. **Meaning test.** What fact, value, action, or outcome is established? Do not choose an exact
    name, migration, endpoint, event, interaction, owner, or risk severity that the evidence does
-   not support.
+   not support. If the outcome is unknown, say that the exact name is unresolved; do not fill the
+   gap with illustrative domain names that look like recommendations.
 2. **Canonical-term test.** Does the concept already have a term in the lexicon? Reuse it instead of coining a synonym.
 3. **Slot test.** Is this explaining something? Then it belongs in a description slot, not a name.
 4. **Constraint test.** Is a spelling fixed by a published or third-party contract, regulated text,
@@ -122,7 +123,9 @@ Register changes **how much explanation appears** and **how domain-specific the 
 Keep each slot's purpose stable while allowing language, localization, accessibility, and established
 design-system grammar to shape the surface form. "Plain and human" is not the same as "chatty and vague."
 
-Unless the product says otherwise, assume operator register.
+For new work with no product evidence, operator register is a fallback. In an existing product,
+inspect its interface and conventions before applying that fallback; keep recommendations
+conditional when the evidence is unavailable.
 
 ## Apply the conventions
 
@@ -137,7 +140,8 @@ Before writing any name or user-facing string:
 7. **Apply the fortieth-time test.**
 8. **Report proportionately.** Answer the requested naming scope first. Separate facts, assumptions,
    owner decisions, and compatibility risks. Do not invent adjacent architecture or repeat the same
-   rationale for every layer.
+   rationale for every layer. Omit executive summaries, status sections, checklists, and exhaustive
+   layer tables unless the user asks for them or they materially clarify the decision.
 
 ## Read the relevant reference
 

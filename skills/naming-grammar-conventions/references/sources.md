@@ -92,3 +92,6 @@ failure.
   future maintainer must preserve them; avoid narrating self-evident statements. This is a catalog
   maintainability conclusion whose named failure is stale prose becoming a second, conflicting
   description of the program.
+- Treat missing meaning as unresolved rather than completing the scenario with plausible domain
+  behavior. This restraint applies to names and to example comments; otherwise illustrative text
+  is easily mistaken for a verified contract.

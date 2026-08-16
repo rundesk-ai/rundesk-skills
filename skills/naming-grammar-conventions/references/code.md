@@ -298,6 +298,11 @@ renamed. Keep the comment next to the owning abstraction and update it with the 
 duplicate every implementation step; that creates a second program in prose that drifts from the
 code.
 
+Comment only facts established by the code, contract, or supplied requirements. Do not invent
+precedence, transaction timing, retry behavior, side effects, or invariants to make an example feel
+complete. When the flow is not known, use a structural placeholder such as `{why order matters}` in
+draft guidance or state that no factual comment can be written yet.
+
 ```ts
 // Validate before reserving inventory: reservation emits a partner-visible event and must not run
 // for requests that will be rejected. Payment capture happens after the transaction commits so a
