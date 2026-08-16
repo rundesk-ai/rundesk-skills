@@ -57,15 +57,15 @@ are using.
 
 ## Naming
 
-A name designates a value; a sentence defines it. `how_a_lead_is_sold` is a definition sitting in the
-name's slot, and it leaves the values it gestures at — an account, a channel, a timestamp — unnamed
+A name designates a value; a sentence defines it. `how_an_invoice_is_paid` is a definition sitting in
+the name's slot, and it leaves the values it gestures at — an account, a method, a timestamp — unnamed
 and usually unmodelled.
 
 - **Name the value, not the question it answers.** Compose the name from the entity, its property,
-  and a representation term, in that order: `sale_channel`, `sold_at`, `buyer_account_id`.
+  and a representation term, in that order: `payment_method`, `paid_at`, `payer_account_id`.
   Interrogatives (`who`, `why`, `when`, `how`) and connecting words (`a`, `the`, `of`, `is`) belong to
-  no name. Each maps to a value instead: the actor to `buyer_account_id`, the event time to
-  `sold_at`, the reason to `cancellation_reason_id`, the mechanism to `sale_channel`.
+  no name. Each maps to a value instead: the actor to `payer_account_id`, the event time to
+  `paid_at`, the reason to `failure_reason_id`, the mechanism to `payment_method`.
 - **A generic word is a suffix, never a whole name.** `publication_status` and `sale_amount` are
   well-formed, because the trailing term says how the value is represented. Bare `status`, `value`,
   `state`, or `type` name nothing a reader can act on. `data`, `info`, `details`, `meta`, and `thing`
@@ -76,21 +76,22 @@ and usually unmodelled.
   schema that says `party` or `entity` has invented a superordinate nobody speaks, so every
   conversation about it now carries a translation step. When the domain's word changes, rename the
   model to match rather than keeping a synonym alive in the schema.
-- **Model the connection; do not describe it.** If "how a lead is sold" is a real fact, it is a row —
-  `lead_sales(lead_id, buyer_account_id, sale_channel, sold_at)` — and the foreign key carries the
-  connection. A column holding prose about the sale cannot be joined, constrained, or aggregated.
-- **Read `table.column` aloud as a fact about one row.** `orders.buyer_account_id` is one. If stating
-  what the column holds takes a sentence, either the name is wrong or the column is on the wrong
-  table.
+- **Model the connection; do not describe it.** If "how an invoice is paid" is a real fact, it is a
+  row — `invoice_payments(invoice_id, payer_account_id, payment_method, paid_at)` — and the foreign
+  key carries the connection. A column holding prose about the payment cannot be joined, constrained,
+  or aggregated.
+- **Read `table.column` aloud as a fact about one row.** `invoice_payments.payer_account_id` is one.
+  If stating what the column holds takes a sentence, either the name is wrong or the column is on the
+  wrong table.
 
 The conventions below are ecosystem conventions, not universals, and they disagree with each other.
 Follow whichever one the stack already uses, and never mix two inside one schema:
 
 | Element | Usual form | Where it comes from, and what it costs |
 |---|---|---|
-| Foreign key | `<singular_parent>_id` — `account_id` | Rails, Laravel, and Django all derive this automatically. A role prefix (`buyer_account_id`) is the right call when one table links to the same parent twice, but it breaks that derivation and needs the relation configured by hand. |
+| Foreign key | `<singular_parent>_id` — `account_id` | Rails, Laravel, and Django all derive this automatically. A role prefix (`approved_by_user_id`) is the right call when one table links to the same parent twice, but it breaks that derivation and needs the relation configured by hand. |
 | Primary key | `id` | The three frameworks mandate it; `sqlstyle.guide` argues the opposite, that a bare `id` should be avoided in favour of `account_id`. Pick the one your stack enforces. |
-| Timestamps | `<past-tense verb>_at` — `sold_at` | Rails and Laravel convention, from `created_at`/`updated_at`. `sqlstyle.guide` uses `_date` instead; there is no cross-ecosystem winner. |
+| Timestamps | `<past-tense verb>_at` — `paid_at` | Rails and Laravel convention, from `created_at`/`updated_at`. `sqlstyle.guide` uses `_date` instead; there is no cross-ecosystem winner. |
 | Booleans | `is_`/`has_` in most languages | Documented as a prefix by typescript-eslint — and forbidden in Ruby, where RuboCop wants `tall?`, not `is_tall`. Follow the language, not this table. |
 | Identifier case | `snake_case`, unquoted | PostgreSQL's own "Don't Do This" page: `NamesLikeThis` has to be quoted everywhere, forever. |
 | Table number | No consensus | Rails and Laravel pluralize, Django and WIPO ST.96 keep the singular, `sqlstyle.guide` prefers a collective noun (`staff` over `employees`). Consistency within the schema is the only rule that holds. |

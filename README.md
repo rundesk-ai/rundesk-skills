@@ -78,6 +78,7 @@ cannot retain stale package files.
 - `maintaining-task-briefs`
 - `managing-github`
 - `mysql-patterns`
+- `naming-grammar-conventions`
 - `pdf-creation`
 - `performance-engineering`
 - `postgres-patterns`
