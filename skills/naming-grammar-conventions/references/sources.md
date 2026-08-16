@@ -103,6 +103,10 @@ failure.
 - Treat missing meaning as unresolved rather than completing the scenario with plausible domain
   behavior. This restraint applies to names and to example comments; otherwise illustrative text
   is easily mistaken for a verified contract.
+- Write confirmation consequences with the specific entity, availability change, affected existing
+  relationships, and truthful recovery path. Vague pronouns and generic permanence language hide
+  the decision a user is authorizing; this is a catalog interface-writing conclusion bounded by the
+  product behavior actually established.
 
 ## Forward-test evidence
 
@@ -120,6 +124,16 @@ semantics, acronym casing, absence states, localization, lexicon scope, and code
   the response bounded and left unknown operation names unresolved. Antigravity preserved contracts
   but still invented internal identifiers, event targets, workflow precedence, and transaction
   behavior, and it ignored the requested concise scope.
+- A later fresh Codex Laravel/PostgreSQL pass preserved framework defaults, explicit ORM mappings,
+  vendor fields, and the public API while refusing to name or comment an unknown operation. It still
+  promoted one model's configured table, primary key, and relationship exceptions into the project
+  lexicon; the lexicon reference now keeps such local ORM configuration with its model unless the
+  exception recurs or changes product vocabulary.
+- The matching fresh Antigravity pass preserved the same convention boundaries and correctly refused
+  an unsupported operation name and flow comment. It remained substantially longer than requested,
+  restated supplied facts as verification, and added unneeded framework configuration and migration
+  decisions. Proportional-output and evidence guardrails therefore remain explicit requirements,
+  not merely style preferences.
 - The reproduced failures led to explicit meaning, constraint, evidence, proportional-reporting,
   comment-factuality, boundary-mapping, orthogonal-state, nullable-override, localization, and
   high-level-lexicon guardrails in this package.

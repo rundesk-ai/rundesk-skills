@@ -27,6 +27,9 @@ Keep the lexicon in a repository location documented for contributors and agents
   that already derive unambiguously from a canonical concept remain with their owning model.
 - Record fixed vendor, generated, regulated, localized, privacy-specific, and published legacy forms
   as mappings rather than treating them as drift or precedent for new first-party names.
+- Keep one model's explicit table, primary key, relationship key, cast, or other ORM configuration
+  beside that model. Promote it to the project lexicon only when the exception recurs across teams or
+  boundaries, changes the product vocabulary, or is needed to prevent a material ambiguity.
 - When a term is renamed, update the lexicon with the implementation when feasible. For a staged migration, record current, target, and compatibility forms.
 - Requirements documents are not the lexicon. PRD prose describes mechanisms; the lexicon names values.
 

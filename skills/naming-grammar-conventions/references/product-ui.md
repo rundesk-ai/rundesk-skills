@@ -400,8 +400,21 @@ Suppress the toast entirely when the result is visible on screen. A row appearin
 
 ### Confirmation dialog
 - **Title:** the action as a question, using the real verb. `Delete this invoice?`
-- **Body:** the irreversible consequence in one sentence, naming what else is affected. `4 line items will be removed. This cannot be undone.`
+- **Body:** name the record or value, the exact availability change, what happens to existing uses,
+  and whether reversal is possible. Use short factual sentences; omit any consequence the product
+  behavior does not establish.
 - **Confirm button:** repeats the verb and object. `Delete invoice`. Never `OK`, never `Yes`.
+
+| Don't | Do |
+|---|---|
+| `It stops being offered for new work. Everything already pointing at it keeps working, and nothing is deleted. This can be undone.` | `{Name} will no longer be available for new {specific records}. Existing {specific records} will remain unchanged. You can restore {name} from {location}.` |
+| `This change is permanent.` | `{Name} will no longer be available. This action cannot be undone.` |
+| `Are you sure?` | `Archive {name}?` or `Delete {name}?`, matching the real action |
+
+Do not use `it`, `everything`, `work`, `pointing at`, `permanent`, or `undo` as substitutes for the
+actual entity, relationship, consequence, and recovery path. Do not claim an action is reversible
+unless a real restore path exists and is available to this user. Do not call it irreversible when
+the product can restore it.
 
 Reserve confirmation for destructive, irreversible, high-impact, regulated, or otherwise risky
 acts under the product's interaction policy. Reversibility alone does not prove that undo exists or
