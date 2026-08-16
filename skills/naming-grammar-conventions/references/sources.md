@@ -65,6 +65,12 @@ rules are narrowed to the audience and ecosystem each source supports.
 The sources do not establish one universal vocabulary workflow. This package therefore labels and
 scopes the following synthesis instead of attributing it to a source:
 
+Any retained do/don't pair not mapped directly to a citation above is a catalog conclusion, not a
+claim that a source mandates that exact wording. Its adjacent `Why`, failure-prevented column, or
+failure prose is the scoped rationale and boundary for applying it; keep the contrast so an agent
+can distinguish the rejected form from its replacement, but do not generalize it beyond that named
+failure.
+
 - Prefer a precise concept name over placeholders such as `data` or `item`; the stated failure is
   that a reader must reconstruct the value's meaning from assignments and callers.
 - Name an operation for its observable outcome; the stated failure is that a generic verb such as
