@@ -278,11 +278,31 @@ The rule is **why, not what.** Code states what it does; comments explain contex
 |---|---|
 | `// increment the counter` above `counter++` | Nothing |
 | Narrating the algorithm in prose | Name the function well and delete the narration |
+| `// process the request` above a multi-stage workflow | State the stages, ordering constraint, and boundary that a future maintainer must preserve |
 | Em dashes, rhetorical questions, jokes | Plain declarative sentences |
 | Commented-out code left in place | Delete it; version control remembers |
 | `// TODO: fix this` | `// Remove after the address migration completes; tracked in the migration plan.` |
 
 **Do** comment: non-obvious business rules, the reason a constant has its value, deliberate deviations from a convention, known limitations, and anything a future reader would otherwise "fix" by breaking it.
+
+**Explain non-obvious flow at the level where the flow is owned.** A module, orchestration function,
+state machine, or boundary adapter may need a short comment that names:
+
+1. the stages and why their order matters;
+2. the state or invariant each stage hands to the next;
+3. the external side effect, retry, transaction, or compatibility boundary; and
+4. where the authoritative contract or longer design explanation lives.
+
+Write for the future developer or agent deciding whether a step can be moved, removed, retried, or
+renamed. Keep the comment next to the owning abstraction and update it with the behavior. Do not
+duplicate every implementation step; that creates a second program in prose that drifts from the
+code.
+
+```ts
+// Validate before reserving inventory: reservation emits a partner-visible event and must not run
+// for requests that will be rejected. Payment capture happens after the transaction commits so a
+// database rollback cannot leave a captured payment without an order.
+```
 
 **Docstrings** state the contract: what it returns, what it throws, what it mutates, what units it expects. Not a paraphrase of the signature.
 

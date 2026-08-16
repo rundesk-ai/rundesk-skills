@@ -88,3 +88,7 @@ failure.
 - Recommend an exact name, architecture, interaction, owner, or risk severity only when the supplied
   evidence establishes it. Otherwise state the assumption or decision needed. This is an execution
   guardrail against false precision, not a sourced universal naming rule.
+- Comment non-obvious workflow sequencing, state handoffs, side-effect boundaries, and the reason a
+  future maintainer must preserve them; avoid narrating self-evident statements. This is a catalog
+  maintainability conclusion whose named failure is stale prose becoming a second, conflicting
+  description of the program.
