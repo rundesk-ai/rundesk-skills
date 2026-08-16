@@ -20,12 +20,16 @@ Reason          export header
 
 | Don't | Do |
 |---|---|
-| Column `why`, label `Reason` | Rename the column to `reason` |
-| Column `retry_setting`, label `Retry limit` | Rename to `retry_limit` and fix the type |
-| Column `cust_flg`, API `customerType`, UI `Client` | Column `customer`, API `customer`, UI `Customer` |
-| Mapping names in the view layer to hide a bad column | Fix the column |
+| New owned column `why`, label `Reason` | Name the new column `reason` |
+| New owned column `retry_setting`, label `Retry limit` | Model and name the value as `retry_limit` |
+| New owned column `cust_flg`, API `customerType`, UI `Client` | Choose one concept, then apply its layer forms |
+| Scattered aliases hiding an owned name with no compatibility constraint | Fix the owned name or stage its migration |
 
-Undocumented display-layer aliasing makes drift permanent: the next engineer reads the column, not the view mapping, and may invent a third name. Prefer descriptive names for new work; assess migrations, reports, integrations, and rollback before renaming stable data.
+Undocumented display-layer aliasing makes drift permanent: the next engineer reads the column, not
+the view mapping, and may invent a third name. A documented adapter mapping is different: use one
+for vendor schemas, generated payloads, published legacy fields, privacy-specific presentation, and
+other names outside the change's authority. Prefer descriptive names for new work; assess migrations,
+reports, integrations, and rollback before renaming stable owned data.
 
 ---
 
@@ -80,9 +84,14 @@ values.
 | `flag`, `status` holding true/false | Name the condition, or make it an enum |
 | `is_active` + `is_archived` + `is_draft` | One `status` enum |
 
-**Don't let booleans multiply into a state machine.** Three booleans express eight states, of which perhaps three are legal. Every query then carries a comment explaining which combinations are impossible. Use an enum from the moment a second mutually-exclusive flag appears.
+**Don't let mutually exclusive booleans multiply into a state machine.** Three booleans express
+eight combinations, of which perhaps three are legal. Use an enum when the states cannot coexist.
+Keep separate fields when they represent orthogonal facts that may coexist, and document their legal
+combinations rather than collapsing meaning for tidiness.
 
-**Never negate.** `WHERE NOT is_not_active` is a bug waiting for a tired reader.
+Prefer a positive predicate when it expresses the same fact: `WHERE NOT is_not_active` is harder to
+read than `WHERE is_active`. Preserve negative domain facts and fixed contracts, then contain or map
+them instead of silently inverting their meaning.
 
 ---
 
@@ -133,7 +142,9 @@ name differs from the framework's inferred key.
 | `Active`, `PENDING_REVIEW`, `paused` mixed | One case convention |
 | `status` holding `'Archived (see notes)'` | The enum value only |
 
-**Never store display strings.** Storing `Pending review` means a copy change becomes a data migration, and the same state renders three ways across the product.
+**Do not store presentation text as a machine state.** Storing `Pending review` as the enum means a
+copy change becomes a data migration. This does not prohibit stored user-authored content or
+regulated verbatim text whose value is the text itself.
 
 **Do not render machine values directly.** Keep an authoritative stored-to-display mapping in each client or shared presentation layer. Localization and consumer-specific presentation may require separate mappings. A view that merely replaces underscores can turn `awaiting_invoice_confirm` into poor interface text.
 
@@ -158,6 +169,12 @@ Decide and document what each absent-value case means. Ambiguity here produces b
 | `-1` meaning "unlimited" | An explicit domain state or separate `is_unlimited` boolean chosen by the model |
 | `''` and `NULL` both used in one column | Pick one, add a constraint |
 | Rendering `0` as `—` | They are different facts |
+
+Define configured, inherited, and effective values separately. A nullable override may be a stable
+contract where `NULL` means inherit; do not call it a simple boolean or migrate it to an enum without
+inventorying defaults, queries, clients, and precedence. Exact display labels for unknown, not
+applicable, withheld, and redacted are product, locale, accessibility, privacy, and threat-model
+decisions. Even revealing that a value was redacted can be sensitive.
 
 ---
 
@@ -242,6 +259,9 @@ Constraint names appear in raw database errors. A meaningful one lets you map a 
 
 **Do** treat the API contract as a published vocabulary. Renaming a field is a breaking change; preserve existing versions and introduce a replacement through the API's compatibility policy.
 
+Preserve immutable third-party fields exactly at the adapter boundary. Record the canonical mapping,
+but do not use a vendor spelling such as `VAT_ID` as precedent for new first-party fields.
+
 ---
 
 ## Error codes and messages
@@ -279,6 +299,11 @@ Constraint names appear in raw database errors. A meaningful one lets you map a 
 
 **Do** name for the business fact rather than the row write. `invoice.paid` survives a schema redesign; `invoices_updated` forces every consumer to diff payloads to find out what happened.
 
+An event name states the business fact, not transport guarantees. Do not add `once`, `unique`, or
+similar promises unless the published contract establishes them. When replacing a published event,
+follow the event-versioning policy; dual publication can itself create duplicate processing and is
+not an automatic safe default.
+
 ---
 
 ## Structured logs and metrics
@@ -291,6 +316,11 @@ Constraint names appear in raw database errors. A meaningful one lets you map a 
 | Free-text log lines with values interpolated into prose | Structured fields plus a short factual message |
 | `log.info("doing the thing now")` | `log.info("archiving invoice", invoice_id=4)` |
 
+Use `completed`, `succeeded`, or `failed` only when the logged boundary is defined. A handler return,
+database commit, queued side effect, and externally visible outcome are different facts. Include
+attempt and correlation identifiers when the system already defines them; do not invent an envelope
+or idempotency contract as part of a naming review.
+
 **Metric names:** follow the metrics ecosystem. Prometheus commonly uses `{subsystem}_{measure}_{unit}`, such as `invoice_rate_sync_duration_seconds`; other systems differ. Include the unit whenever ambiguity is possible.
 
 ---
@@ -299,8 +329,10 @@ Constraint names appear in raw database errors. A meaningful one lets you map a 
 
 | Don't | Do |
 |---|---|
-| Export headers that differ from on-screen column headers | Identical strings |
+| Export headers that drift accidentally from on-screen terms | The same canonical term, with documented locale or format mappings |
 | `export(1).csv`, `report_final.xlsx` | `invoices_2026-03-04.csv` |
 | Raw enum values in an export | The display terms the user sees on screen |
 
-A user reconciling a spreadsheet against a screen should never have to translate between two vocabularies for the same data. Export headers are a UI slot that happens to live in a file.
+A user reconciling a spreadsheet against a screen should not have to translate accidental
+vocabulary drift. Export headers are a UI slot that happens to live in a file, but locale, machine
+readability, published formats, and accessibility may require an intentional documented mapping.

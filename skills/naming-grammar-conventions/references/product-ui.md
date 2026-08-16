@@ -47,6 +47,9 @@ invent one merely to shorten a label.
 - Never concatenate sentence fragments. Build whole strings with placeholders: `{count} invoices selected`, not `"" + count + " invoices selected"`.
 - Handle plurals with real plural rules, never `item(s)` and never `1 items`.
 - Never build a sentence whose word order assumes English grammar if the product will ever be translated.
+- Give translators the whole string, its slot, the action and object it names, and enough context to
+  resolve noun/verb ambiguity. Locale-specific wording may map to the canonical concept without
+  matching English grammar mechanically.
 - Avoid idioms, metaphors, and culturally specific references. They translate badly and add nothing.
 
 ### Accessible names
@@ -142,7 +145,7 @@ Use when the explanation matters on first encounter and is noise afterward. Must
 ### Table column header
 **Form:** noun phrase naming the value in the cell. One to three words. No question words, no sentences.
 
-This is the highest-frequency failure in generated interfaces. The header names what is *in the column*, not what the feature *does*.
+The header names what is *in the column*, not what the feature *does*.
 
 | Good | Bad | Why |
 |---|---|---|
@@ -163,7 +166,7 @@ Numeric columns are right-aligned; their headers are too. For a sortable header,
 - Enum display values are lexicon entries. `Active`, `Paused`, `Archived`. Not `Currently active`, not `Turned off`.
 - States are adjectives or past participles, never verbs: `Archived`, not `Archive`. `Pending review`, not `Needs to be reviewed`.
 - Never render a raw stored value (`PENDING_REVIEW`, `line_item`) to a user.
-- Render empty values with the product's chosen null marker, such as `—`. Distinguish `None`, `N/A`, `null`, blank, unavailable, and redacted when they carry different meanings.
+- Render empty values with the product's chosen null marker, such as `—`. Distinguish `None`, `N/A`, `null`, blank, unavailable, and redacted when they carry different meanings and when revealing the distinction is safe. Supply accessible text when a symbol alone does not convey the meaning.
 - Zero renders as `0`, never as `—`. They are different facts.
 
 ### Metric and stat card label
@@ -256,7 +259,9 @@ Never make one option a sentence and another a word.
 | Two-factor authentication | Turn on 2FA for extra security | Verb plus sales pitch in a label |
 | Show completed tasks | Hide completed tasks | Negated labels make the off state ambiguous |
 
-**Never negate a toggle label.** "Hide completed, off" is a puzzle. Consequences go in the help text below, not in the label.
+Prefer a positive toggle label when it expresses the same domain fact. "Hide completed, off" is a
+puzzle. Preserve regulated wording, a genuinely negative domain fact, or an established platform
+label; put consequences in help text rather than silently reversing the stored meaning.
 
 ### Numeric input with a range
 Show bounds and default where the user can see them without hovering.
@@ -308,14 +313,18 @@ Use `...` after a label only where the platform convention means "opens a dialog
 **Form:** the real verb plus the object. `Delete invoice`, not `Remove`, not `Clear`, not `Are you sure?` The confirm button inside the dialog repeats the same verb and object.
 
 ### Disabled control
-**Never disable a control without a tooltip stating the condition that would enable it.**
+Explain why a disabled control is unavailable when people are likely to need or expect the action
+and disclosure is safe.
 
 > Cannot archive an invoice with active line items.
 
 Explain a disabled control when people are likely to need or expect the action. Hide it when the action is irrelevant or disclosure would be unsafe. If the reason needs substantial explanation, redesign the state instead of forcing it into a tooltip.
 
 ### Icon-only control
-Requires an accessible name and a tooltip, both the same verb plus object as the equivalent text button.
+Requires an accessible name and, when the meaning is not otherwise persistently available, an
+accessible tooltip or equivalent explanation. Reuse the same action concept and object as the
+equivalent text button. When visible text exists, ensure the accessible name contains it; exact
+equality is a strong maintenance default, not the WCAG requirement.
 
 ---
 
@@ -394,7 +403,10 @@ Suppress the toast entirely when the result is visible on screen. A row appearin
 - **Body:** the irreversible consequence in one sentence, naming what else is affected. `4 line items will be removed. This cannot be undone.`
 - **Confirm button:** repeats the verb and object. `Delete invoice`. Never `OK`, never `Yes`.
 
-Only confirm destructive or irreversible acts. Confirming ordinary saves trains users to click through dialogs unread, which is how the dangerous ones get missed. Prefer undo over confirmation wherever the act is reversible.
+Reserve confirmation for destructive, irreversible, high-impact, regulated, or otherwise risky
+acts under the product's interaction policy. Reversibility alone does not prove that undo exists or
+that confirmation is unnecessary. Prefer undo only when the system genuinely supports a timely,
+reliable reversal and the interaction fits the risk.
 
 ### Undo affordance
 **Form:** the past-tense confirmation plus `Undo`. `Invoice archived. **Undo**`

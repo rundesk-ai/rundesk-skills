@@ -5,7 +5,8 @@ description: Use when choosing, reviewing, or standardizing software terminology
 
 # Naming and grammar conventions
 
-Keep one vocabulary across code, data contracts, and product interfaces.
+Keep one vocabulary per concept across code, data contracts, and product interfaces. Preserve
+intentional layer forms and compatibility mappings instead of forcing identical spelling.
 
 ## Name the meaning
 
@@ -45,13 +46,21 @@ Generated names and interface text often blend prose, mechanism, and explanation
 
 Run these on any name or string before writing it.
 
-1. **Canonical-term test.** Does the concept already have a term in the lexicon? Reuse it instead of coining a synonym.
-2. **Slot test.** Is this explaining something? Then it belongs in a description slot, not a name.
-3. **Fortieth-time test.** Read it as the person who encounters it for the fortieth time: the operator scanning the table, the engineer reading the stack trace at 2 AM. Does it help them scan, or make them read?
+1. **Meaning test.** What fact, value, action, or outcome is established? Do not choose an exact
+   name, migration, endpoint, event, interaction, owner, or risk severity that the evidence does
+   not support.
+2. **Canonical-term test.** Does the concept already have a term in the lexicon? Reuse it instead of coining a synonym.
+3. **Slot test.** Is this explaining something? Then it belongs in a description slot, not a name.
+4. **Constraint test.** Is a spelling fixed by a published or third-party contract, regulated text,
+   localization, privacy, or an established platform convention? Preserve it and document the
+   mapping.
+5. **Fortieth-time test.** Read it as the person who encounters it for the fortieth time: the operator scanning the table, the engineer reading the stack trace at 2 AM. Does it help them scan, or make them read?
 
 ## Keep one canonical term
 
-Give each concept one canonical term. Express it through each layer's convention and document any intentional compatibility, localization, privacy, or audience-specific mapping:
+Give each concept one canonical term. Canonical parity means shared meaning, not character-for-character
+spelling. Express the term through each layer's convention and document intentional compatibility,
+vendor, localization, privacy, or audience-specific mappings:
 
 ```
 consumer          DB column / table
@@ -69,7 +78,10 @@ When the database says `cust_flg`, the model says `isCustomer`, the API says `cu
 
 ## Look up terms before inventing them
 
-Agents **look terms up; they do not coin them.** Consistency is unreachable through better writing, because every file and screen written independently will invent a fresh synonym for the same concept. Consistency is only reachable through lookup.
+Agents **look terms up before proposing them.** Consistency is unreachable through better writing
+alone, because every file and screen written independently can invent a fresh synonym for the same
+concept. When no approved term exists, state the missing evidence, propose only the smallest
+supported candidate, and request the owner's decision instead of filling every layer speculatively.
 
 A product with recurring domain terms keeps a **lexicon** in the repository: one canonical term per concept, its layer forms, its definition, and the synonyms to avoid. The lexicon is the artifact that maintains the product vocabulary. Read [the lexicon reference](references/lexicon.md) when creating or repairing that vocabulary.
 
@@ -83,7 +95,7 @@ Use these as defaults for operator-style software. Record product-specific excep
 |---|---|---|
 | Em dashes used as routine asides | Period, parentheses, or restructure | Keeps operator text direct. A product may choose another punctuation style; `—` may also be its null marker |
 | Abbreviations that are not domain standard (`cust`, `qty_rcv`, `mgr`) | Full words | Saves keystrokes once, costs comprehension forever |
-| Negated names (`is_not_active`, `disable_notifications`, `hideCompleted`) | Positive form (`is_active`, `notifications_enabled`, `show_completed`) | Double negatives at every call site and an ambiguous "off" state |
+| Negated names that merely invert a positive condition (`is_not_active`, `disable_notifications`, `hideCompleted`) | Positive form (`is_active`, `notifications_enabled`, `show_completed`) | Double negatives at every call site and an ambiguous "off" state; preserve a negative form when the domain fact or fixed contract is genuinely negative |
 | Type or class in the name (`strName`, `reason_text`, `InvoiceObject`, `user_list`) | The meaning (`name`, `reason`, `Invoice`, `users`) | The type is already declared, and it changes |
 | Grab-bag words (`data`, `info`, `item`, `thing`, `util`, `helper`, `manager`, `handler`, `stuff`, `temp`) | The specific thing | These are names that mean "I have not decided what this is" |
 | Numeric suffixes (`data2`, `processUser3`, `column_b`) | Distinct meanings, distinct names | The suffix is the missing distinction |
@@ -94,7 +106,7 @@ Use these as defaults for operator-style software. Record product-specific excep
 | Minimizers (simply, just, easily, only) | Omit | They add no recovery information and can understate difficulty |
 | Hedging (`it looks like`, `it seems`, `apparently`) | State what is known | Erodes trust in every other message |
 | Inconsistent verbs for one operation (`get` / `fetch` / `retrieve` for the same act) | One verb per meaning, product-wide | Every synonym implies a distinction that does not exist |
-| Stale names after a refactor | Rename when meaning changes | A wrong name is worse than no name |
+| Stale names after a refactor | Classify the boundary, then rename privately or stage a compatible migration | A wrong name misleads, while an unsafe rename breaks consumers |
 
 ## Choose the product register
 
@@ -106,7 +118,9 @@ One decision per product, recorded at the top of the lexicon file.
 | **Practitioner** | Professional SaaS with self-serve onboarding | Same grammar, more explanation slots filled |
 | **Consumer** | Public apps, first-run flows | Same grammar, plainer vocabulary, more guidance |
 
-Register changes **how much explanation appears** and **how domain-specific the vocabulary is**. It never changes the grammar. A consumer app still may not put a question word in a column header, and "plain and human" is not the same as "chatty and vague."
+Register changes **how much explanation appears** and **how domain-specific the vocabulary is**.
+Keep each slot's purpose stable while allowing language, localization, accessibility, and established
+design-system grammar to shape the surface form. "Plain and human" is not the same as "chatty and vague."
 
 Unless the product says otherwise, assume operator register.
 
@@ -121,6 +135,9 @@ Before writing any name or user-facing string:
 5. **Check parity** across layers. Distinguish accidental drift from an intentional, documented mapping.
 6. **Scan the product defaults.**
 7. **Apply the fortieth-time test.**
+8. **Report proportionately.** Answer the requested naming scope first. Separate facts, assumptions,
+   owner decisions, and compatibility risks. Do not invent adjacent architecture or repeat the same
+   rationale for every layer.
 
 ## Read the relevant reference
 
@@ -142,4 +159,12 @@ State the exception in the lexicon file rather than deciding case by case.
 - **Established platform and language conventions win.** Follow the idioms of the language and framework in use over the preferences here. Ruby is not Java is not Go.
 - **Real domain jargon wins over plain language.** If practitioners say "endorsement," the term is `endorsement`, not `policy change`. Plain language means avoiding *invented* abstraction, not avoiding the reader's actual vocabulary.
 - **Existing codebase conventions win over local preference.** Consistency with the surrounding code beats correctness in isolation. If a codebase is uniformly wrong, propose a migration rather than introducing a second convention.
+- **Fixed third-party names stay at the boundary.** Preserve vendor fields and generated contract
+  names verbatim, map them to the canonical term at the adapter, and do not spread the external form
+  into new first-party names.
+- **Distinct meanings stay distinct.** Similar words may be valid terms for different concepts;
+  never put a contextual term on a global avoid list or collapse states merely to make names match.
+- **Conflicting constraints require an owner decision.** Do not manufacture a universal precedence
+  rule when regulation, accessibility, privacy, localization, and a published contract pull in
+  different directions.
 - **Marketing and landing pages are out of scope.** Different discipline. Do not let that voice migrate into the product.

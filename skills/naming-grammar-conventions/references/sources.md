@@ -80,3 +80,11 @@ failure.
 - Preserve stored data, dashboards, alerts, and other consumers during non-API renames; AIP-180
   directly supports only published API compatibility, while these rows are conservative catalog
   workflow conclusions with the affected consumer named.
+- Preserve immutable third-party names at an adapter boundary and document the canonical mapping;
+  this is a catalog workflow conclusion, not a claim that AIP-180 governs vendor schemas.
+- Prefer positive predicates only when they preserve the same fact. Negative domain facts,
+  regulated wording, and fixed contracts are scoped exceptions; silently inverting them can change
+  behavior rather than improve a name.
+- Recommend an exact name, architecture, interaction, owner, or risk severity only when the supplied
+  evidence establishes it. Otherwise state the assumption or decision needed. This is an execution
+  guardrail against false precision, not a sourced universal naming rule.

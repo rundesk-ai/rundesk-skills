@@ -35,7 +35,11 @@ The governing rule from `SKILL.md` applies here as much as on screen: name value
 | `deleted` | `isDeleted` or `deletedAt` timestamp | If you need to know *when*, it was never a boolean |
 | `userType` (holding true/false) | `isInternal`, or an enum | A boolean pretending to be a category |
 
-**Don't keep a boolean that has grown a third state.** The moment a `bool` needs "unknown," "pending," or "partially," it is an enum. Convert it rather than adding a second boolean beside it, which is how `is_active` plus `is_archived` plus `is_draft` produces four impossible states.
+**Don't make one boolean carry a third meaning.** When a configured value can be enabled, disabled,
+or inherited, model and name the configured value separately from the effective computed condition.
+Use an enum when those meanings are mutually exclusive. Keep separate fields when the facts are
+orthogonal and can be true together; do not force a fraud hold and a billing pause into one enum
+merely because both affect availability.
 
 **Don't** name a boolean after the question it answers (`did_the_user_confirm`). Name it after the condition it asserts (`isConfirmed`).
 
@@ -93,7 +97,7 @@ Use the project's documented verb semantics. If none exist, start with the defau
 | `build` / `create` | Constructs a new value in memory. |
 | `save` / `store` / `persist` | Writes. Prefer one primary verb within a bounded API; preserve established public names until a compatible migration is planned. |
 | `compute` / `calculate` | Pure derivation from inputs. |
-| `ensure` | Idempotent. Makes a condition true; safe to call twice. |
+| `ensure` | Use only when the operation's contract is idempotent: it makes a condition true and is safe to call twice. It does not imply exactly-once delivery. |
 | `validate` | Returns errors. |
 | `assert` | Throws on failure. |
 | `to` / `as` | Converts. `toCents()`, `asJson()`. |
@@ -130,7 +134,10 @@ Record the chosen set in the lexicon file. The specific choices matter far less 
 | `index.ts` holding logic | `index` re-exports; logic lives in named files |
 | `InvoiceController.php` containing line-item logic | Keep the file's contents matching its name |
 
-**A `utils` file is a naming failure with a directory entry.** Everything in it belongs to some concept; find the concept. If a helper truly serves several domains, name it for what it does (`retry.ts`, `pagination.ts`), not for the fact that it is a helper.
+Treat a growing `utils` file as a signal to find the concepts inside it. When the ecosystem or
+repository intentionally uses a shared utility module, preserve that convention and improve names
+within its boundary rather than creating churn for the label alone. If a helper serves several
+domains, prefer what it does (`retry.ts`, `pagination.ts`) over the fact that it is a helper.
 
 ---
 
@@ -212,6 +219,11 @@ Distinguish facts that occurred, actions requested, and the workers that perform
 | `ProcessQueueJob` | Name the work: `ReconcileInvoiceRatesJob` |
 
 **Do** name events for the business fact, not the table write. `invoice.paid` survives a schema change; `invoices_row_updated` does not.
+
+Keep delivery guarantees out of names unless the contract proves them. Retries keep the same command
+name; duplicate delivery keeps the same event name. Put attempt, event, and deduplication identifiers
+in the documented contract or structured fields, and define what `completed` means before using it
+in a log or operation name.
 
 ---
 
@@ -305,5 +317,7 @@ The most common naming defect in a mature codebase is not a bad original name. I
 | A flag outlived its rollout | Remove the flag and the branch |
 | A term was renamed on screen only | Decide whether it is display-only or domain-wide; document the mapping or stage propagation across affected boundaries |
 
-**A wrong name is worse than a vague one.** `data` tells a reader nothing; `invoiceEmail` holding a phone number tells them something false, and they will act on it.
+**Do not replace uncertainty with false precision.** `data` tells a reader nothing; `invoiceEmail`
+holding a phone number tells them something false. Resolve the meaning when evidence is available;
+when it is not, state the uncertainty instead of inventing a precise domain name.
 **Do** inventory every layer a rename may cross: the column, migration, model attribute, API field, validation rule, form field, label, export header, saved filters or reports, and lexicon. Change private names atomically; stage stored and published contracts through their compatibility process. Document intentional differences so they do not become accidental drift.
