@@ -13,7 +13,6 @@ CATALOG_GUIDE_URL = "https://github.com/rundesk-ai/rundesk-cli/blob/main/docs/ca
 FORBIDDEN_PACKAGE_FILES = {"README.md", "CHANGELOG.md", "rundesk.json"}
 ALLOWED_PACKAGE_ROOTS = {"SKILL.md", "LICENSE.txt", "references", "assets"}
 LEGACY_PACKAGES_WITHOUT_SOURCES = {
-    "managing-github",
     "mysql-patterns",
     "pdf-creation",
     "postgres-patterns",
@@ -191,6 +190,46 @@ class CatalogContract(unittest.TestCase):
 
     def test_catalog_contains_no_integration_commands(self):
         self.assertEqual([], list((ROOT / "skills").glob("*/scripts/**")))
+
+    def test_managing_github_keeps_complete_fallback_templates(self):
+        package = ROOT / "skills" / "managing-github"
+        issues = (package / "references" / "issues.md").read_text(encoding="utf-8")
+        pull_requests = (package / "references" / "pull-requests.md").read_text(
+            encoding="utf-8"
+        )
+        issue_templates = (package / "references" / "issue-templates.md").read_text(
+            encoding="utf-8"
+        )
+        pull_request_template = (
+            package / "references" / "pull-request-template.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("[the fallback issue templates](issue-templates.md)", issues)
+        self.assertIn(
+            "[fallback pull-request template](pull-request-template.md)",
+            pull_requests,
+        )
+        issue_blocks = re.findall(r"```md\n(.*?)\n```", issue_templates, re.DOTALL)
+        self.assertEqual(2, len(issue_blocks))
+        for block, headings in zip(issue_blocks, ISSUE_HEADINGS.values()):
+            with self.subTest(issue_fallback=headings[0]):
+                self.assertEqual(
+                    headings,
+                    tuple(re.findall(r"^## .+$", block, re.MULTILINE)),
+                )
+        pull_request_block = re.search(
+            r"````md\n(.*?)\n````", pull_request_template, re.DOTALL
+        )
+        self.assertIsNotNone(pull_request_block)
+        self.assertEqual(
+            PR_HEADINGS,
+            tuple(
+                re.findall(
+                    r"^## .+$", pull_request_block.group(1), re.MULTILINE
+                )
+            ),
+        )
+        self.assertIn("🤖 by <Agent>", pull_request_template)
 
     def test_repository_guides_and_templates_follow_the_shared_contract(self):
         agents = (ROOT / "AGENTS.md").read_bytes()

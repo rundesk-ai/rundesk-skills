@@ -49,50 +49,8 @@ authorized. Do not create a duplicate merely because the existing issue is close
 ## Write a checkable issue
 
 Keep one independently closable problem per issue. Lead with impact and current behavior, not a
-preferred implementation. Use the repository template when one applies. Otherwise use the
-smallest suitable fallback.
-
-Bug:
-
-```md
-## What happened
-<Who is affected, what failed, and the consequence.>
-
-## Reproduce
-<Smallest exact setup and ordered actions.>
-
-**Expected:** <documented or intended result>
-**Actual:** <observed result, trimmed to the failure>
-
-## Environment
-- version or commit: <value>
-- operating system/runtime: <only relevant details>
-
-## Evidence
-- <fresh result, source location, regression range, or sanitized excerpt>
-
-## Acceptance criteria
-- [ ] <observable condition distinguishing fixed from unfixed>
-```
-
-Feature or scoped work:
-
-```md
-## Need
-<Who needs what, and what is impossible or costly today.>
-
-## Evidence
-- <request, example, measurement, or current limitation>
-
-## Scope
-- <bounded capability or outcome>
-
-## Out of scope
-- <nearest tempting expansion>
-
-## Acceptance criteria
-- [ ] <observable completion condition>
-```
+preferred implementation. Use the repository template when one applies. When none applies, read
+[the fallback issue templates](issue-templates.md) and select the bug or change-proposal form.
 
 Put optional implementation ideas under **Possible approach** so the issue survives a design
 change. Apply the shared public-data hygiene before filing.

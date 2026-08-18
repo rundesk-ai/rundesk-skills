@@ -48,35 +48,8 @@ required check that was not run and why. Never convert an unrun check into a che
 ## Write the merge case
 
 A PR body explains why the change should merge and what the diff cannot. Use the repository
-template when one applies. Otherwise omit irrelevant sections from this fallback instead of
-filling them with `N/A`:
-
-```md
-## Summary
-<What changes and why, in one or two lines.>
-
-## Problem
-- <impact and why the current state is insufficient>
-
-**Evidence:**
-- <issue, observed result, source location, request, or measurement>
-
-**Root cause:** <bugs only: responsible mechanism>
-
-## Implementation
-- <important choices, rationale, and scope boundaries>
-
-**Critical risk:** <only for auth, schema, billing, data loss, privacy, or deploy changes>
-
-## Validation
-- ✅ <exact command or manual check and fresh result>
-- ❌ <required check not run and exact reason>
-
-## How to test by hand
-<Only for a user-visible surface: short steps and expected result.>
-
-Closes #<issue-number>.
-```
+template when one applies. When none applies, read and complete the
+[fallback pull-request template](pull-request-template.md).
 
 Follow the repository's title convention. With none, use a concise imperative title; use
 Conventional Commits only when that repository does.
