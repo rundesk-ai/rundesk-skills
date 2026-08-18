@@ -1,68 +1,9 @@
 # Rundesk Skills
 
 Rundesk's depended collection of general-purpose, guidance-only Agent Skills. It contains complete
-skill packages and has no service integration commands, credentials, or shared state.
+skill packages and no service integration commands, credentials, or shared state.
 
-## Install with Rundesk CLI
-
-Rundesk CLI is the default installation path for this catalog. It manages catalog updates, skill
-namespaces, and per-agent grants while preserving the repository's complete package structure.
-
-Rundesk fetches this catalog during its own install and retries after updates when an offline
-machine could not fetch it. The direct catalog commands use the same preview-and-confirm flow:
-
-```sh
-rundesk skills install https://github.com/rundesk-ai/rundesk-skills
-rundesk skills install https://github.com/rundesk-ai/rundesk-skills --confirm
-```
-
-The first command previews the manifest; `--confirm` installs the complete catalog when it is not
-already present. Installation makes every discovered skill available but grants none automatically.
-Grant only the skills an agent needs:
-
-```sh
-rundesk skills grant <agent> rundesk-skills/python-patterns
-```
-
-The manifest's catalog name owns later lifecycle commands:
-
-```sh
-rundesk skills catalogs
-rundesk skills update rundesk-skills             # preview
-rundesk skills update rundesk-skills --confirm   # apply
-rundesk skills revoke <agent> python-patterns
-```
-
-`rundesk-skills` is a Rundesk dependency and cannot be removed. Revoke an individual grant when an
-agent no longer needs it.
-
-## Use without Rundesk
-
-Rundesk is not required. Each directory under `skills/` is a portable Agent Skill with its own
-`SKILL.md` and supporting files. Copy or symlink the complete package directories you want; do not
-copy only `SKILL.md`, because its relative references belong to the package.
-
-For Codex, place packages in `.agents/skills/` at a repository root for project use or in
-`~/.agents/skills/` for personal use. Codex also follows symlinked skill directories. For Claude
-Code, place packages in `.claude/skills/` for a project or in `~/.claude/skills/` for personal use.
-Restart or begin a new session if the agent does not detect a newly copied skill.
-
-```sh
-# Codex, current repository
-mkdir -p .agents/skills
-cp -R /path/to/rundesk-skills/skills/testing-code .agents/skills/
-
-# Claude Code, current repository
-mkdir -p .claude/skills
-cp -R /path/to/rundesk-skills/skills/testing-code .claude/skills/
-```
-
-These packages follow the open Agent Skills `SKILL.md` format. Script-backed packages, where a
-catalog has them, remain subject to their documented runtime, credential, and permission setup even
-when copied directly. Review an existing same-name destination before replacing it so an update
-cannot retain stale package files.
-
-## Included skills
+## Skills
 
 - `creating-design-assets`
 - `conversion-landing-pages`
@@ -94,38 +35,124 @@ cannot retain stale package files.
 - `writing-prds`
 - `writing-technical-docs`
 
-## Manifest contract
+## Install
 
-`manifest.json` is the repository contract. Rundesk reads its `schema`, `name`, `version`, and
-`description`, then discovers complete packages under `skills/`. The `skills` array remains this
-repository's maintained catalog index and is checked against the Included skills list by repository
-validation; Rundesk does not need it to discover packages.
+Rundesk previews a catalog before changing the install. Review the preview, confirm it, then grant
+only the skills an agent needs:
 
-The catalog name is the install and update unit; each skill name remains the grant and revoke unit.
-This repository uses semantic versions for publication, but Rundesk compares source content rather
-than trusting the version to decide whether an update exists.
+```sh
+rundesk skills install https://github.com/rundesk-ai/rundesk-skills
+rundesk skills install https://github.com/rundesk-ai/rundesk-skills --confirm
+rundesk skills grant ava rundesk-skills/testing-code
+```
 
-## Rundesk Skills collection
+Installation adds the complete catalog and grants no skills automatically. Rundesk normally fetches
+this depended catalog during installation, retries when a machine was offline, and does not permit
+the catalog's removal. Its namespace owns later lifecycle commands:
 
-| Catalog | Purpose |
-|---|---|
-| [rundesk-skills](https://github.com/rundesk-ai/rundesk-skills) | General guidance and software-development workflows |
-| [rundesk-skills-gamedev](https://github.com/rundesk-ai/rundesk-skills-gamedev) | Game design, production, C++, 2D systems, and Axmol |
-| [rundesk-skills-apple](https://github.com/rundesk-ai/rundesk-skills-apple) | Guarded local Apple integrations for macOS |
-| [rundesk-skills-integrations](https://github.com/rundesk-ai/rundesk-skills-integrations) | Guarded service integration CLIs |
+```sh
+rundesk skills catalogs
+rundesk skills update rundesk-skills
+rundesk skills update rundesk-skills --confirm
+rundesk skills revoke ava testing-code
+```
 
-Catalog namespaces cannot transfer grants automatically, and one agent cannot hold two grants under
-the same skill name. Before updating from a core catalog version that still carries game or C++
-skills, install `rundesk-skills-gamedev`; for each affected agent, revoke the old core grant and
-immediately grant the same-named gamedev skill. Then update the core catalog. Use `--as <name>` only
-when a deliberate temporary alias is preferable to that one-at-a-time replacement.
+## Requirements
 
-Standalone layout details: [Codex skills](https://learn.chatgpt.com/docs/build-skills) and
-[Claude Code skills](https://code.claude.com/docs/en/slash-commands).
+- The catalog is public and installs from its GitHub repository with the current Rundesk CLI.
+- Packages are guidance-only and require no catalog runtime, credentials, dependencies, or network
+  access. A skill may describe tools that have their own documented requirements.
+- Rundesk is optional. Copy or symlink a complete package, including its references and assets, into
+  a provider's supported skill directory. For Codex use `.agents/skills/`; for Claude Code use
+  `.claude/skills/`. Review an existing same-name destination before replacing it.
+- The catalog name is the install and update unit. Each skill name is the grant and revoke unit. One
+  agent cannot hold two grants with the same name; use `--as <name>` only for a deliberate alias.
 
-Rundesk checks this repository after every successful `rundesk update`. Changed content replaces
-the installed catalog atomically, including same-version changes and local drift; identical content
-stays in place. Catalog namespaces let repositories carry the same skill name. Use `--as <name>`
-when one agent must hold two grants that would otherwise share a name. See
-[RELEASING.md](RELEASING.md) for the version, tag, validation, and GitHub Release process
-maintainers use.
+Before updating from an older core catalog that still carries game or C++ skills, install
+`rundesk-skills-gamedev`; for each affected agent, revoke the old core grant and immediately grant
+the same-named gamedev skill. Then update this catalog.
+
+This collection separates runtime and permission boundaries: general guidance lives here, game and
+C++ guidance lives in
+[`rundesk-skills-gamedev`](https://github.com/rundesk-ai/rundesk-skills-gamedev), guarded local Apple
+integrations live in
+[`rundesk-skills-apple`](https://github.com/rundesk-ai/rundesk-skills-apple), and guarded service
+integrations live in
+[`rundesk-skills-integrations`](https://github.com/rundesk-ai/rundesk-skills-integrations).
+
+## Repository layout
+
+```text
+.
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   ├── pull_request_template.md
+│   └── workflows/
+├── skills/<name>/
+│   ├── SKILL.md
+│   ├── references/sources.md
+│   ├── references/<topic>.md       optional
+│   └── assets/                     optional, only when consumed
+├── tests/test_catalog.py
+├── AGENTS.md
+├── CLAUDE.md
+├── README.md
+├── RELEASING.md
+├── THIRD_PARTY_NOTICES.md
+├── LICENSE
+└── manifest.json
+```
+
+`manifest.json` supplies the published catalog name and version. Rundesk discovers packages under
+`skills/`; the repository's legacy manifest `skills` index remains intentionally maintained and
+must match package directories, frontmatter names, and this README.
+
+## Development
+
+Read [AGENTS.md](AGENTS.md) before changing the repository. The complete offline gate is:
+
+```sh
+python3 -m unittest discover -s tests -v
+git diff --check
+```
+
+The suite requires Python 3.9+ and checks manifest, package, README, release, contributor-template,
+and guide contracts. Skill changes also require source-link verification and a realistic forward
+test when the guidance materially changes.
+
+## Creating a skill catalog
+
+Use the
+[canonical skill-catalog guide](https://github.com/rundesk-ai/rundesk-cli/blob/main/docs/catalogs.md)
+for catalog boundaries, manifests, package layout, installation, and validation.
+
+This catalog's skills are researched judgment, not condensed manuals. Every new or touched package
+keeps `references/sources.md`, uses a mixed evidence base, separates source claims from local
+conclusions, and keeps conditional depth in focused references. Frontmatter contains only `name` and
+`description`; routing belongs in the description, and `SKILL.md` stays below 500 lines. No scripts,
+credentials, service adapters, or network behavior belong here.
+
+## Contributing
+
+Use the repository templates to keep reports bounded and reviewable:
+
+- [Report a reproducible bug](.github/ISSUE_TEMPLATE/bug-report.md)
+- [Propose a change](.github/ISSUE_TEMPLATE/change-proposal.md)
+- [Prepare a pull request](.github/pull_request_template.md)
+
+Search before adding a skill, keep public documentation synchronized with package changes, and
+include exact validation evidence. Never publish credentials, personal or customer identifiers,
+private-project language, or owner-specific paths. Adapted work must retain its upstream license and
+record the upstream commit in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Releases
+
+Published skill content and behavior changes follow [RELEASING.md](RELEASING.md) and its semantic
+version policy. Repository-process-only changes to agent guides, contributor templates, or tests
+that enforce those files do not require a manifest version bump. Rundesk compares catalog content,
+not only the version, when deciding whether an installed tree changed.
+
+## License
+
+This catalog is available under the [MIT License](LICENSE). Adapted packages remain subject to the
+licenses recorded in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
