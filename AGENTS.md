@@ -22,11 +22,14 @@ later and does not permit its removal.
    | version, tag, or release | `RELEASING.md`, then `managing-github` release guidance |
 
    If a governing skill is unavailable, name it in the report; do not imply compliance.
-3. Search before adding a skill. Extend the existing owner instead of splitting one subject across
+3. Use `.github/pull_request_template.md` for every pull request. Preserve its headings and
+   checklists. Mark an item complete only from evidence observed for the exact head commit; explain
+   any item that is not applicable.
+4. Search before adding a skill. Extend the existing owner instead of splitting one subject across
    packages.
-4. Verify Rundesk commands and catalog behavior against the current `rundesk-cli` parser, tests, and
+5. Verify Rundesk commands and catalog behavior against the current `rundesk-cli` parser, tests, and
    bundled `writing-skills` package. Never copy syntax from memory or an older installed release.
-5. Investigate an owner's concern before contradicting it. Bring evidence, not a hunch.
+6. Investigate an owner's concern before contradicting it. Bring evidence, not a hunch.
 
 ## A skill is researched judgment
 
