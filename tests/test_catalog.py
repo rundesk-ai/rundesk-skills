@@ -40,6 +40,7 @@ PR_HEADINGS = (
     "## Repository gates",
     "## Release",
     "## Manual user path",
+    "## Agent",
 )
 PR_CHECKLIST_ANCHORS = (
     "- Skills changed:",
@@ -47,6 +48,7 @@ PR_CHECKLIST_ANCHORS = (
     "- [ ] Required GitHub checks pass for the exact head commit.",
     "- [ ] The diff contains no credential, customer identifier, private-project language, owner-specific path, generated filler, or unrelated artifact.",
     "- [ ] `README.md`, `manifest.json`, `tests/test_catalog.py`, and `skills/` agree.",
+    "🤖 by <Agent>",
 )
 README_HEADINGS = (
     "## Skills",

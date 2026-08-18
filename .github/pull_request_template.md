@@ -54,3 +54,9 @@
 ```text
 
 ```
+
+## Agent
+
+<!-- Replace the placeholder with the filing agent's display name. Do not add provider, model, tool, session, or generated-by branding. -->
+
+🤖 by <Agent>
