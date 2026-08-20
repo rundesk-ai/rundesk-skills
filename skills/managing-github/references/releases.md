@@ -18,6 +18,32 @@ Stop if the worktree is dirty, the intended commit is not merged and pushed as r
 validation is incomplete, or the release branch, commit, account, repository, or remote is
 uncertain.
 
+## Classify the release branch
+
+Determine branch purpose from repository instructions and deployment workflows, never from its name
+alone:
+
+- A live website deployment branch represents the code deployed to a production environment; its
+  canonical integration branch is `main` unless repository instructions explicitly name another.
+- A product release comes from `main` or an intentional isolated version branch used to build and
+  support that product version.
+
+When releasing from a live website deployment branch, treat reconciliation into `main` as part of
+release completion. After production verification, fetch both branches, compare the deployed commit
+with current `main`, and merge the deployment branch back through a pull request with the
+repository's required reviews and checks. Do not merge `main` into the deployment branch and call it
+reconciled. Verify the exact deployed commit is reachable from updated `main`; if repository policy
+requires squash or rebase, instead prove no deployment-only content remains and record that
+exception. Substitute the repository's explicitly named canonical branch for `main` when needed.
+
+Do not report the release as complete while the deployment branch still contains unreconciled work.
+If the current authority does not permit the pull request or merge, prepare only what is authorized
+and report the back-merge as the remaining release blocker.
+
+Do not apply that automatic back-merge rule to an isolated product-version branch. Follow the
+repository's merge-forward or maintenance policy for that release line, and deliberately port only
+the changes that belong on `main`.
+
 ## Choose an exact version
 
 Inspect every change since the last published release. The highest-impact change sets the bump:

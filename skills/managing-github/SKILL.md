@@ -47,3 +47,6 @@ exact blocker; do not use a different account or publication route.
   or recover a GitHub Release, its exact tag, notes, and artifacts.
 
 Read multiple references only when the request genuinely spans those operations.
+
+Read [references/sources.md](references/sources.md) when auditing or changing these GitHub workflow
+rules.
