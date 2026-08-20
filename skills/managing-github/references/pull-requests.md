@@ -47,9 +47,35 @@ required check that was not run and why. Never convert an unrun check into a che
 
 ## Write the merge case
 
-A PR body explains why the change should merge and what the diff cannot. Use the repository
+A PR body is a scan-friendly review map, not an implementation diary, design document, or test
+transcript. It explains why the change should merge and what the diff cannot. Use the repository
 template when one applies. When none applies, read and complete the
 [fallback pull-request template](pull-request-template.md).
+
+Keep the merge case proportionate:
+
+- State the outcome and user or system impact in one or two lines.
+- Give the root cause, then three to six high-value implementation bullets covering decisions and
+  boundaries. Link to code, contracts, issues, or artifacts instead of pasting algorithms,
+  chronology, full matrices, every edge case, or repeated diff details.
+- Name only material risk and blast radius. Group exact validation commands with their observed
+  results; do not paste complete test lists, mutation catalogs, logs, or CI transcripts.
+- Give the shortest representative manual path, normally no more than five steps. Put blockers and
+  readiness state where a reviewer can see them immediately.
+- Preserve required template headings, questions, and checklists, but remove optional unused
+  sections when the repository permits it.
+
+Every PR body must identify the filing agent. Preserve a repository's stricter identity block;
+otherwise append exactly:
+
+```md
+## Agent
+
+🤖 by <Agent display name>
+```
+
+Do not add provider, model, tool, session, vendor link, `Generated with` footer, or provider-style
+co-author attribution to the PR body. Agent identity is the relevant review and ownership signal.
 
 Follow the repository's title convention. With none, use a concise imperative title; use
 Conventional Commits only when that repository does.
@@ -87,5 +113,6 @@ gh pr view <number> --repo <owner/repo> \
 gh pr checks <number> --repo <owner/repo>
 ```
 
-Verify the base, head, owner, body, draft state, issue links, URL, and template compliance. Report
-the URL and any pending or failing checks; do not claim readiness from creation alone.
+Verify the base, head, owner, body, agent sign, absence of provider branding, draft state, issue
+links, URL, and template compliance. Report the URL and any pending or failing checks; do not claim
+readiness from creation alone.

@@ -48,7 +48,7 @@ exact head commit.
 
 ## Manual user path
 
-<!-- Give the shortest representative user path and expected result. State why none applies when the change has no user-facing path. -->
+<!-- Give the shortest representative user path and expected result, normally in no more than five steps. State why none applies when the change has no user-facing path. -->
 
 ```text
 
@@ -58,7 +58,7 @@ exact head commit.
 
 ## Agent
 
-<!-- Replace the placeholder with the filing agent's display name. Do not add provider, model, tool, session, or generated-by branding. -->
+<!-- Replace the placeholder with the filing agent's display name. Do not add provider, model, tool, session, vendor link, generated-by branding, or provider-style co-author attribution. -->
 
 🤖 by <Agent>
 ````

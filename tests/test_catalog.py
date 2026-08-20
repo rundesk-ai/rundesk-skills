@@ -209,6 +209,10 @@ class CatalogContract(unittest.TestCase):
             "[fallback pull-request template](pull-request-template.md)",
             pull_requests,
         )
+        self.assertIn("scan-friendly review map", pull_requests)
+        self.assertIn("normally no more than five steps", pull_requests)
+        self.assertIn("Every PR body must identify the filing agent", pull_requests)
+        self.assertIn("`Generated with` footer", pull_requests)
         issue_blocks = re.findall(r"```md\n(.*?)\n```", issue_templates, re.DOTALL)
         self.assertEqual(2, len(issue_blocks))
         for block, headings in zip(issue_blocks, ISSUE_HEADINGS.values()):
