@@ -35,3 +35,10 @@ proof only; repository rules and the stored GitHub object remain authoritative f
 - An anonymized first-hand operating requirement recorded on 2026-08-20 establishes the scoped
   catalog conclusion: production branches used for live website deployments must be reconciled into
   `main`, while product releases originate from `main` or an intentional isolated version branch.
+
+## Review readability and accountable identity
+
+- An anonymized first-hand operating requirement recorded on 2026-08-20 establishes that pull
+  request bodies must be concise review maps rather than implementation or test transcripts, must
+  use the responsible agent's display-name sign, and must omit provider, model, tool, vendor, and
+  generated-by branding.
