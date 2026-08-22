@@ -84,8 +84,8 @@ ISSUE_HEADINGS = {
     ),
 }
 ISSUE_DIGESTS = {
-    "bug-report.md": "10f98fd9296f9afb5f2b55c1b7362abdf8c80d3773f01a1130115c28799b5a0a",
-    "change-proposal.md": "3dbccf1dc19df37e390c7b43eb8792eee87f7ad127e76927cb262e94ae0cc680",
+    "bug-report.md": "9b8bb222a68b4c2a592512ee368c17bc8edc8e0750c5f76ba3e4dd65837e5187",
+    "change-proposal.md": "71f68d702f29e1cedd6b5a839b8a10df899240f68bd215d734ee77f5286cd379",
 }
 
 

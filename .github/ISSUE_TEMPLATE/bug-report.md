@@ -8,19 +8,19 @@ assignees: ""
 
 ## Problem
 
-<!-- What happened, and why is it incorrect? -->
+<!-- State what happened, who is affected, and why the result is incorrect. -->
 
 ## Reproduction
 
-<!-- Give the smallest exact sequence that reproduces the problem. -->
+<!-- Give the smallest exact setup and ordered actions that reproduce the problem. -->
 
 ## Expected behavior
 
-<!-- What observable result should occur instead? -->
+<!-- State the observable result that should occur instead. -->
 
 ## Evidence
 
-<!-- Include sanitized output, errors, screenshots, source locations, or links that support the report. Distinguish observation from inference. -->
+<!-- Include fresh, sanitized output, errors, screenshots, source locations, or a regression range. Distinguish observation from inference. -->
 
 ## Acceptance criteria
 
@@ -28,8 +28,8 @@ assignees: ""
 
 ## Environment
 
-<!-- Include the catalog version, skill, command, Python version, OS, and relevant configuration names. Never include secret values. -->
+<!-- Include only relevant versions, commit, operating system, runtime, and configuration names. Never include secret values. -->
 
 ## Scope and privacy
 
-<!-- State the affected surface and confirm that the report contains no credentials, personal data, private identifiers, or owner-specific paths. -->
+<!-- State the affected surface and confirm the report contains no credentials, personal data, private identifiers, or owner-specific paths. -->
