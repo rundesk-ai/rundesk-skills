@@ -8,28 +8,28 @@ assignees: ""
 
 ## Problem
 
-<!-- What current limitation exists, who or what does it affect, and what is the practical consequence? -->
+<!-- State the current limitation, who or what it affects, and its practical consequence. -->
 
 ## Proposed solution
 
-<!-- What outcome should replace the current state, and where does this proposal's boundary stop? -->
+<!-- Describe the outcome that should replace the current state and the boundary of the proposal. -->
 
 ## Evidence
 
-<!-- Which observed example, request pattern, source location, measurement, or documented contract supports the problem? Distinguish observation from inference. -->
+<!-- Support the problem with an observed example, measurement, request pattern, source location, or documented contract. Distinguish observation from inference. -->
 
 ## Scope and compatibility
 
-<!-- Identify affected skills and contracts, compatibility constraints, permissions, credentials, dependencies, and migration needs. -->
+<!-- Name affected contracts, compatibility constraints, permissions, dependencies, and migration needs. -->
 
 ## Acceptance criteria
 
-<!-- Which independently checkable outcomes must all be true for this proposal to be complete? -->
+<!-- Give independently checkable outcomes that must all be true for the proposal to be complete. -->
 
 ## Verification
 
-<!-- Which automated checks and representative user path will prove the acceptance criteria? -->
+<!-- State which automated checks and representative user path will prove the acceptance criteria. -->
 
 ## Alternatives considered
 
-<!-- What existing path or smaller alternative was considered? -->
+<!-- State the existing path or smaller alternative considered. -->
