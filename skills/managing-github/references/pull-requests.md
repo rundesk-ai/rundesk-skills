@@ -54,16 +54,29 @@ template when one applies. When none applies, read and complete the
 
 Keep the merge case proportionate:
 
-- State the outcome and user or system impact in one or two lines.
-- Give the root cause, then three to six high-value implementation bullets covering decisions and
-  boundaries. Link to code, contracts, issues, or artifacts instead of pasting algorithms,
-  chronology, full matrices, every edge case, or repeated diff details.
+- State the problem and its user or system impact in one or two lines. Do not assume the issue link
+  gives the reviewer enough context.
+- Describe the proposed solution in three to six high-value bullets covering decisions, rationale,
+  boundaries, and preserved behavior. Link to code, contracts, issues, or artifacts instead of pasting
+  algorithms, chronology, full matrices, every edge case, or repeated diff details.
+- Give representative before-and-after evidence when the diff alone cannot show the behavior
+  change. Keep evidence separate from validation: evidence supports the merge case; validation
+  shows that the exact head behaves as claimed.
+- Map acceptance criteria to observable outcomes and mark one complete only when the exact head
+  proves it. Do not turn implementation tasks, changed filenames, or "works as expected" into
+  acceptance criteria.
 - Name only material risk and blast radius. Group exact validation commands with their observed
   results; do not paste complete test lists, mutation catalogs, logs, or CI transcripts.
 - Give the shortest representative manual path, normally no more than five steps. Put blockers and
   readiness state where a reviewer can see them immediately.
 - Preserve required template headings, questions, and checklists, but remove optional unused
   sections when the repository permits it.
+
+Reject low-information prose before publication. Headings such as **Summary**, **Need**, **What we
+need**, **Context**, or **Notes** do not make a body useful when they only repeat the title. Likewise,
+"implemented support," "updated tests," and a list of changed files do not explain the problem,
+the solution's important decisions, or why the evidence is sufficient. Prefer precise claims and
+delete filler rather than padding every section.
 
 Every PR body must identify the filing agent. Preserve a repository's stricter identity block;
 otherwise append exactly:

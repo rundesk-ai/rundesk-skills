@@ -32,9 +32,12 @@ AGENT_HEADINGS = (
     "## Definition of done",
 )
 PR_HEADINGS = (
-    "## Summary",
+    "## Problem",
+    "## Proposed solution",
+    "## Evidence",
     "## Scope and compatibility",
-    "## Critical risk",
+    "## Risks and safeguards",
+    "## Acceptance criteria",
     "## Validation",
     "## Repository gates",
     "## Release",
@@ -66,21 +69,23 @@ ISSUE_HEADINGS = {
         "## Reproduction",
         "## Expected behavior",
         "## Evidence",
+        "## Acceptance criteria",
         "## Environment",
         "## Scope and privacy",
     ),
     "change-proposal.md": (
         "## Problem",
-        "## Desired outcome",
-        "## Users and value",
+        "## Proposed solution",
+        "## Evidence",
         "## Scope and compatibility",
-        "## Alternatives",
-        "## Validation",
+        "## Acceptance criteria",
+        "## Verification",
+        "## Alternatives considered",
     ),
 }
 ISSUE_DIGESTS = {
-    "bug-report.md": "747da5c0682a73adc61c35407327fb174c648630e80278c275af4a4542da6caf",
-    "change-proposal.md": "2fe6a1d651ce91af2c3d19e98eea150ca26f41ad9a1ed95a6466a692b73eb4d7",
+    "bug-report.md": "10f98fd9296f9afb5f2b55c1b7362abdf8c80d3773f01a1130115c28799b5a0a",
+    "change-proposal.md": "3dbccf1dc19df37e390c7b43eb8792eee87f7ad127e76927cb262e94ae0cc680",
 }
 
 
@@ -213,6 +218,11 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("normally no more than five steps", pull_requests)
         self.assertIn("Every PR body must identify the filing agent", pull_requests)
         self.assertIn("`Generated with` footer", pull_requests)
+        self.assertIn("Reject low-information prose", pull_requests)
+        for weak_heading in ("## Need", "## What we need", "## Summary"):
+            with self.subTest(weak_heading=weak_heading):
+                self.assertNotIn(weak_heading, issue_templates)
+                self.assertNotIn(weak_heading, pull_request_template)
         issue_blocks = re.findall(r"```md\n(.*?)\n```", issue_templates, re.DOTALL)
         self.assertEqual(2, len(issue_blocks))
         for block, headings in zip(issue_blocks, ISSUE_HEADINGS.values()):
@@ -226,7 +236,14 @@ class CatalogContract(unittest.TestCase):
         )
         self.assertIsNotNone(pull_request_block)
         self.assertEqual(
-            PR_HEADINGS,
+            (
+                "## Problem",
+                "## Proposed solution",
+                "## Evidence",
+                "## Acceptance criteria",
+                "## Validation",
+                "## Agent",
+            ),
             tuple(
                 re.findall(
                     r"^## .+$", pull_request_block.group(1), re.MULTILINE

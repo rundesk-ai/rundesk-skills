@@ -1,58 +1,31 @@
 # Fallback GitHub pull-request template
 
 Use this only when the target repository has no applicable pull-request template. Replace every
-placeholder, remove comments, preserve all eight headings, and check only claims proven for the
-exact head commit.
+placeholder, remove comments, preserve the six core headings, and check only claims proven for the
+exact head commit. Add the conditional sections after the core template only when they materially
+help review; do not add them to produce a fuller-looking body.
 
 ````md
-## Summary
+## Problem
 
-<!-- State what changes and why in one or two lines. -->
+<!-- State the current behavior or limitation, who or what it affects, and the consequence. -->
 
--
+## Proposed solution
 
-## Scope and compatibility
+<!-- Describe the implemented outcome, important decisions and rationale, its boundary, and preserved behavior. -->
 
-- Changed surface:
-- User-visible effect:
-- Preserved behavior:
-- Compatibility or migration impact:
+## Evidence
 
-## Critical risk
+<!-- Give concise before-and-after observations, source locations, measurements, or contract links that support the merge case. Distinguish evidence from validation. -->
 
-<!-- Cover credentials, privacy, destructive operations, persisted data, billing, deployment, or another critical risk. Write "None" when none applies. -->
+## Acceptance criteria
 
-- Risk:
-- Guard:
+- [ ] <!-- Independently checkable outcome proven by this exact head. -->
 
 ## Validation
 
 - [ ] `<exact command or manual check>` — `<observed result>`
 - [ ] Required GitHub checks pass for the exact head commit.
-
-```text
-# Exact validation commands and observed results
-```
-
-## Repository gates
-
-- [ ] Repository instructions and applicable contribution guidance were followed.
-- [ ] The diff contains no credential, private data, owner-specific path, debug output, generated clutter, or unrelated artifact.
-- [ ] Documentation, tests, and compatibility notes agree with the changed behavior.
-
-## Release
-
-- Version: `<before>` → `<after>`
-- SemVer reason:
-- Release or follow-up required after merge:
-
-## Manual user path
-
-<!-- Give the shortest representative user path and expected result, normally in no more than five steps. State why none applies when the change has no user-facing path. -->
-
-```text
-
-```
 
 <!-- Use one standalone `Closes #<number>.` line per issue this PR completes. Use `Refs` for partial work. -->
 
@@ -62,3 +35,8 @@ exact head commit.
 
 🤖 by <Agent>
 ````
+
+Add **Scope and compatibility** when the change affects a public contract, migration, dependency,
+permission, or preserved behavior. Add **Risks and safeguards** for a material security, privacy,
+data, billing, destructive-operation, or deployment risk. Add **Manual user path** when a short
+representative path would help a reviewer observe a user-facing result.

@@ -20,7 +20,11 @@ assignees: ""
 
 ## Evidence
 
-<!-- Include sanitized output, errors, screenshots, or links that support the report. -->
+<!-- Include sanitized output, errors, screenshots, source locations, or links that support the report. Distinguish observation from inference. -->
+
+## Acceptance criteria
+
+<!-- Give independently checkable outcomes that distinguish fixed from unfixed. Do not prescribe an implementation. -->
 
 ## Environment
 
