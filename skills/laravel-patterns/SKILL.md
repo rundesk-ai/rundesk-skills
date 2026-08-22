@@ -1,12 +1,13 @@
 ---
 name: laravel-patterns
-description: Use when building, reviewing, debugging, or refactoring a Laravel application or API, including controllers, validation, authorization, Eloquent, migrations, queues, caching, testing, and deployment. It supplies version-aware Laravel defaults and source-backed replacements for common production traps. Do not use for Livewire- or Blade-only frontend work; use `inertia-patterns` alongside it at an Inertia boundary.
+description: Use when building, reviewing, debugging, or refactoring a Laravel application, API, scheduled task, or behavior-bearing Blade feature, including controllers, validation, authorization, Eloquent, migrations, queues, caching, outbound HTTP, events, mail, testing, and deployment. It supplies version-aware Laravel defaults and source-backed replacements for common production traps. Use `inertia-patterns` alongside it at an Inertia boundary. Do not use for visual-only changes with no Laravel behavior; use `frontend-design`.
 ---
 
 # Laravel patterns
 
-Prefer Laravel's documented path. Deviate only when the codebase or measured behavior supplies a
-reason.
+Prefer the application's established Laravel pattern, then the framework's documented path. Do not
+introduce a second style for the same job unless the existing one causes a correctness or security
+failure; name that failure when deviating.
 
 ## Inspect before changing
 
@@ -16,13 +17,13 @@ php artisan about
 composer show laravel/framework
 ```
 
-Then read the route, request, controller, model, migration, configuration, and tests involved. Check
-the installed major before using versioned APIs; do not copy a current-doc example into an older
-application.
+Then read the changed files, sibling implementations, configuration, and relevant tests. Check the
+installed major before using versioned APIs; do not copy a current-doc example into an older
+application. Prefer the project's documentation search or installed source when available.
 
-For Laravel 11+, configure middleware and exceptions in `bootstrap/app.php`; the minimal skeleton has
-no `app/Http/Kernel.php` or `app/Exceptions/Handler.php`. Generate only the directories the change
-needs.
+New Laravel 11+ applications use the streamlined `bootstrap/app.php` configuration, but upgraded
+applications may retain `app/Http/Kernel.php` and `app/Exceptions/Handler.php`. Inspect the actual
+skeleton and extend its existing boundary. Generate only the directories the change needs.
 
 ## Apply these defaults
 
@@ -60,22 +61,49 @@ Model::preventSilentlyDiscardingAttributes(! app()->isProduction());
 This catches accidental lazy loads and discarded attributes during development without turning a
 missed eager load into a production outage.
 
-## Read only the needed depth
+## Rule index
 
-- Read [`eloquent-and-database.md`](references/eloquent-and-database.md) for relationship loading,
-  large result sets, aggregates, mass operations, transactions, and migrations.
-- Read [`http-and-validation.md`](references/http-and-validation.md) for route binding, form
-  requests, file validation, policies, and API resources.
-- Read [`queues-and-jobs.md`](references/queues-and-jobs.md) before writing or debugging queued work.
-- Read [`performance-and-deployment.md`](references/performance-and-deployment.md) for configuration
-  caches, slow requests, data caches, Octane, and long-running workers.
-- Read [`anti-patterns.md`](references/anti-patterns.md) when triaging a review; it routes suspicious
-  code to the reference that owns the fix.
-- Read [`sources.md`](references/sources.md) when auditing or updating a claim or example.
+Map every affected concern before editing. Start with the compact do/don't pairs, then read the
+deeper reference only for the concerns the change touches. Cross-cutting work often needs several
+rows.
+
+| Concern | Compact rules | Deeper reference |
+|---|---|---|
+| Query count, eager loading, indexes, large datasets | [Database performance](references/rule-index.md#database-performance) | [Eloquent and database](references/eloquent-and-database.md) |
+| Subqueries, aggregates, complex ordering, query plans | [Advanced queries](references/rule-index.md#advanced-queries) | [Eloquent and database](references/eloquent-and-database.md) |
+| Models, relationships, scopes, casts | [Eloquent](references/rule-index.md#eloquent) | [Eloquent and database](references/eloquent-and-database.md) |
+| Authentication, authorization, input safety, secrets, uploads | [Security](references/rule-index.md#security) | [HTTP and validation](references/http-and-validation.md) |
+| Form requests and validation rules | [Validation](references/rule-index.md#validation) | [HTTP and validation](references/http-and-validation.md) |
+| Controllers, route binding, resources, middleware | [Routing and controllers](references/rule-index.md#routing-and-controllers) | [HTTP and validation](references/http-and-validation.md) |
+| Schema changes, foreign keys, indexes | [Migrations](references/rule-index.md#migrations) | [Eloquent and database](references/eloquent-and-database.md) |
+| Jobs, retries, uniqueness, batches, Horizon | [Queues and jobs](references/rule-index.md#queues-and-jobs) | [Queues and jobs](references/queues-and-jobs.md) |
+| Cache lifetime, invalidation, locks, memoization | [Caching](references/rule-index.md#caching) | [Performance and deployment](references/performance-and-deployment.md) |
+| Outbound requests, retries, timeouts, fakes | [HTTP client](references/rule-index.md#http-client) | [Outbound HTTP and errors](references/outbound-http-and-errors.md) |
+| Exceptions, reporting, rendering, log context | [Error handling](references/rule-index.md#error-handling) | [Outbound HTTP and errors](references/outbound-http-and-errors.md) |
+| Events and notifications | [Events and notifications](references/rule-index.md#events-and-notifications) | [Events, mail, and scheduling](references/events-mail-and-scheduling.md) |
+| Mailables and mail assertions | [Mail](references/rule-index.md#mail) | [Events, mail, and scheduling](references/events-mail-and-scheduling.md) |
+| Scheduled tasks and overlap protection | [Scheduling](references/rule-index.md#scheduling) | [Events, mail, and scheduling](references/events-mail-and-scheduling.md) |
+| Collections, lazy iteration, bulk operations | [Collections](references/rule-index.md#collections) | [Framework utilities](references/framework-utilities.md) |
+| Blade components, attributes, composers | [Blade and views](references/rule-index.md#blade-and-views) | [Testing and views](references/testing-and-views.md) |
+| Environment values and application configuration | [Configuration](references/rule-index.md#configuration) | [Performance and deployment](references/performance-and-deployment.md) |
+| Pest/PHPUnit patterns, factories, fakes | [Testing](references/rule-index.md#testing) | [Testing and views](references/testing-and-views.md) |
+| Naming, helpers, file boundaries, PHP style | [Style](references/rule-index.md#style) | [Framework utilities](references/framework-utilities.md) |
+| Actions, services, dependencies, application structure | [Architecture](references/rule-index.md#architecture) | [Where logic belongs](references/where-logic-belongs.md) |
+
+Read [`anti-patterns.md`](references/anti-patterns.md) when triaging a review. Read
+[`sources.md`](references/sources.md) when auditing or strengthening a claim. The compact rules are
+defaults, not text-match findings: confirm the failure mechanism and the installed Laravel version.
 
 Use `inertia-patterns` alongside this skill for props, shared data, forms, partial reloads, SSR, or
 adapter-version changes. Authorize on the server even when an Inertia prop controls what the UI
-shows.
+shows. Use `testing-code` alongside this skill when selecting test layers, designing regressions, or
+auditing coverage.
+
+## Verify the mapped behavior
+
+Run the narrowest relevant test first, then the project's formatter and static analysis. Re-read the
+diff against every mapped reference and confirm the failure path, not only the happy path. Run the
+broader suite when the changed boundary or repository policy requires it.
 
 ## Report findings as failures
 

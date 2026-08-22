@@ -38,9 +38,11 @@ public function __construct(
 ) {}
 ```
 
-Use `$model->withoutRelations()` on versions without the attribute. Collections of models do not
-restore relationships, by design. Base64-encode raw binary data before queueing it, or store the blob
-and queue a locator.
+Use `$model->withoutRelations()` on versions without the attribute. Collection behavior is
+version-sensitive: Laravel 13 restores eager-loaded relations for models in serialized collections,
+while earlier versions did not. Remove relations explicitly when the job should reload none, and
+cover the installed version's deserialized payload in a test. Base64-encode raw binary data before
+queueing it, or store the blob and queue a locator.
 
 If a deleted model should make the work irrelevant, apply Laravel 13's
 `#[DeleteWhenMissingModels]`. On older versions, use the supported equivalent for that installed
@@ -62,6 +64,11 @@ $connection = ['retry_after' => 90]; // worker/job timeout: 60
 Also set timeouts on blocking HTTP or socket clients; process timeouts may not interrupt them. Define
 tries/backoff and surface terminal failure through monitoring or `failed()` behavior.
 
+Back off transient failures so every retry does not hit the same unhealthy dependency immediately.
+Use a fixed or increasing schedule that matches the dependency's recovery and rate-limit behavior.
+Implement `failed()` only when terminal failure needs local state repair or a domain signal; global
+failed-job monitoring remains necessary, and a boilerplate logger on every job can duplicate noise.
+
 Retries mean side effects can run more than once. Check state before acting and use the provider's
 idempotency key for charges or other non-repeatable external calls. `ShouldBeUnique` limits duplicate
 dispatch; `WithoutOverlapping` limits concurrent execution. Neither replaces an idempotent operation.
@@ -71,6 +78,10 @@ Lock-based controls need a shared lock-capable cache across all servers. Remembe
 - unique constraints do not apply inside batches;
 - `DebounceFor` and `ShouldBeUnique` are mutually exclusive;
 - choose the same logical key everywhere that must not overlap.
+
+Apply rate-limiting middleware when a shared external quota governs many jobs. Use Horizon only when
+the application uses Redis queues and needs its dashboard, balancing, or supervisor controls; it is
+an operational dependency, not a default for every queue.
 
 ## Keep chains and batches honest
 

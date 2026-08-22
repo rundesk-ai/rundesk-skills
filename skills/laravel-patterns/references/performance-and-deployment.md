@@ -68,6 +68,15 @@ $stats = Cache::remember(
 - Use `Cache::flexible()` when serving stale data during refresh is acceptable.
 - Namespace related keys so invalidation can target the owning data.
 
+Use `Cache::add()` for an atomic create-if-absent value; a separate `has()` then `put()` check races.
+Use cache tags only on supported stores and only when group invalidation is worth the portability
+cost. On framework versions with cache memoization, `Cache::memo()` can remove repeated store reads
+within one request or job without changing cross-request TTL behavior.
+
+A failover cache store trades an outage for degraded or potentially inconsistent cached behavior.
+Adopt it only after deciding whether locks, rate limits, and cache-dependent correctness may safely
+fall back; do not treat a failover store as automatic production hardening.
+
 Avoid caching an Eloquent model reflexively. It can trade an indexed lookup for serialization and a
 new stale-data problem. Cache measured expensive results whose invalidation boundary is understood.
 

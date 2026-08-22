@@ -12,6 +12,8 @@ replacement, and sourced example; do not report a text match without confirming 
 | `get()->count()`, `get()->sum()`, `get()->isNotEmpty()` | Collection behavior is not otherwise needed | [Eloquent and database](eloquent-and-database.md) |
 | `chunk()` while changing its filter column | Updated rows can move between pages | [Eloquent and database](eloquent-and-database.md) |
 | Bulk `update`, `delete`, `insert`, or `upsert` | Correctness depends on model events | [Eloquent and database](eloquent-and-database.md) |
+| Global scope for a conditional product view | Every query, job, and admin path should really inherit it | [Eloquent and database](eloquent-and-database.md) |
+| Relationship collection loaded for one scalar | An aggregate or subquery can answer the real question | [Eloquent and database](eloquent-and-database.md) |
 | `$guarded = []` plus request-derived writes | A future sensitive column can cross the boundary | [Eloquent and database](eloquent-and-database.md) |
 | Business operation in a controller/job/observer | Multiple callers, steps, or required side effects justify extraction | [Where logic belongs](where-logic-belongs.md) |
 | Repository wrapping Eloquent | It creates a real boundary instead of mirroring the query builder | [Where logic belongs](where-logic-belongs.md) |
@@ -24,6 +26,15 @@ replacement, and sourced example; do not report a text match without confirming 
 | Queued model with loaded relations | The payload and reloaded relationship set are intended | [Queues and jobs](queues-and-jobs.md) |
 | Queue timeout at/above `retry_after` | A second worker can start before the first stops | [Queues and jobs](queues-and-jobs.md) |
 | Unique job inside a batch | Code assumes uniqueness that Laravel does not apply | [Queues and jobs](queues-and-jobs.md) |
+| External HTTP response decoded without a status decision | A 4xx/5xx body can be treated as success | [Outbound HTTP and errors](outbound-http-and-errors.md) |
+| Retry around an externally visible write | A stable idempotency key prevents duplicate side effects | [Outbound HTTP and errors](outbound-http-and-errors.md) |
+| Catch-and-fallback without reporting or a metric | The dependency can fail silently in production | [Outbound HTTP and errors](outbound-http-and-errors.md) |
+| Event, notification, or mail dispatched in a transaction | Delivery waits until committed state exists | [Events, mail, and scheduling](events-mail-and-scheduling.md) |
+| Scheduled task can outlive its interval | Overlap and multi-server execution are controlled | [Events, mail, and scheduling](events-mail-and-scheduling.md) |
+| Framework fake before event-dependent factories | Setup still receives the events it requires | [Testing and views](testing-and-views.md) |
+| Raw Blade echo for user-controlled HTML | A sanitizer owns the XSS boundary | [Testing and views](testing-and-views.md) |
+| `app()` or `resolve()` inside domain code | The dependency is visible at the class boundary | [Framework utilities](framework-utilities.md) |
+| `defer()` for required work | Losing the PHP process cannot lose the operation | [Framework utilities](framework-utilities.md) |
 | Mutable static/singleton request state under Octane | State survives the request that created it | [Performance and deployment](performance-and-deployment.md) |
 
 ## Review discipline

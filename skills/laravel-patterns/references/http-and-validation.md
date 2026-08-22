@@ -114,8 +114,20 @@ Exercise the POST, redirect target, and later request in order, then assert the 
 
 ## Follow the installed skeleton
 
-On Laravel 11+, middleware registration belongs in `bootstrap/app.php`, not
-`app/Http/Kernel.php`. Exclude exceptional routes narrowly from CSRF/request-forgery middleware;
-never disable the protection application-wide to fix one endpoint.
+New Laravel 11+ applications register middleware in `bootstrap/app.php`, while upgraded applications
+may intentionally retain `app/Http/Kernel.php`. Follow the application's actual skeleton. Exclude
+exceptional routes narrowly from CSRF/request-forgery middleware; never disable the protection
+application-wide to fix one endpoint.
+
+## Keep sensitive values out of responses and source
+
+Read secrets through configuration, never a direct `env()` call in application code. Mark sensitive
+model attributes hidden to prevent accidental serialization. Use Laravel's `encrypted` cast when the
+database value itself requires application-layer encryption, and provision a text-capable column
+because ciphertext length is not predictable. Hiding an attribute is not encryption, and encryption
+does not authorize who may retrieve the decrypted value.
+
+Run the project's dependency audit in CI or release checks. A clean audit is point-in-time evidence,
+not a substitute for version-aware updates and review of the actual dependency change.
 
 The exact source mapping for every pair and warning is in [`sources.md`](sources.md).

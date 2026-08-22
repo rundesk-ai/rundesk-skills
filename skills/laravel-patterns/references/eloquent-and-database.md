@@ -36,6 +36,25 @@ Laravel 11+ supports a per-parent `limit()` inside eager-load constraints. On ol
 use a version-compatible solution; native support came from the community
 `eloquent-eager-limit` package through framework PR #49695.
 
+Use local scopes for constraints reused across callers. Reserve global scopes for conditions that
+truly apply to every query, including admin, reporting, queue, and maintenance paths; a hidden
+`published` filter is difficult to diagnose when one caller needs drafts. Define casts for domain
+types such as booleans, dates, enums, arrays, and encrypted values, following the model convention
+used by the installed Laravel version.
+
+## Ask SQL for the value you need
+
+Do not eager load a has-many collection only to read one aggregate or latest value. Prefer
+`withCount`, `withSum`, `withExists`, an `ofMany` relationship, or a correlated `addSelect()`
+subquery when it expresses the required value. For several conditional totals over the same rows, a
+single conditional-aggregate query can replace several independent counts.
+
+These are candidates, not automatic wins. Compare `EXPLAIN` plans and representative timings before
+replacing `whereHas()` with a join, `whereIn()` subquery, or multiple-query strategy; database
+statistics and indexes decide the winner. When both sides of an already-loaded relationship are
+needed, `setRelation()` can point each child at the existing parent and prevent a reverse N+1 without
+another query.
+
 ## Bound every growing read
 
 Choose by eventual size, not today's row count:
@@ -117,6 +136,8 @@ external effects after commit so rollback does not leave the outside world ahead
 
 ## Review migrations as production operations
 
+- Generate migration filenames with `php artisan make:migration --no-interaction`; the timestamp and
+  naming stay compatible with the application's tooling.
 - Do not rewrite a migration already applied outside disposable local environments; add a new
   migration so deployed state has a forward path.
 - Make rollback behavior honest. Implement `down()` when reversal is safe; document an intentionally
@@ -125,5 +146,9 @@ external effects after commit so rollback does not leave the outside world ahead
   adding an index or changing a column.
 - Use `EXPLAIN` and observed query shapes to choose indexes. Avoid blanket indexing rules that ignore
   write cost and composite-index order.
+- Use `foreignId()->constrained()` when its conventions match the schema. Name the table and actions
+  explicitly when they do not; a concise helper must not conceal the wrong delete behavior.
+- Mirror a database default in a model only when unsaved model instances must expose that same
+  value. Otherwise two defaults create two places that can drift.
 
 The exact source mapping for every pair and version boundary is in [`sources.md`](sources.md).
