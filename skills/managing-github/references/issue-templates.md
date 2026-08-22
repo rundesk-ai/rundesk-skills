@@ -20,7 +20,11 @@ replace every placeholder, remove comments, and keep every heading in order.
 
 ## Evidence
 
-<!-- Include fresh, sanitized output, errors, screenshots, source locations, or regression range. -->
+<!-- Include fresh, sanitized output, errors, screenshots, source locations, or a regression range. Distinguish observation from inference. -->
+
+## Acceptance criteria
+
+<!-- Give independently checkable outcomes that distinguish fixed from unfixed. Do not prescribe an implementation. -->
 
 ## Environment
 
@@ -36,25 +40,29 @@ replace every placeholder, remove comments, and keep every heading in order.
 ```md
 ## Problem
 
-<!-- State the concrete limitation and who it affects. -->
+<!-- State the current limitation, who or what it affects, and its practical consequence. -->
 
-## Desired outcome
+## Proposed solution
 
-<!-- State the observable outcome the proposal should produce. -->
+<!-- Describe the outcome that should replace the current state and the boundary of the proposal. -->
 
-## Users and value
+## Evidence
 
-<!-- Identify who benefits and the measurable or practical value. -->
+<!-- Support the problem with an observed example, measurement, request pattern, source location, or documented contract. Distinguish observation from inference. -->
 
 ## Scope and compatibility
 
 <!-- Name affected contracts, compatibility constraints, permissions, dependencies, and migration needs. -->
 
-## Alternatives
+## Acceptance criteria
+
+<!-- Give independently checkable outcomes that must all be true for the proposal to be complete. -->
+
+## Verification
+
+<!-- State which automated checks and representative user path will prove the acceptance criteria. -->
+
+## Alternatives considered
 
 <!-- State the existing path or smaller alternative considered. -->
-
-## Validation
-
-<!-- State how automated checks and a representative user path will prove the outcome. -->
 ```

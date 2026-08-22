@@ -8,24 +8,28 @@ assignees: ""
 
 ## Problem
 
-<!-- What concrete problem or limitation should change? -->
+<!-- What current limitation exists, who or what does it affect, and what is the practical consequence? -->
 
-## Desired outcome
+## Proposed solution
 
-<!-- What observable outcome should the proposal produce? -->
+<!-- What outcome should replace the current state, and where does this proposal's boundary stop? -->
 
-## Users and value
+## Evidence
 
-<!-- Who benefits, and what measurable value does this provide? -->
+<!-- Which observed example, request pattern, source location, measurement, or documented contract supports the problem? Distinguish observation from inference. -->
 
 ## Scope and compatibility
 
 <!-- Identify affected skills and contracts, compatibility constraints, permissions, credentials, dependencies, and migration needs. -->
 
-## Alternatives
+## Acceptance criteria
+
+<!-- Which independently checkable outcomes must all be true for this proposal to be complete? -->
+
+## Verification
+
+<!-- Which automated checks and representative user path will prove the acceptance criteria? -->
+
+## Alternatives considered
 
 <!-- What existing path or smaller alternative was considered? -->
-
-## Validation
-
-<!-- How will the outcome be proven with automated checks and a representative user path? -->

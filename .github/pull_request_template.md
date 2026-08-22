@@ -1,8 +1,14 @@
-## Summary
+## Problem
 
-<!-- State what changes and why in one or two lines. -->
+<!-- State the current behavior or limitation, who or what it affects, and the consequence. -->
 
--
+## Proposed solution
+
+<!-- Describe the implemented outcome, important decisions and rationale, its boundary, and preserved behavior. -->
+
+## Evidence
+
+<!-- Give concise before-and-after observations, source locations, measurements, or contract links that support the merge case. Distinguish evidence from validation. -->
 
 ## Scope and compatibility
 
@@ -12,12 +18,16 @@
 - Executables, service adapters, credentials, or network behavior added: none
 - Third-party source, attribution, or license changes: none
 
-## Critical risk
+## Risks and safeguards
 
-<!-- Required for credential, privacy, destructive, deployment, or other critical-risk guidance. Write "None" when no critical risk applies. -->
+<!-- Cover material credential, privacy, destructive, deployment, compatibility, or other risks. State "No material risk identified" when none applies. -->
 
 - Risk:
 - Guard:
+
+## Acceptance criteria
+
+- [ ] <!-- Independently checkable outcome proven by this exact head. -->
 
 ## Validation
 
