@@ -1,120 +1,81 @@
 ---
 name: laravel-patterns
-description: Use when building, reviewing, debugging, or refactoring a Laravel application, API, scheduled task, or behavior-bearing Blade feature, including controllers, validation, authorization, Eloquent, migrations, queues, caching, outbound HTTP, events, mail, testing, and deployment. It supplies version-aware Laravel defaults and source-backed replacements for common production traps. Use `inertia-patterns` alongside it at an Inertia boundary. Do not use for visual-only changes with no Laravel behavior; use `frontend-design`.
+description: Use when building, reviewing, debugging, or refactoring Laravel backend behavior, including controllers, validation, authorization, Eloquent, migrations, queues, caching, outbound HTTP, events, mail, schedules, Blade behavior, testing, and deployment. It supplies version-aware, example-driven Laravel rules and production traps. Use `inertia-patterns` alongside it at an Inertia boundary. Do not use for visual-only work with no Laravel behavior; use `frontend-design`.
 ---
 
-# Laravel patterns
+# Laravel Best Practices
 
-Prefer the application's established Laravel pattern, then the framework's documented path. Do not
-introduce a second style for the same job unless the existing one causes a correctness or security
-failure; name that failure when deviating.
+Best practices for Laravel, organized as an index of rule files. Each rule file teaches what to do
+and why. For exact API syntax, verify with `search-docs`.
 
-## Inspect before changing
+Read only the files mapped to the current task. If `search-docs` is unavailable, verify
+version-sensitive APIs against the installed framework or official versioned documentation.
 
-```sh
-php artisan --version
-php artisan about
-composer show laravel/framework
-```
+## Consistency First
 
-Then read the changed files, sibling implementations, configuration, and relevant tests. Check the
-installed major before using versioned APIs; do not copy a current-doc example into an older
-application. Prefer the project's documentation search or installed source when available.
+Before applying any rule, check what the application already does. Laravel offers multiple valid
+approaches, and the best choice is the one the codebase already uses, even if another pattern would
+be theoretically better. Inconsistency is worse than a suboptimal pattern.
 
-New Laravel 11+ applications use the streamlined `bootstrap/app.php` configuration, but upgraded
-applications may retain `app/Http/Kernel.php` and `app/Exceptions/Handler.php`. Inspect the actual
-skeleton and extend its existing boundary. Generate only the directories the change needs.
+Check sibling files, related controllers, models, or tests for established patterns. If one exists,
+follow it. Don't introduce a second way. These rules are defaults for when no pattern exists yet,
+not overrides.
 
-## Apply these defaults
+## How to Apply
 
-| Avoid | Prefer | Failure prevented |
-|---|---|---|
-| `env()` outside `config/` | Read `config('...')` | `config:cache` stops loading `.env`, so local-only success becomes a production `null` |
-| `APP_DEBUG=true` in production | `APP_DEBUG=false` | Debug pages can expose configuration values |
-| Persisting `$request->all()` | Validate, authorize, then persist `validated()` into an explicitly fillable model | Extra client fields crossing the write boundary |
-| User input in `Rule::unique()->ignore(...)` | Pass the resolved model or its system-generated key | Laravel documents the former as an SQL-injection vector |
-| Lazy-loading relations in loops | Eager load and enable non-production strictness | N+1 queries stay visible during development |
-| `all()` / unbounded `get()` on growing data | Paginate user views; use `lazy()` or `chunkById()` for batch work | Memory growth tracks table growth |
-| Dispatching inside a transaction | Enable `after_commit` or call `afterCommit()` | A worker can run before the row exists |
-| Queue `timeout >= retry_after` | Keep timeout several seconds shorter | The same job can run twice concurrently |
+1. Check the changed files, nearby code, project configuration, and relevant tests for established
+   patterns. Deviate only for a correctness or security defect, and call the deviation out.
+2. Map every affected concern to the rule index below. Read each mapped rule file before editing.
+   Skip unrelated rule files.
+3. Make the smallest coherent change. Keep the application's architecture and naming instead of
+   introducing a second pattern for the same job.
+4. Verify version-sensitive Laravel APIs for the installed version with `search-docs`, or inspect
+   the installed framework when it is unavailable.
+5. Run the narrowest relevant tests first, then the project's formatting and static-analysis checks
+   when the change warrants them.
+6. Re-read the diff against every mapped rule before finishing.
 
-These are framework-documented failure modes, not style preferences. The references give the exact
-conditions and sourced good/bad pairs.
+## Rule Index
 
-## Place behavior where callers can reach it
+Cross-cutting changes often need more than one rule file.
 
-Keep a small CRUD action in its controller. Extract an action or service when an operation has
-multiple entry points, multiple coordinated steps, or side effects. Jobs transport an operation;
-observers should not hide work required for correctness. Read
-[`where-logic-belongs.md`](references/where-logic-belongs.md) before introducing or reviewing those
-layers.
+| Concern | Read |
+| --- | --- |
+| Query count, eager loading, indexes, large datasets | [`references/rules/db-performance.md`](references/rules/db-performance.md) |
+| Subqueries, aggregates, complex ordering and query plans | [`references/rules/advanced-queries.md`](references/rules/advanced-queries.md) |
+| Models, relationships, scopes, casts | [`references/rules/eloquent.md`](references/rules/eloquent.md) |
+| Authentication, authorization, input safety, secrets, uploads | [`references/rules/security.md`](references/rules/security.md) |
+| Form Requests and validation rules | [`references/rules/validation.md`](references/rules/validation.md) |
+| Controllers, route binding, resources, middleware | [`references/rules/routing.md`](references/rules/routing.md) |
+| Schema changes, columns, foreign keys, indexes | [`references/rules/migrations.md`](references/rules/migrations.md) |
+| Jobs, retries, uniqueness, batches, Horizon | [`references/rules/queue-jobs.md`](references/rules/queue-jobs.md) |
+| Cache lifetime, invalidation, locks, memoization | [`references/rules/caching.md`](references/rules/caching.md) |
+| Outbound requests, retries, timeouts, fakes | [`references/rules/http-client.md`](references/rules/http-client.md) |
+| Exceptions, reporting, rendering, log context | [`references/rules/error-handling.md`](references/rules/error-handling.md) |
+| Events and notifications | [`references/rules/events-notifications.md`](references/rules/events-notifications.md) |
+| Mailables and mail assertions | [`references/rules/mail.md`](references/rules/mail.md) |
+| Scheduled tasks and overlap protection | [`references/rules/scheduling.md`](references/rules/scheduling.md) |
+| Collections, lazy iteration, bulk operations | [`references/rules/collections.md`](references/rules/collections.md) |
+| Blade components, attributes, composers | [`references/rules/blade-views.md`](references/rules/blade-views.md) |
+| Environment values and application configuration | [`references/rules/config.md`](references/rules/config.md) |
+| Pest/PHPUnit patterns, factories, fakes | [`references/rules/testing.md`](references/rules/testing.md) |
+| Naming, helpers, file boundaries, PHP style | [`references/rules/style.md`](references/rules/style.md) |
+| Actions, services, dependencies, application structure | [`references/rules/architecture.md`](references/rules/architecture.md) |
+| Production caches, Octane, deploy transitions, workers | [`references/rules/deployment.md`](references/rules/deployment.md) |
+| Code-review triage across Laravel concerns | [`references/rules/review-triage.md`](references/rules/review-triage.md) |
 
-## Make silent ORM failures loud
+## Decision Rules
 
-In non-production environments, enable the strictness needed by the project:
-
-```php
-Model::preventLazyLoading(! app()->isProduction());
-Model::preventSilentlyDiscardingAttributes(! app()->isProduction());
-```
-
-This catches accidental lazy loads and discarded attributes during development without turning a
-missed eager load into a production outage.
-
-## Rule index
-
-Map every affected concern before editing. Start with the compact do/don't pairs, then read the
-deeper reference only for the concerns the change touches. Cross-cutting work often needs several
-rows.
-
-| Concern | Compact rules | Deeper reference |
-|---|---|---|
-| Query count, eager loading, indexes, large datasets | [Database performance](references/rule-index.md#database-performance) | [Eloquent and database](references/eloquent-and-database.md) |
-| Subqueries, aggregates, complex ordering, query plans | [Advanced queries](references/rule-index.md#advanced-queries) | [Eloquent and database](references/eloquent-and-database.md) |
-| Models, relationships, scopes, casts | [Eloquent](references/rule-index.md#eloquent) | [Eloquent and database](references/eloquent-and-database.md) |
-| Authentication, authorization, input safety, secrets, uploads | [Security](references/rule-index.md#security) | [HTTP and validation](references/http-and-validation.md) |
-| Form requests and validation rules | [Validation](references/rule-index.md#validation) | [HTTP and validation](references/http-and-validation.md) |
-| Controllers, route binding, resources, middleware | [Routing and controllers](references/rule-index.md#routing-and-controllers) | [HTTP and validation](references/http-and-validation.md) |
-| Schema changes, foreign keys, indexes | [Migrations](references/rule-index.md#migrations) | [Eloquent and database](references/eloquent-and-database.md) |
-| Jobs, retries, uniqueness, batches, Horizon | [Queues and jobs](references/rule-index.md#queues-and-jobs) | [Queues and jobs](references/queues-and-jobs.md) |
-| Cache lifetime, invalidation, locks, memoization | [Caching](references/rule-index.md#caching) | [Performance and deployment](references/performance-and-deployment.md) |
-| Outbound requests, retries, timeouts, fakes | [HTTP client](references/rule-index.md#http-client) | [Outbound HTTP and errors](references/outbound-http-and-errors.md) |
-| Exceptions, reporting, rendering, log context | [Error handling](references/rule-index.md#error-handling) | [Outbound HTTP and errors](references/outbound-http-and-errors.md) |
-| Events and notifications | [Events and notifications](references/rule-index.md#events-and-notifications) | [Events, mail, and scheduling](references/events-mail-and-scheduling.md) |
-| Mailables and mail assertions | [Mail](references/rule-index.md#mail) | [Events, mail, and scheduling](references/events-mail-and-scheduling.md) |
-| Scheduled tasks and overlap protection | [Scheduling](references/rule-index.md#scheduling) | [Events, mail, and scheduling](references/events-mail-and-scheduling.md) |
-| Collections, lazy iteration, bulk operations | [Collections](references/rule-index.md#collections) | [Framework utilities](references/framework-utilities.md) |
-| Blade components, attributes, composers | [Blade and views](references/rule-index.md#blade-and-views) | [Testing and views](references/testing-and-views.md) |
-| Environment values and application configuration | [Configuration](references/rule-index.md#configuration) | [Performance and deployment](references/performance-and-deployment.md) |
-| Pest/PHPUnit patterns, factories, fakes | [Testing](references/rule-index.md#testing) | [Testing and views](references/testing-and-views.md) |
-| Naming, helpers, file boundaries, PHP style | [Style](references/rule-index.md#style) | [Framework utilities](references/framework-utilities.md) |
-| Actions, services, dependencies, application structure | [Architecture](references/rule-index.md#architecture) | [Where logic belongs](references/where-logic-belongs.md) |
-
-Read [`anti-patterns.md`](references/anti-patterns.md) when triaging a review. Read
-[`sources.md`](references/sources.md) when auditing or strengthening a claim. The compact rules are
-defaults, not text-match findings: confirm the failure mechanism and the installed Laravel version.
-
-Use `inertia-patterns` alongside this skill for props, shared data, forms, partial reloads, SSR, or
-adapter-version changes. Authorize on the server even when an Inertia prop controls what the UI
-shows. Use `testing-code` alongside this skill when selecting test layers, designing regressions, or
-auditing coverage.
-
-## Verify the mapped behavior
-
-Run the narrowest relevant test first, then the project's formatter and static analysis. Re-read the
-diff against every mapped reference and confirm the failure path, not only the happy path. Run the
-broader suite when the changed boundary or repository policy requires it.
-
-## Report findings as failures
-
-```text
-[HIGH] Job can run before its transaction commits
-Location: app/Actions/CreateOrder.php:38
-Evidence: ProcessOrder is dispatched inside DB::transaction(); after_commit is false.
-Impact: the worker may query an order that has not committed.
-Replacement: enable after_commit or append ->afterCommit().
-Verification: cover the dispatch boundary and the job's lookup in a queue-backed test.
-```
-
-Separate correctness and security defects from structure preferences. Never call a recommendation
-"best practice" without naming the failure it prevents.
+- Prefer framework features and existing application abstractions over new helpers or dependencies.
+- Avoid speculative abstractions. Extract code when it creates a clear domain boundary, removes
+  meaningful duplication, or makes behavior independently testable.
+- Keep database access out of Blade views and prevent hidden N+1 queries across controllers,
+  resources, jobs, and serialization.
+- Check the installed framework version before using a rule's version-sensitive API. New Laravel
+  11+ applications use streamlined configuration, while upgraded applications may retain older
+  kernel and exception-handler boundaries.
+- Use `inertia-patterns` alongside this skill for props, shared data, forms, partial reloads, SSR,
+  or adapter-version changes. Authorize every request on the server.
+- Use `testing-code` alongside this skill when choosing test layers or auditing coverage.
+- Read [`references/sources.md`](references/sources.md) only when auditing or changing a factual
+  claim or example.

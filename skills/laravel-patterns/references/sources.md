@@ -116,8 +116,7 @@ advice is marked in the owning reference instead of maintaining a patch/support 
   flashed value is deleted after the subsequent request. An anonymized first-hand Laravel/Inertia
   reproduction in 2026 found a redirect target consuming flash before a later workflow request, a
   failure hidden by a test that stopped after the POST. The documented lifetime establishes the
-  mechanism; the reproduction supports exercising the complete request sequence in
-  `http-and-validation.md`.
+  mechanism; the reproduction supports the routing rule's complete multi-request test path.
 
 ## Queue lessons
 

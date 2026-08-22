@@ -31,6 +31,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+The `laravel-patterns` rule index and the 20 core files under `references/rules/` are also adapted
+from an owner-supplied Laravel best-practices skill at source snapshot commit
+`fe82e2a971321fc39b8f0b972c2261e43709bd91`. Rundesk preserves the focused rule-file organization
+and worked examples, adds installed-version checks and production caveats, and incorporates its
+existing source-backed Laravel traps into the matching rule files. The source metadata declares the
+MIT License; a copy accompanies the package in `skills/laravel-patterns/LICENSE.txt`.
+
 The `frontend-design` skill is adapted from Anthropic's
 [frontend-design Agent Skill](https://github.com/anthropics/skills/tree/2235be7c60b551f5de82ade908fd3816455afcda/skills/frontend-design)
 at commit `2235be7c60b551f5de82ade908fd3816455afcda`. Rundesk changed the skill's
