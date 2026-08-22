@@ -41,28 +41,28 @@ Cross-cutting changes often need more than one rule file.
 
 | Concern | Read |
 | --- | --- |
-| Query count, eager loading, indexes, large datasets | [`references/rules/db-performance.md`](references/rules/db-performance.md) |
-| Subqueries, aggregates, complex ordering and query plans | [`references/rules/advanced-queries.md`](references/rules/advanced-queries.md) |
-| Models, relationships, scopes, casts | [`references/rules/eloquent.md`](references/rules/eloquent.md) |
-| Authentication, authorization, input safety, secrets, uploads | [`references/rules/security.md`](references/rules/security.md) |
-| Form Requests and validation rules | [`references/rules/validation.md`](references/rules/validation.md) |
-| Controllers, route binding, resources, middleware | [`references/rules/routing.md`](references/rules/routing.md) |
-| Schema changes, columns, foreign keys, indexes | [`references/rules/migrations.md`](references/rules/migrations.md) |
-| Jobs, retries, uniqueness, batches, Horizon | [`references/rules/queue-jobs.md`](references/rules/queue-jobs.md) |
-| Cache lifetime, invalidation, locks, memoization | [`references/rules/caching.md`](references/rules/caching.md) |
-| Outbound requests, retries, timeouts, fakes | [`references/rules/http-client.md`](references/rules/http-client.md) |
-| Exceptions, reporting, rendering, log context | [`references/rules/error-handling.md`](references/rules/error-handling.md) |
-| Events and notifications | [`references/rules/events-notifications.md`](references/rules/events-notifications.md) |
-| Mailables and mail assertions | [`references/rules/mail.md`](references/rules/mail.md) |
-| Scheduled tasks and overlap protection | [`references/rules/scheduling.md`](references/rules/scheduling.md) |
-| Collections, lazy iteration, bulk operations | [`references/rules/collections.md`](references/rules/collections.md) |
-| Blade components, attributes, composers | [`references/rules/blade-views.md`](references/rules/blade-views.md) |
-| Environment values and application configuration | [`references/rules/config.md`](references/rules/config.md) |
-| Pest/PHPUnit patterns, factories, fakes | [`references/rules/testing.md`](references/rules/testing.md) |
-| Naming, helpers, file boundaries, PHP style | [`references/rules/style.md`](references/rules/style.md) |
-| Actions, services, dependencies, application structure | [`references/rules/architecture.md`](references/rules/architecture.md) |
-| Production caches, Octane, deploy transitions, workers | [`references/rules/deployment.md`](references/rules/deployment.md) |
-| Code-review triage across Laravel concerns | [`references/rules/review-triage.md`](references/rules/review-triage.md) |
+| Query count, eager loading, indexes, large datasets | [`references/db-performance.md`](references/db-performance.md) |
+| Subqueries, aggregates, complex ordering and query plans | [`references/advanced-queries.md`](references/advanced-queries.md) |
+| Models, relationships, scopes, casts | [`references/eloquent.md`](references/eloquent.md) |
+| Authentication, authorization, input safety, secrets, uploads | [`references/security.md`](references/security.md) |
+| Form Requests and validation rules | [`references/validation.md`](references/validation.md) |
+| Controllers, route binding, resources, middleware | [`references/routing.md`](references/routing.md) |
+| Schema changes, columns, foreign keys, indexes | [`references/migrations.md`](references/migrations.md) |
+| Jobs, retries, uniqueness, batches, Horizon | [`references/queue-jobs.md`](references/queue-jobs.md) |
+| Cache lifetime, invalidation, locks, memoization | [`references/caching.md`](references/caching.md) |
+| Outbound requests, retries, timeouts, fakes | [`references/http-client.md`](references/http-client.md) |
+| Exceptions, reporting, rendering, log context | [`references/error-handling.md`](references/error-handling.md) |
+| Events and notifications | [`references/events-notifications.md`](references/events-notifications.md) |
+| Mailables and mail assertions | [`references/mail.md`](references/mail.md) |
+| Scheduled tasks and overlap protection | [`references/scheduling.md`](references/scheduling.md) |
+| Collections, lazy iteration, bulk operations | [`references/collections.md`](references/collections.md) |
+| Blade components, attributes, composers | [`references/blade-views.md`](references/blade-views.md) |
+| Environment values and application configuration | [`references/config.md`](references/config.md) |
+| Pest/PHPUnit patterns, factories, fakes | [`references/testing.md`](references/testing.md) |
+| Naming, helpers, file boundaries, PHP style | [`references/style.md`](references/style.md) |
+| Actions, services, dependencies, application structure | [`references/architecture.md`](references/architecture.md) |
+| Production caches, Octane, deploy transitions, workers | [`references/deployment.md`](references/deployment.md) |
+| Code-review triage across Laravel concerns | [`references/review-triage.md`](references/review-triage.md) |
 
 ## Decision Rules
 
