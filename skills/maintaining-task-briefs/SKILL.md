@@ -89,10 +89,10 @@ Record who owns the delegated item and whether it is active, returned, or blocke
 the artifact and evidence, integrate the result, and update the lead brief. A worker report does not
 complete the parent requirement by itself.
 
-Use `managing-development-work` when a primary or domain agent owns development scoping, delivery,
-validation, and the final definition-of-done audit. A bounded development specialist follows its
-own agent instructions and exact handoff. Use `working-as-an-assistant` when maintaining the
-recipient's own task system or commitments rather than your execution state.
+Use `managing-development-work` for development scoping, delivery, validation, and the final
+definition-of-done audit. A bounded development specialist follows its own agent instructions and
+exact handoff. Use `working-as-an-assistant` when maintaining the recipient's own task system or
+commitments rather than your execution state.
 
 ## Close without leaving clutter
 

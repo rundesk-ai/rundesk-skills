@@ -1,6 +1,6 @@
 ---
 name: managing-development-work
-description: Use when handling a software change from request to an approval-ready outcome, including scoping, planning, execution, delegation decisions, scope control, and validation.
+description: Use when planning or delivering a software change from request through verified completion, including features, bug fixes, refactors, configuration, and repository documentation.
 ---
 
 # Manage development work
@@ -12,33 +12,36 @@ and more process are costs to justify, not signs of thoroughness.
 
 Write one completion contract from the request:
 
-- the behavior or artifact the owner wants;
+- the requested behavior or artifact;
 - the observable evidence that will prove it;
 - explicit constraints, exclusions, and preserved behavior;
 - authority already granted and actions that need later approval; and
 - material unknowns that could change scope, behavior, risk, cost, or reversibility.
 
-Inspect repository rules, workspace state, and the smallest relevant implementation surface. Ask only
-for a decision that cannot be safely discovered or reasonably inferred. A request to investigate,
+Inspect repository rules, workspace state, and the smallest relevant implementation surface. Ask
+only for a decision that cannot be safely discovered or reasonably inferred. A request to investigate,
 plan, or advise does not authorize implementation, external delivery, or an adjacent fix.
 
 ## Choose the smallest engagement mode
 
 Classify from observed boundaries, not from how ambitious the solution sounds.
 
+Work already scoped into an assignment you accepted is not reclassified here; execute it under that
+assignment.
+
 ### Direct
 
-Use direct work for a localized documentation, copy, metadata, configuration, or similarly mechanical
-change when the current owner has the skill and authority to complete and verify it safely. Keep a
-short checklist in the current turn. Do not create a standalone plan or delegate it merely to follow
-a workflow.
+Use direct work for a localized documentation, copy, metadata, configuration, or contained code
+change, including a one-line fix with a confirmed cause. Keep a short checklist in the current turn.
+For code, keep direct work to one file with a confirmed cause and no design choice. Do not create a
+standalone plan or delegate merely to follow a workflow.
 
 ### Bounded implementation
 
 Use one implementer for an ordinary code change with one coherent outcome, a known design boundary,
-and focused proof. The owner may implement directly when it is their responsibility and capability;
+and focused proof. The responsible agent may implement directly when it has the capability;
 otherwise give one matching development specialist the bounded assignment. The specialist follows
-its own agent instructions and the exact handoff; it does not restart this management workflow.
+its own agent instructions and the exact handoff.
 
 As a default scope signal, pause before implementation if the expected change exceeds three
 production files or 150 production lines, introduces a service or architectural layer, changes a
@@ -54,13 +57,16 @@ testable, and stop decomposition when the complete requested outcome is covered.
 
 ### Discovery before commitment
 
-Use a read-only discovery specialist—such as a Scout—only when a sizable or unfamiliar codebase has
-an unknown that materially changes the approach, scope, or risk. Give it the exact question,
-inspection boundary, evidence to return, and decision the result will unlock. The owner synthesizes
-the finding into the plan before an implementer—such as Forge—receives work.
+Use a read-only discovery specialist only when a sizable or unfamiliar codebase has an unknown that
+materially changes the approach, scope, or risk. Give it the exact question, inspection boundary,
+evidence to return, and decision the result will unlock. The responsible agent synthesizes the
+finding into the plan before an implementer receives work.
 
-Do not use discovery to restate an already understood request, and do not pass an unchecked scout
-report directly to implementation. If inspection by the owner is cheaper than the handoff and
+Bound discovery to the smallest evidence set that resolves the unknown. Start at the nearest known
+entry point and expand only when evidence shows another affected boundary. Stop when the unknown is
+resolved—for persisted state, when the authoritative write path and its actual consumers are
+identified—or an architecture decision is proved necessary. Do not create a component inventory or
+matrix merely because the system is large. If direct inspection is cheaper than the handoff and
 review, inspect directly.
 
 ## Increase ceremony only for observed risk
@@ -77,7 +83,7 @@ Risk changes the workflow and proof, not the requested product scope. Name the t
 - concurrency, performance, or broad blast radius: characterize the baseline and prove relevant
   limits under representative conditions.
 
-Add an independent reviewer or QA specialist only when repository policy, owner direction, or a
+Add an independent reviewer or QA specialist only when repository policy, requester direction, or a
 named risk benefits from independent judgment. Assign the risk lens and evidence explicitly. Do not
 route every ordinary change through research, implementation, review, and QA agents by default.
 
@@ -94,7 +100,7 @@ Before approving a plan or handoff, apply this gate:
 4. Is the change still inside the accepted size, risk, compatibility, and authority boundary?
 
 If any answer fails, reduce the approach. If a materially larger boundary is genuinely necessary,
-stop before implementation and ask the owner to approve the expanded outcome and impact. Explain
+stop before implementation and ask the requester to approve the expanded outcome and impact. Explain
 the smallest viable boundary, why the original boundary cannot work, expected size, risks,
 alternatives, and proof. Passing tests never authorizes more scope.
 
@@ -103,32 +109,20 @@ proved necessary, characterize preserved behavior first, split the work into rev
 and avoid combining unrelated feature, cleanup, or deployment work.
 
 When implementation reveals a new dependency, consumer, risk, or necessary file outside the
-accepted boundary, freeze the affected work. Preserve valid local evidence, distinguish a mistaken
-estimate from a changed outcome, and update the completion contract and downstream proof. Continue
-without new approval only when the discovery remains inside the accepted outcome, risk, authority,
-and scope signals. Otherwise present the expansion gate again; do not let sunk effort decide scope.
+accepted boundary, freeze the affected work and preserve valid local evidence. A mistaken estimate
+updates the size budget; a changed outcome reopens the completion contract. Continue without new
+approval only when the discovery remains inside the accepted outcome, risk, authority, and scope
+signals. Otherwise present the expansion gate again; do not let sunk effort decide scope.
 
 ## Build the execution contract
 
-For work that leaves the owner, apply `delegating-work` and send one bounded outcome with:
+For delegated work, apply `delegating-work`. Add the accepted size budget and stop conditions plus
+the required implementation, test, and user-path evidence to its delegation brief.
 
-- exact included and excluded behavior;
-- files or component ownership when known;
-- the accepted size budget and stop conditions;
-- applicable repository and specialist guidance;
-- required implementation, test, and user-path evidence; and
-- authority limited to local artifacts—no issue, push, pull request, merge, tag, release, publish,
-  deploy, or other external delivery.
-
-Use one implementation owner by default. Split or parallelize only independent workstreams whose
+Use one implementer by default. Split or parallelize only independent workstreams whose
 coordination cost is lower than sequential execution and whose edit boundaries do not overlap. Keep
 architecture decisions, dependency order, integration, approval, and final communication with the
-primary owner.
-
-Do not grant this orchestration workflow to inbound-only development specialists merely because
-they write code. Keep their shortest-path execution, testing, stop conditions, and local-artifact
-return contract in their agent instructions so an accepted assignment starts with implementation
-instead of another management cycle.
+responsible agent.
 
 ## Review the return, not the summary
 
@@ -147,17 +141,17 @@ When implementation returns:
    larger boundary, or repeated scope failure, stop and re-scope instead of layering fixes.
 
 A delegated answer is evidence to inspect, not completion. `Complete` means the accepted behavior,
-scope, and proof all match the integrated artifact. Say `validation incomplete` or `blocked` when a
-required surface or decision is unavailable.
+scope, and proof all match the integrated artifact. Say `Continue` and name the missing check, or
+say `Blocked`, when a required surface or decision is unavailable.
 
 ## Prepare external delivery separately
 
 Do not require an issue, project entry, branch, commit, or pull-request draft merely as workflow
-ceremony. Create or prepare one only when the owner requests it, repository policy requires it, or
-it is the smallest durable artifact needed for the accepted work. Its existence never expands the
-outcome or grants GitHub authority.
+ceremony. Create or prepare one only when the requester asks for it, repository policy requires it,
+or it is the smallest durable artifact needed for the accepted work. Its existence never expands
+the outcome or grants GitHub authority.
 
-Before any pull request, give the owner a compact checkpoint:
+Before any pull request, give the requester a compact checkpoint:
 
 ```text
 Outcome: <what changed>
@@ -167,10 +161,9 @@ Proof: <observed checks and user-path result>
 Excluded: <adjacent work intentionally left out>
 ```
 
-Obtain explicit owner approval for that exact pull-request outcome and scope. The primary agent then
-applies `managing-github` and owns the issue or pull request, branch push, checks, review responses,
-and any separately authorized merge or release. An implementation specialist returns local artifacts
-and evidence; it never performs GitHub delivery for the primary.
+Obtain explicit requester approval for that exact pull-request outcome and scope. The responsible
+agent then applies `managing-github` and retains external delivery; an implementation specialist
+returns only local artifacts and evidence.
 
-The evidence behind small changes, explicit risk, bounded delegation, and observed completion is
-mapped in [references/sources.md](references/sources.md).
+Read [references/sources.md](references/sources.md) when challenging a threshold, risk trigger, or
+ownership boundary in this workflow.

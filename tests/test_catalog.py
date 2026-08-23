@@ -160,8 +160,8 @@ class CatalogContract(unittest.TestCase):
         normalized = " ".join(page.split())
 
         for trigger in (
-            "handling a software change from request to an approval-ready outcome",
-            "scoping, planning, execution, delegation decisions, scope control, and validation",
+            "planning or delivering a software change from request through verified completion",
+            "features, bug fixes, refactors, configuration, and repository documentation",
         ):
             with self.subTest(routing_trigger=trigger):
                 self.assertIn(trigger, description)
@@ -176,20 +176,29 @@ class CatalogContract(unittest.TestCase):
 
         for required in (
             "Choose the shortest safe path",
+            "Work already scoped into an assignment you accepted is not reclassified here",
             "Use direct work for a localized documentation",
+            "contained code change, including a one-line fix with a confirmed cause",
+            "one file with a confirmed cause and no design choice",
             "Use one implementer for an ordinary code change",
             "Use a read-only discovery specialist",
+            "Bound discovery to the smallest evidence set that resolves the unknown",
+            "Stop when the unknown is resolved—for persisted state",
+            "Do not create a component inventory or matrix merely because the system is large",
             "three production files or 150 production lines",
             "Passing tests never authorizes more scope",
             "When implementation reveals a new dependency",
             "do not let sunk effort decide scope",
+            "to its delegation brief",
             "Do not require an issue, project entry, branch, commit, or pull-request draft",
-            "Obtain explicit owner approval for that exact pull-request outcome and scope",
-            "it never performs GitHub delivery for the primary",
+            "Obtain explicit requester approval for that exact pull-request outcome and scope",
+            "retains external delivery",
         ):
             with self.subTest(development_boundary=required):
                 self.assertIn(required, normalized)
-        self.assertIn("Do not grant this orchestration workflow to inbound-only", normalized)
+        self.assertNotIn("grant this orchestration workflow", normalized)
+        self.assertNotIn("Scout", normalized)
+        self.assertNotIn("Forge", normalized)
 
     def test_every_entry_is_a_complete_named_skill(self):
         missing_sources = set()
