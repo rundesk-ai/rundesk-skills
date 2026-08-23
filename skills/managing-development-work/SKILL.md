@@ -1,6 +1,6 @@
 ---
 name: managing-development-work
-description: Use when a primary or domain agent owns a software change and must scope, plan, execute, delegate, and validate it from request to an approval-ready outcome. It supplies a technology-neutral shortest-path workflow, size and risk gates, bounded discovery and implementation handoffs, scope control, and integration proof. Do not use for an inbound specialist assignment; follow that specialist's agent instructions and exact handoff. Do not use for review-, diagnosis-, or test-only work with no delivery ownership, or for GitHub-only delivery of an accepted artifact.
+description: Use when handling a software change from request to an approval-ready outcome, including scoping, planning, execution, delegation decisions, scope control, and validation.
 ---
 
 # Manage development work

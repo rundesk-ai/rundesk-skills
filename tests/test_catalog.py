@@ -160,14 +160,19 @@ class CatalogContract(unittest.TestCase):
         normalized = " ".join(page.split())
 
         for trigger in (
-            "primary or domain agent owns a software change",
-            "scope, plan, execute, delegate, and validate",
-            "Do not use for an inbound specialist assignment",
-            "review-, diagnosis-, or test-only work with no delivery ownership",
-            "GitHub-only delivery of an accepted artifact",
+            "handling a software change from request to an approval-ready outcome",
+            "scoping, planning, execution, delegation decisions, scope control, and validation",
         ):
             with self.subTest(routing_trigger=trigger):
                 self.assertIn(trigger, description)
+        for role_filter in (
+            "primary",
+            "domain agent",
+            "inbound specialist",
+            "Do not use",
+        ):
+            with self.subTest(role_filter=role_filter):
+                self.assertNotIn(role_filter, description)
 
         for required in (
             "Choose the shortest safe path",
@@ -184,7 +189,6 @@ class CatalogContract(unittest.TestCase):
         ):
             with self.subTest(development_boundary=required):
                 self.assertIn(required, normalized)
-        self.assertIn("Do not use for an inbound specialist assignment", normalized)
         self.assertIn("Do not grant this orchestration workflow to inbound-only", normalized)
 
     def test_every_entry_is_a_complete_named_skill(self):
