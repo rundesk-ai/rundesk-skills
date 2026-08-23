@@ -140,8 +140,9 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("creating-design-assets", names)
         self.assertIn("conversion-landing-pages", names)
         self.assertIn("ecommerce-storefronts", names)
-        self.assertIn("executing-development-tasks", names)
+        self.assertNotIn("executing-development-tasks", names)
         self.assertIn("maintaining-task-briefs", names)
+        self.assertIn("managing-development-work", names)
         self.assertIn("naming-grammar-conventions", names)
         self.assertIn("lead-compliance-gates", names)
         self.assertIn("laravel-stripe-payments", names)
@@ -150,6 +151,41 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("working-as-an-assistant", names)
         self.assertIn("writing-prds", names)
         self.assertIn("writing-technical-docs", names)
+
+    def test_development_management_keeps_proportionate_delivery_boundaries(self):
+        page = (
+            ROOT / "skills" / "managing-development-work" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        description = page.split("---", 2)[1]
+        normalized = " ".join(page.split())
+
+        for trigger in (
+            "primary or domain agent owns a software change",
+            "scope, plan, execute, delegate, and validate",
+            "Do not use for an inbound specialist assignment",
+            "review-, diagnosis-, or test-only work with no delivery ownership",
+            "GitHub-only delivery of an accepted artifact",
+        ):
+            with self.subTest(routing_trigger=trigger):
+                self.assertIn(trigger, description)
+
+        for required in (
+            "Choose the shortest safe path",
+            "Use direct work for a localized documentation",
+            "Use one implementer for an ordinary code change",
+            "Use a read-only discovery specialist",
+            "three production files or 150 production lines",
+            "Passing tests never authorizes more scope",
+            "When implementation reveals a new dependency",
+            "do not let sunk effort decide scope",
+            "Do not require an issue, project entry, branch, commit, or pull-request draft",
+            "Obtain explicit owner approval for that exact pull-request outcome and scope",
+            "it never performs GitHub delivery for the primary",
+        ):
+            with self.subTest(development_boundary=required):
+                self.assertIn(required, normalized)
+        self.assertIn("Do not use for an inbound specialist assignment", normalized)
+        self.assertIn("Do not grant this orchestration workflow to inbound-only", normalized)
 
     def test_every_entry_is_a_complete_named_skill(self):
         missing_sources = set()

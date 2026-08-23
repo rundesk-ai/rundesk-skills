@@ -10,13 +10,13 @@ skill packages and no service integration commands, credentials, or shared state
 - `database-design`
 - `debugging-code`
 - `ecommerce-storefronts`
-- `executing-development-tasks`
 - `frontend-design`
 - `inertia-patterns`
 - `laravel-patterns`
 - `laravel-stripe-payments`
 - `lead-compliance-gates`
 - `maintaining-task-briefs`
+- `managing-development-work`
 - `managing-github`
 - `mysql-patterns`
 - `naming-grammar-conventions`

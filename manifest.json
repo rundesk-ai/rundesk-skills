@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "3.5.2",
+  "version": "4.0.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -23,10 +23,6 @@
     {
       "name": "ecommerce-storefronts",
       "path": "skills/ecommerce-storefronts"
-    },
-    {
-      "name": "executing-development-tasks",
-      "path": "skills/executing-development-tasks"
     },
     {
       "name": "frontend-design",
@@ -51,6 +47,10 @@
     {
       "name": "maintaining-task-briefs",
       "path": "skills/maintaining-task-briefs"
+    },
+    {
+      "name": "managing-development-work",
+      "path": "skills/managing-development-work"
     },
     {
       "name": "managing-github",
