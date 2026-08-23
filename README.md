@@ -7,25 +7,15 @@ skill packages and no service integration commands, credentials, or shared state
 
 - `creating-design-assets`
 - `conversion-landing-pages`
-- `database-design`
 - `ecommerce-storefronts`
-- `executing-development-tasks`
-- `frontend-design`
-- `inertia-patterns`
-- `laravel-patterns`
 - `laravel-stripe-payments`
 - `lead-compliance-gates`
 - `maintaining-task-briefs`
-- `mysql-patterns`
 - `naming-grammar-conventions`
 - `pdf-creation`
 - `performance-engineering`
-- `postgres-patterns`
-- `python-patterns`
 - `researching-topics`
 - `seo`
-- `sqlite-patterns`
-- `vue-patterns`
 - `working-as-an-assistant`
 - `writing-plans`
 - `writing-prds`
@@ -70,8 +60,8 @@ the same-named gamedev skill. Then update this catalog.
 
 ### Development workflow skills
 
-The Rundesk development team owns `debugging-code`, `reviewing-code`, and `testing-code`. Install
-its catalog in skills-only mode to use them without creating the team:
+The Rundesk development team owns the coding and product-design skills. Install its catalog in
+skills-only mode to use them without creating the team:
 
 ```sh
 rundesk skills install https://github.com/rundesk-ai/rundesk-team-development
@@ -83,6 +73,23 @@ rundesk skills grant ava rundesk-team-development/testing-code
 `rundesk-skills` catalog, move each affected agent to the new grant: revoke the old same-named grant,
 grant its replacement, then update this catalog:
 
+| Previous grant | Replacement |
+|---|---|
+| `database-design` | `rundesk-team-development/designing-databases` |
+| `debugging-code` | `rundesk-team-development/debugging-code` |
+| `executing-development-tasks` | `rundesk-team-development/managing-development-work` |
+| `frontend-design` | `rundesk-team-development/designing-ui-ux` |
+| `inertia-patterns` | `rundesk-team-development/using-inertia` |
+| `laravel-patterns` | `rundesk-team-development/using-laravel` |
+| `mysql-patterns` | `rundesk-team-development/using-mysql` |
+| `postgres-patterns` | `rundesk-team-development/using-postgres` |
+| `python-patterns` | `rundesk-team-development/using-python` |
+| `reviewing-code` | `rundesk-team-development/reviewing-code` |
+| `sqlite-patterns` | `rundesk-team-development/using-sqlite` |
+| `testing-code` | `rundesk-team-development/testing-code` |
+| `vue-patterns` | `rundesk-team-development/using-vuejs` |
+| `managing-github` | `rundesk/managing-github` |
+
 ```sh
 rundesk skills revoke ava testing-code
 rundesk skills grant ava rundesk-team-development/testing-code
@@ -91,9 +98,8 @@ rundesk skills grant ava rundesk/managing-github
 rundesk skills update rundesk-skills --confirm
 ```
 
-Repeat that replacement for `debugging-code`, `reviewing-code`, and `testing-code` wherever they are
-granted. Installing the complete development team later reuses the skills catalog and adds its
-managed agents.
+Repeat the replacement for every affected grant. Installing the complete development team later
+reuses the skills catalog and adds its managed agents.
 
 This collection separates runtime and permission boundaries: general guidance lives here, game and
 C++ guidance lives in

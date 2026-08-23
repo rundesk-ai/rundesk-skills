@@ -12,16 +12,22 @@ ALLOWED = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 CATALOG_GUIDE_URL = "https://github.com/rundesk-ai/rundesk-cli/blob/main/docs/catalogs.md"
 FORBIDDEN_PACKAGE_FILES = {"README.md", "CHANGELOG.md", "rundesk.json"}
 ALLOWED_PACKAGE_ROOTS = {"SKILL.md", "LICENSE.txt", "references", "assets"}
-LEGACY_PACKAGES_WITHOUT_SOURCES = {
-    "mysql-patterns",
-    "pdf-creation",
-    "postgres-patterns",
-}
+LEGACY_PACKAGES_WITHOUT_SOURCES = {"pdf-creation"}
 MOVED_DEVELOPMENT_SKILLS = {
+    "database-design",
     "debugging-code",
+    "executing-development-tasks",
+    "frontend-design",
+    "inertia-patterns",
+    "laravel-patterns",
     "managing-github",
+    "mysql-patterns",
+    "postgres-patterns",
+    "python-patterns",
     "reviewing-code",
+    "sqlite-patterns",
     "testing-code",
+    "vue-patterns",
 }
 AGENT_HEADINGS = (
     "# AGENTS",
@@ -135,6 +141,7 @@ class CatalogContract(unittest.TestCase):
             "rundesk skills install https://github.com/rundesk-ai/rundesk-skills --confirm",
             "rundesk skills grant ava rundesk-skills/writing-plans",
             "rundesk-team-development/testing-code",
+            "rundesk-team-development/using-python",
             "rundesk/managing-github",
             "rundesk skills update rundesk-skills --confirm",
         ):
@@ -149,7 +156,6 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("creating-design-assets", names)
         self.assertIn("conversion-landing-pages", names)
         self.assertIn("ecommerce-storefronts", names)
-        self.assertIn("executing-development-tasks", names)
         self.assertIn("maintaining-task-briefs", names)
         self.assertIn("naming-grammar-conventions", names)
         self.assertIn("lead-compliance-gates", names)
