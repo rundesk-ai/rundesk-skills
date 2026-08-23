@@ -46,7 +46,15 @@ the changes that belong on `main`.
 
 ## Choose an exact version
 
-Inspect every change since the last published release. The highest-impact change sets the bump:
+Inspect every change since the last published release. Follow the repository's documented version,
+tag, title, and prerelease scheme. Do not normalize an established Calendar Version, product
+prefix, missing `v`, prerelease suffix, or other repository convention merely for cross-project
+consistency. Confirm the proposed tag is unused and ordered correctly within that repository's
+release line.
+
+When the repository has no version policy or established release pattern, default to stable SemVer
+with a `v`-prefixed tag and matching release title. The highest-impact change sets the fallback
+bump:
 
 | Bump | Use when the release contains |
 |---|---|
@@ -54,20 +62,19 @@ Inspect every change since the last published release. The highest-impact change
 | Minor: `v1.4.2` → `v1.5.0` | Backward-compatible functionality or public deprecation. |
 | Major: `v1.4.2` → `v2.0.0` | Any incompatible API, CLI, schema, configuration, data, or behavior change. |
 
-Reset lower components after a minor or major increment. One breaking change makes the release
-major; fix count does not determine the bump. For `v0.Y.Z`, use minor for incompatible changes or
-new capability and patch for compatible corrections unless the repository is stricter. Use
-`v1.0.0` only when the project deliberately declares its public contract stable.
+Reset lower components after a minor or major increment. One breaking change makes the fallback
+release major; fix count does not determine the bump. For `v0.Y.Z`, use minor for incompatible
+changes or new capability and patch for compatible corrections. Use `v1.0.0` only when the project
+deliberately declares its public contract stable.
 
-The public tag and GitHub Release title must both match:
+The fallback public tag and GitHub Release title both match:
 
 ```text
 ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$
 ```
 
-Use `v1.4.2`, never a product prefix, missing `v`, shortened version, prerelease, date, or suffix.
-Keep repository version files in their required format, such as `1.4.2` without `v`. Confirm the
-version is greater than the last release and unused in Git and GitHub.
+Use `v1.4.2` when the fallback applies. Keep repository version files in their required format,
+such as `1.4.2` without `v`.
 
 ## Prepare the release commit
 
@@ -82,12 +89,12 @@ repository and version authorizes publication. Otherwise stop before external ch
 
 ## Tag and generate notes
 
-Create an annotated tag on the recorded commit and push only that tag:
+Follow the repository automation's tag ownership and annotated, signed, or lightweight tag
+contract. When neither repository policy nor automation chooses the tag type, create an annotated
+tag on the recorded commit. Push only the approved tag:
 
 ```sh
-version=1.4.2
-tag="v$version"
-printf '%s\n' "$tag" | grep -Eq '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$' || exit 1
+tag=<approved-tag>
 release_commit=$(git rev-parse <approved-release-commit>)
 git tag -a "$tag" "$release_commit" -m "$tag"
 git push <release-remote> "refs/tags/$tag"
@@ -102,13 +109,14 @@ gh release create "$tag" --repo <owner/repo> \
   --verify-tag \
   --generate-notes \
   --fail-on-no-commits \
-  --title "$tag"
+  --title '<approved-release-title>'
 ```
 
-Add `--notes-start-tag <previous-tag>` when GitHub would compare the wrong release line. Inspect
-the stored draft. Generated notes should cover the correct pull requests, contributors, and
-comparison range, honoring `.github/release.yml`. Correct missing breaking changes, migrations,
-security instructions, or misleading summaries in a reviewed notes file:
+Add `--prerelease` when the approved release is not stable. Add
+`--notes-start-tag <previous-tag>` when GitHub would compare the wrong release line. Inspect the
+stored draft. Generated notes should cover the correct pull requests, contributors, and comparison
+range, honoring `.github/release.yml`. Correct missing breaking changes, migrations, security
+instructions, or misleading summaries in a reviewed notes file:
 
 ```sh
 gh release view "$tag" --repo <owner/repo> \
@@ -127,16 +135,17 @@ Publish only after the tag target, draft, notes, and assets match the approved r
 gh release edit "$tag" --repo <owner/repo> \
   --draft=false \
   --verify-tag \
-  --title "$tag"
+  --title '<approved-release-title>'
 ```
 
-Let GitHub determine `Latest` from semantic order unless repository policy says otherwise. Fetch
-the remote tag and prove it resolves to the recorded commit. Read the published release back and
-verify its exact tag, title, stable and non-draft state, notes, URL, and assets. With immutable
-releases, run `gh release verify "$tag"`; verify local artifacts with
-`gh release verify-asset "$tag" <file>`.
+Let GitHub determine `Latest` unless repository policy or a nonstandard version scheme requires an
+explicit choice. Fetch the remote tag and prove it resolves to the recorded commit. Read the
+published release back and verify its exact tag, title, intended prerelease or stable state,
+non-draft state, notes, URL, and assets. With immutable releases, run
+`gh release verify "$tag" --repo <owner/repo>`; verify local artifacts with
+`gh release verify-asset "$tag" <file> --repo <owner/repo>`.
 
 After failure, inspect the remote tag, workflow runs, draft, and published release before retrying.
-Never delete, move, or recreate a published tag to hide a mistake; correct a published release
-with a new patch version. Report success only with the URL, tag, commit, bump rationale, and
-verification evidence.
+Never delete, move, or recreate a published tag to hide a mistake; correct a published release with
+the next corrective version under repository policy, or a patch under the fallback SemVer policy.
+Report success only with the URL, tag, commit, version rationale, and verification evidence.

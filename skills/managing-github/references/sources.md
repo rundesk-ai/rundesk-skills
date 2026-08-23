@@ -12,6 +12,14 @@
   establishes that pull-request templates can prompt for purpose, linked issues, testing notes,
   and review checklists. This catalog concludes that a fallback should request those decisions in
   review language without forcing empty sections.
+- An anonymized first-hand operating requirement recorded on 2026-08-23 establishes the template
+  precedence rule: use an applicable template from the target repository before the skill's
+  fallback, while preserving consistent evidence, verification, privacy, and checkable-claim
+  standards across repositories.
+- A provider-diverse live forward test recorded on 2026-08-23 found that an agent preserved a YAML
+  issue form but marked its required Code of Conduct attestation complete without user confirmation.
+  This establishes the scoped guard that drafting or filing intent is not proof of agreement; the
+  attestation stays unchecked until the user explicitly confirms it.
 
 ## Issue and pull-request writing
 
@@ -45,15 +53,19 @@
   `--template`, and existing issue-type selection.
 - [`gh pr create`](https://cli.github.com/manual/gh_pr_create) establishes `--body-file`, explicit
   base/head selection, user-owned fork qualification, and issue-closing references in the PR body.
-- [`gh release create`](https://cli.github.com/manual/gh_release_create) establishes annotated-tag
-  use, `--verify-tag`, generated notes, drafts, and the no-new-commits guard.
+- [`gh release create`](https://cli.github.com/manual/gh_release_create) establishes caller-selected
+  tags and titles, annotated-tag support, prereleases, `--verify-tag`, generated notes, drafts, and
+  the no-new-commits guard. This catalog therefore treats a strict `v`-prefixed stable SemVer tag as
+  a fallback rather than a universal GitHub contract.
 
 ## Reproduced command surface
 
-On 2026-08-22, `gh` 2.94.0 help output was checked locally for every command shown by this package.
-It confirmed the issue and PR body/template flags, PR user-qualified head behavior, and the release
-draft, notes-file, generated-notes, no-new-commits, and tag-verification flags. This is command-surface
-proof only; repository rules and the stored GitHub object remain authoritative for each operation.
+On 2026-08-23, `gh` 2.94.0 help output and the live issue-types endpoint were checked locally for
+every command shown by this package. They confirmed the issue and PR body/template flags, current
+issue-types API version, PR user-qualified head behavior, and the release draft, prerelease,
+notes-file, generated-notes, no-new-commits, title, and tag-verification flags. This is
+command-surface proof only; repository rules and the stored GitHub object remain authoritative for
+each operation.
 
 ## Deployment branch reconciliation
 
@@ -65,6 +77,10 @@ proof only; repository rules and the stored GitHub object remain authoritative f
 - An anonymized first-hand operating requirement recorded on 2026-08-20 establishes the scoped
   catalog conclusion: production branches used for live website deployments must be reconciled into
   `main`, while product releases originate from `main` or an intentional isolated version branch.
+- An anonymized first-hand operating requirement recorded on 2026-08-23 establishes that release
+  preparation and post-production branch reconciliation belong to the managing-github routing
+  contract, and that a live deployment is incomplete until its production-only work returns to the
+  canonical branch under repository policy.
 
 ## Review readability and accountable identity
 

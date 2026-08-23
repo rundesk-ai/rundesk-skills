@@ -13,7 +13,9 @@ draft. Read applicable `AGENTS.md`, `CONTRIBUTING.md`, `.github/ISSUE_TEMPLATE/`
 `SECURITY.md`. Inspect every Markdown template and YAML issue form on the default branch. Select
 the template whose stated purpose matches the report; preserve its required headings, field
 order, checkboxes, and footer. Remove comments and placeholders. Never mark an unproven claim or
-check complete.
+check complete. Treat agreement, policy, search, and other attestation checkboxes as user claims:
+mark one complete only when the user explicitly confirmed it. A request to draft or file the issue
+is not confirmation; leave the box unchecked and name the required confirmation as a blocker.
 
 For YAML forms, map each required `body` entry to a rendered heading and substantive answer.
 Inspect available labels and issue types before naming either:
