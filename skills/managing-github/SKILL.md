@@ -1,6 +1,6 @@
 ---
 name: managing-github
-description: Use this skill when asked to prepare, create, edit, inspect, or verify GitHub issues, pull requests, or releases. It provides guarded GitHub CLI workflows that select the correct account and repository, honor repository rules, limit external changes to authorized actions, and prove stored results. Do not use it for local Git work, GitHub Actions, or repository administration.
+description: Use when asked to prepare, create, edit, inspect, or verify GitHub issues, pull requests, or releases, or to reconcile a production deployment branch into its canonical branch. It provides guarded GitHub CLI and release workflows that honor repository rules, limit external changes to authorized actions, and prove stored results. Do not use it for local Git work, GitHub Actions, or repository administration.
 ---
 
 # Manage GitHub
@@ -36,9 +36,16 @@ a target from a nearby directory, an issue or PR number alone, or a remembered r
 silently switch accounts, hosts, repositories, forks, remotes, or branches.
 
 Read the repository instructions named by the operation reference. Repository rules and
-templates override these fallbacks. Before sending public text, remove credentials, private
-URLs, customer data, private conversations, internal hostnames, personal identifiers, and
-unrelated logs. Use placeholders and retain only evidence needed for the task.
+templates override these fallbacks. For issues and pull requests, inspect the target repository's
+templates on its default branch before drafting. When one applies, its structure, field order, and
+required prompts take precedence; keep this skill's standards for evidence, verification, privacy,
+and checkable claims within that structure. Use the bundled fallback only when no repository
+template applies. Never force fallback headings into a repository template merely to make projects
+look identical.
+
+Before sending public text, remove credentials, private URLs, customer data, private conversations,
+internal hostnames, personal identifiers, and unrelated logs. Use placeholders and retain only
+evidence needed for the task.
 
 After every mutation, read the stored object back from GitHub and compare its identity, content,
 and state with the request. A successful exit status is not proof that the intended result was
@@ -51,8 +58,9 @@ exact blocker; do not use a different account or publication route.
   select templates, labels, issue types, and security routes.
 - [Pull requests](references/pull-requests.md): prepare, open, edit, or inspect a PR; select its
   base and head, explain the diff, link issues, and verify checks.
-- [Releases](references/releases.md): choose a SemVer version; prepare, draft, publish, verify,
-  or recover a GitHub Release, its exact tag, notes, and artifacts.
+- [Releases](references/releases.md): follow the repository's release workflow; choose its version
+  and tag or the fallback SemVer convention; prepare, publish, verify, or recover a GitHub Release;
+  and reconcile a live deployment branch into its canonical branch.
 
 Read multiple references only when the request genuinely spans those operations.
 
