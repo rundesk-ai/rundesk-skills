@@ -252,6 +252,27 @@ class CatalogContract(unittest.TestCase):
         )
         self.assertIn("🤖 by <Agent>", pull_request_template)
 
+    def test_managing_github_keeps_external_writes_with_the_responsible_agent(self):
+        package = ROOT / "skills" / "managing-github"
+        skill = " ".join((package / "SKILL.md").read_text(encoding="utf-8").split())
+        sources = " ".join(
+            (package / "references" / "sources.md").read_text(encoding="utf-8").split()
+        )
+
+        for phrase in (
+            "The primary or domain agent responsible for the outcome owns every GitHub write",
+            "Never delegate issue or pull-request creation, editing, submission, or follow-up",
+            "even when that specialist prepared the implementation or investigation",
+            "The specialist returns local artifacts and evidence",
+            "re-establishes the account and repository itself",
+            "stop at the handback instead of using a GitHub mutation command",
+        ):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, skill)
+        self.assertIn(
+            "issue and pull-request writes stay with the primary or domain agent", sources
+        )
+
     def test_repository_guides_and_templates_follow_the_shared_contract(self):
         agents = (ROOT / "AGENTS.md").read_bytes()
         self.assertEqual(agents, (ROOT / "CLAUDE.md").read_bytes())

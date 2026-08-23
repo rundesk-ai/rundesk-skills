@@ -13,6 +13,14 @@ GitHub mutations affect other people. Inspect freely, but create, edit, push, ta
 request review only when the owner requested that action. A specific request is authorization;
 otherwise prepare a draft or plan and stop before changing GitHub.
 
+The primary or domain agent responsible for the outcome owns every GitHub write. Never delegate
+issue or pull-request creation, editing, submission, or follow-up to a named specialist, even when
+that specialist prepared the implementation or investigation. The specialist returns local
+artifacts and evidence, such as the branch, commit, diff, issue draft, PR draft, and verification.
+The responsible agent loads this skill, re-establishes the account and repository itself, performs
+the authorized GitHub action, and proves the stored result. If you are acting as the named
+specialist, stop at the handback instead of using a GitHub mutation command.
+
 Establish the active account, repository, default branch, remotes, branch, and worktree:
 
 ```sh

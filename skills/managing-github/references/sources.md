@@ -15,6 +15,11 @@
 
 ## Issue and pull-request writing
 
+- An anonymized first-hand operating requirement recorded on 2026-08-22 establishes the scoped
+  ownership boundary that issue and pull-request writes stay with the primary or domain agent using
+  this guarded workflow. Named specialists return local artifacts and evidence instead of creating,
+  editing, submitting, or following up on GitHub issues or pull requests.
+
 - Benjamin C. Haller's 2022 peer-reviewed practitioner article,
   [Ten simple rules for reporting a bug](https://pmc.ncbi.nlm.nih.gov/articles/PMC9562159/), draws
   on more than 40 years of software-development experience. It recommends the correct reporting
