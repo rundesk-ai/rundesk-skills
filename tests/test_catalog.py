@@ -84,6 +84,7 @@ ISSUE_HEADINGS = {
         "## Acceptance criteria",
         "## Environment",
         "## Scope and privacy",
+        "## Agent",
     ),
     "change-proposal.md": (
         "## Problem",
@@ -93,11 +94,12 @@ ISSUE_HEADINGS = {
         "## Acceptance criteria",
         "## Verification",
         "## Alternatives considered",
+        "## Agent",
     ),
 }
 ISSUE_DIGESTS = {
-    "bug-report.md": "9b8bb222a68b4c2a592512ee368c17bc8edc8e0750c5f76ba3e4dd65837e5187",
-    "change-proposal.md": "71f68d702f29e1cedd6b5a839b8a10df899240f68bd215d734ee77f5286cd379",
+    "bug-report.md": "6e8eadbdaf3198c29ed33edf6b3abaf7374cfca5adb05d46c85daedeb1281276",
+    "change-proposal.md": "82c13fe89d21778e23de6c9a7ae7e918960cf78d4b2cccd69041e9160e97fdbd",
 }
 
 
@@ -253,6 +255,7 @@ class CatalogContract(unittest.TestCase):
                     ISSUE_DIGESTS[filename],
                     hashlib.sha256(issue_bytes).hexdigest(),
                 )
+                self.assertIn("🤖 by <Agent>", issue_bytes.decode("utf-8"))
                 self.assertEqual(
                     expected,
                     tuple(re.findall(r"^## .+$", issue_bytes.decode("utf-8"), re.MULTILINE)),
