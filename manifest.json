@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "3.5.3",
+  "version": "4.0.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -13,32 +13,8 @@
       "path": "skills/conversion-landing-pages"
     },
     {
-      "name": "database-design",
-      "path": "skills/database-design"
-    },
-    {
-      "name": "debugging-code",
-      "path": "skills/debugging-code"
-    },
-    {
       "name": "ecommerce-storefronts",
       "path": "skills/ecommerce-storefronts"
-    },
-    {
-      "name": "executing-development-tasks",
-      "path": "skills/executing-development-tasks"
-    },
-    {
-      "name": "frontend-design",
-      "path": "skills/frontend-design"
-    },
-    {
-      "name": "inertia-patterns",
-      "path": "skills/inertia-patterns"
-    },
-    {
-      "name": "laravel-patterns",
-      "path": "skills/laravel-patterns"
     },
     {
       "name": "laravel-stripe-payments",
@@ -53,14 +29,6 @@
       "path": "skills/maintaining-task-briefs"
     },
     {
-      "name": "managing-github",
-      "path": "skills/managing-github"
-    },
-    {
-      "name": "mysql-patterns",
-      "path": "skills/mysql-patterns"
-    },
-    {
       "name": "naming-grammar-conventions",
       "path": "skills/naming-grammar-conventions"
     },
@@ -73,36 +41,12 @@
       "path": "skills/performance-engineering"
     },
     {
-      "name": "postgres-patterns",
-      "path": "skills/postgres-patterns"
-    },
-    {
-      "name": "python-patterns",
-      "path": "skills/python-patterns"
-    },
-    {
       "name": "researching-topics",
       "path": "skills/researching-topics"
     },
     {
-      "name": "reviewing-code",
-      "path": "skills/reviewing-code"
-    },
-    {
       "name": "seo",
       "path": "skills/seo"
-    },
-    {
-      "name": "sqlite-patterns",
-      "path": "skills/sqlite-patterns"
-    },
-    {
-      "name": "testing-code",
-      "path": "skills/testing-code"
-    },
-    {
-      "name": "vue-patterns",
-      "path": "skills/vue-patterns"
     },
     {
       "name": "working-as-an-assistant",

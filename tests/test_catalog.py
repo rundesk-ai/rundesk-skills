@@ -12,10 +12,22 @@ ALLOWED = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 CATALOG_GUIDE_URL = "https://github.com/rundesk-ai/rundesk-cli/blob/main/docs/catalogs.md"
 FORBIDDEN_PACKAGE_FILES = {"README.md", "CHANGELOG.md", "rundesk.json"}
 ALLOWED_PACKAGE_ROOTS = {"SKILL.md", "LICENSE.txt", "references", "assets"}
-LEGACY_PACKAGES_WITHOUT_SOURCES = {
+LEGACY_PACKAGES_WITHOUT_SOURCES = {"pdf-creation"}
+MOVED_DEVELOPMENT_SKILLS = {
+    "database-design",
+    "debugging-code",
+    "executing-development-tasks",
+    "frontend-design",
+    "inertia-patterns",
+    "laravel-patterns",
+    "managing-github",
     "mysql-patterns",
-    "pdf-creation",
     "postgres-patterns",
+    "python-patterns",
+    "reviewing-code",
+    "sqlite-patterns",
+    "testing-code",
+    "vue-patterns",
 }
 AGENT_HEADINGS = (
     "# AGENTS",
@@ -127,7 +139,11 @@ class CatalogContract(unittest.TestCase):
             ".github/ISSUE_TEMPLATE/change-proposal.md",
             ".github/pull_request_template.md",
             "rundesk skills install https://github.com/rundesk-ai/rundesk-skills --confirm",
-            "rundesk skills grant ava rundesk-skills/testing-code",
+            "rundesk skills grant ava rundesk-skills/writing-plans",
+            "rundesk-team-development/testing-code",
+            "rundesk-team-development/using-python",
+            "rundesk/managing-github",
+            "rundesk skills update rundesk-skills --confirm",
         ):
             with self.subTest(readme_contract=required):
                 self.assertIn(required, readme)
@@ -140,7 +156,6 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("creating-design-assets", names)
         self.assertIn("conversion-landing-pages", names)
         self.assertIn("ecommerce-storefronts", names)
-        self.assertIn("executing-development-tasks", names)
         self.assertIn("maintaining-task-briefs", names)
         self.assertIn("naming-grammar-conventions", names)
         self.assertIn("lead-compliance-gates", names)
@@ -150,6 +165,7 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("working-as-an-assistant", names)
         self.assertIn("writing-prds", names)
         self.assertIn("writing-technical-docs", names)
+        self.assertEqual(set(), names & MOVED_DEVELOPMENT_SKILLS)
 
     def test_every_entry_is_a_complete_named_skill(self):
         missing_sources = set()
@@ -195,83 +211,6 @@ class CatalogContract(unittest.TestCase):
 
     def test_catalog_contains_no_integration_commands(self):
         self.assertEqual([], list((ROOT / "skills").glob("*/scripts/**")))
-
-    def test_managing_github_keeps_complete_fallback_templates(self):
-        package = ROOT / "skills" / "managing-github"
-        issues = (package / "references" / "issues.md").read_text(encoding="utf-8")
-        pull_requests = (package / "references" / "pull-requests.md").read_text(
-            encoding="utf-8"
-        )
-        issue_templates = (package / "references" / "issue-templates.md").read_text(
-            encoding="utf-8"
-        )
-        pull_request_template = (
-            package / "references" / "pull-request-template.md"
-        ).read_text(encoding="utf-8")
-
-        self.assertIn("[the fallback issue templates](issue-templates.md)", issues)
-        self.assertIn(
-            "[fallback pull-request template](pull-request-template.md)",
-            pull_requests,
-        )
-        self.assertIn("scan-friendly review map", pull_requests)
-        self.assertIn("normally no more than five steps", pull_requests)
-        self.assertIn("Every PR body must identify the filing agent", pull_requests)
-        self.assertIn("`Generated with` footer", pull_requests)
-        self.assertIn("Reject low-information prose", pull_requests)
-        for weak_heading in ("## Need", "## What we need", "## Summary"):
-            with self.subTest(weak_heading=weak_heading):
-                self.assertNotIn(weak_heading, issue_templates)
-                self.assertNotIn(weak_heading, pull_request_template)
-        issue_blocks = re.findall(r"```md\n(.*?)\n```", issue_templates, re.DOTALL)
-        self.assertEqual(2, len(issue_blocks))
-        for block, headings in zip(issue_blocks, ISSUE_HEADINGS.values()):
-            with self.subTest(issue_fallback=headings[0]):
-                self.assertEqual(
-                    headings,
-                    tuple(re.findall(r"^## .+$", block, re.MULTILINE)),
-                )
-        pull_request_block = re.search(
-            r"````md\n(.*?)\n````", pull_request_template, re.DOTALL
-        )
-        self.assertIsNotNone(pull_request_block)
-        self.assertEqual(
-            (
-                "## Problem",
-                "## Proposed solution",
-                "## Evidence",
-                "## Acceptance criteria",
-                "## Validation",
-                "## Agent",
-            ),
-            tuple(
-                re.findall(
-                    r"^## .+$", pull_request_block.group(1), re.MULTILINE
-                )
-            ),
-        )
-        self.assertIn("🤖 by <Agent>", pull_request_template)
-
-    def test_managing_github_keeps_external_writes_with_the_responsible_agent(self):
-        package = ROOT / "skills" / "managing-github"
-        skill = " ".join((package / "SKILL.md").read_text(encoding="utf-8").split())
-        sources = " ".join(
-            (package / "references" / "sources.md").read_text(encoding="utf-8").split()
-        )
-
-        for phrase in (
-            "The primary or domain agent responsible for the outcome owns every GitHub write",
-            "Never delegate issue or pull-request creation, editing, submission, or follow-up",
-            "even when that specialist prepared the implementation or investigation",
-            "The specialist returns local artifacts and evidence",
-            "re-establishes the account and repository itself",
-            "stop at the handback instead of using a GitHub mutation command",
-        ):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, skill)
-        self.assertIn(
-            "issue and pull-request writes stay with the primary or domain agent", sources
-        )
 
     def test_repository_guides_and_templates_follow_the_shared_contract(self):
         agents = (ROOT / "AGENTS.md").read_bytes()
