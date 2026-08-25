@@ -19,7 +19,6 @@ skill packages and no service integration commands, credentials, or shared state
 - `working-as-an-assistant`
 - `writing-plans`
 - `writing-prds`
-- `writing-technical-docs`
 
 ## Install
 
