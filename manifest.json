@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -59,10 +59,6 @@
     {
       "name": "writing-prds",
       "path": "skills/writing-prds"
-    },
-    {
-      "name": "writing-technical-docs",
-      "path": "skills/writing-technical-docs"
     }
   ]
 }

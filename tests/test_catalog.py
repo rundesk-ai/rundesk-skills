@@ -28,6 +28,7 @@ MOVED_DEVELOPMENT_SKILLS = {
     "sqlite-patterns",
     "testing-code",
     "vue-patterns",
+    "writing-technical-docs",
 }
 AGENT_HEADINGS = (
     "# AGENTS",
@@ -166,7 +167,6 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("seo", names)
         self.assertIn("working-as-an-assistant", names)
         self.assertIn("writing-prds", names)
-        self.assertIn("writing-technical-docs", names)
         self.assertEqual(set(), names & MOVED_DEVELOPMENT_SKILLS)
 
     def test_every_entry_is_a_complete_named_skill(self):
