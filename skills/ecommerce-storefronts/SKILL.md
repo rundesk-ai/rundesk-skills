@@ -149,9 +149,9 @@ For each stage:
 6. use a holdout to measure incremental contribution, not attributed recovered revenue.
 
 Never infer marketing SMS permission from a shipping phone number or label promotional outreach
-`transactional` to bypass consent. Use `lead-compliance-gates` for U.S. call and text consent,
-suppression, revocation, and evidence; route other jurisdictions and commercial-email rules to
-current compliance review.
+`transactional` to bypass consent. Use `rundesk-team-marketing/lead-compliance-gates` for U.S. call
+and text consent, suppression, revocation, and evidence; route other jurisdictions and commercial-
+email rules to current compliance review.
 
 ## Measure the complete store
 
@@ -188,10 +188,11 @@ intent, product scope, economics, permission, and destination it actually serves
 product promise to the matching selected product, a category need to a useful collection or search
 state, and a campaign-specific offer to a dedicated page when that makes the promise clearer.
 
-Use `seo` for crawling, indexing, product structured data, feeds, category and product search
-visibility, and AI shopping surfaces. Use `conversion-landing-pages` for a dedicated single-offer
-campaign destination and its source-to-page message match. The storefront remains responsible for
-the complete catalog, product, cart, checkout, fulfillment, and retained-value journey after arrival.
+Use `rundesk-team-marketing/seo` for crawling, indexing, product structured data, feeds, category and
+product search visibility, and AI shopping surfaces. Use
+`rundesk-team-marketing/conversion-landing-pages` to plan a dedicated single-offer campaign
+destination and its source-to-page message match. The storefront remains responsible for the
+complete catalog, product, cart, checkout, fulfillment, and retained-value journey after arrival.
 
 For each channel, separate attributed orders from incremental acquisition. Compare new retained
 customers, retained contribution, acquisition and offer cost, payback window, repeat behavior,

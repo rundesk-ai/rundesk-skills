@@ -6,19 +6,14 @@ skill packages and no service integration commands, credentials, or shared state
 ## Skills
 
 - `creating-design-assets`
-- `conversion-landing-pages`
 - `ecommerce-storefronts`
 - `laravel-stripe-payments`
-- `lead-compliance-gates`
 - `maintaining-task-briefs`
 - `naming-grammar-conventions`
 - `pdf-creation`
 - `performance-engineering`
-- `researching-topics`
-- `seo`
 - `working-as-an-assistant`
 - `writing-plans`
-- `writing-prds`
 
 ## Install
 
@@ -56,6 +51,34 @@ rundesk skills revoke ava writing-plans
 Before updating from an older core catalog that still carries game or C++ skills, install
 `rundesk-skills-gamedev`; for each affected agent, revoke the old core grant and immediately grant
 the same-named gamedev skill. Then update this catalog.
+
+### Marketing workflow skills
+
+The Rundesk marketing team owns research, SEO, landing-page planning, lead-compliance, and product-
+requirements skills. Install its catalog in skills-only mode to use them without creating the team:
+
+```sh
+rundesk skills install https://github.com/rundesk-ai/rundesk-team-marketing
+rundesk skills install https://github.com/rundesk-ai/rundesk-team-marketing --confirm
+```
+
+Before updating from a version of this catalog that still carries those packages, move each affected
+agent to the marketing-owned grant. Revoke the old grant, grant its replacement, then update this
+catalog:
+
+| Previous grant | Replacement |
+|---|---|
+| `conversion-landing-pages` | `rundesk-team-marketing/conversion-landing-pages` |
+| `lead-compliance-gates` | `rundesk-team-marketing/lead-compliance-gates` |
+| `researching-topics` | `rundesk-team-marketing/researching-topics` |
+| `seo` | `rundesk-team-marketing/seo` |
+| `writing-prds` | `rundesk-team-marketing/writing-prds` |
+
+```sh
+rundesk skills revoke ava seo
+rundesk skills grant ava rundesk-team-marketing/seo
+rundesk skills update rundesk-skills --confirm
+```
 
 ### Development workflow skills
 

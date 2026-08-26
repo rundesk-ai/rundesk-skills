@@ -82,7 +82,8 @@ manual. Verified on **August 7, 2026**.
   caching, rendering, and delivery traps.
 - `mysql-patterns`, `postgres-patterns`, and `sqlite-patterns` own engine plans, indexes, locking,
   pools, and storage behavior.
-- `seo` owns field-versus-lab Core Web Vitals when search performance is the goal.
+- `rundesk-team-marketing/seo` owns field-versus-lab Core Web Vitals when search performance is the
+  goal.
 
 This package owns the shared contract: choose the right measurement, preserve experimental validity,
 locate the limiting boundary, and prove that the system—not merely one isolated operation—improved.

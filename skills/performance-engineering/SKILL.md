@@ -16,7 +16,7 @@ This skill owns the investigation and proof. Load the stack owner for its profil
 - `cpp-patterns` or `python-patterns` for language/runtime work;
 - `laravel-patterns`, `vue-patterns`, or `inertia-patterns` for framework work;
 - `mysql-patterns`, `postgres-patterns`, or `sqlite-patterns` for query and engine behavior;
-- `seo` for Core Web Vitals when search or field CWV is the goal; and
+- `rundesk-team-marketing/seo` for Core Web Vitals when search or field CWV is the goal; and
 - `testing-code` when turning the result into a stable regression check.
 
 Read [profiling-and-observability.md](references/profiling-and-observability.md) when the limiting

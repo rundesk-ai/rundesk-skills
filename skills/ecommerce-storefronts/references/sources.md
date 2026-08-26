@@ -215,7 +215,7 @@ outcomes.
 - [CTIA: Messaging interoperability principles](https://www.ctia.org/the-wireless-industry/industry-commitments/messaging-interoperability-sms-mms)
   and [2023 update](https://www.ctia.org/news/ctia-updates-messaging-principles-and-best-practices-to-further-protect-consumers-from-unwanted-messages-while-supporting-the-growth-of-messaging)
   require opt-in and effective opt-out as carrier-industry policy. CTIA is not statute; use
-  `lead-compliance-gates` and current provider rules for implementation.
+  `rundesk-team-marketing/lead-compliance-gates` and current provider rules for implementation.
 - [PCI SSC FAQ 1588](https://www.pcisecuritystandards.org/faqs/1588/) describes the PCI DSS 4.0.1 SAQ
   A boundary for embedded versus redirected payment pages and merchant responsibility for script
   attacks. When Laravel and Stripe are in use, implementation belongs in

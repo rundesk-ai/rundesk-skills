@@ -30,6 +30,13 @@ MOVED_DEVELOPMENT_SKILLS = {
     "vue-patterns",
     "writing-technical-docs",
 }
+MOVED_MARKETING_SKILLS = {
+    "conversion-landing-pages",
+    "lead-compliance-gates",
+    "researching-topics",
+    "seo",
+    "writing-prds",
+}
 AGENT_HEADINGS = (
     "# AGENTS",
     "## Purpose",
@@ -147,6 +154,7 @@ class CatalogContract(unittest.TestCase):
             "rundesk-team-development/using-python",
             "rundesk/managing-github",
             "rundesk skills update rundesk-skills --confirm",
+            "rundesk-team-marketing/seo",
         ):
             with self.subTest(readme_contract=required):
                 self.assertIn(required, readme)
@@ -157,17 +165,13 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("pdf-creation", names)
         self.assertIn("performance-engineering", names)
         self.assertIn("creating-design-assets", names)
-        self.assertIn("conversion-landing-pages", names)
         self.assertIn("ecommerce-storefronts", names)
         self.assertIn("maintaining-task-briefs", names)
         self.assertIn("naming-grammar-conventions", names)
-        self.assertIn("lead-compliance-gates", names)
         self.assertIn("laravel-stripe-payments", names)
-        self.assertIn("researching-topics", names)
-        self.assertIn("seo", names)
         self.assertIn("working-as-an-assistant", names)
-        self.assertIn("writing-prds", names)
         self.assertEqual(set(), names & MOVED_DEVELOPMENT_SKILLS)
+        self.assertEqual(set(), names & MOVED_MARKETING_SKILLS)
 
     def test_every_entry_is_a_complete_named_skill(self):
         missing_sources = set()

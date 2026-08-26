@@ -1,16 +1,12 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
       "name": "creating-design-assets",
       "path": "skills/creating-design-assets"
-    },
-    {
-      "name": "conversion-landing-pages",
-      "path": "skills/conversion-landing-pages"
     },
     {
       "name": "ecommerce-storefronts",
@@ -19,10 +15,6 @@
     {
       "name": "laravel-stripe-payments",
       "path": "skills/laravel-stripe-payments"
-    },
-    {
-      "name": "lead-compliance-gates",
-      "path": "skills/lead-compliance-gates"
     },
     {
       "name": "maintaining-task-briefs",
@@ -41,24 +33,12 @@
       "path": "skills/performance-engineering"
     },
     {
-      "name": "researching-topics",
-      "path": "skills/researching-topics"
-    },
-    {
-      "name": "seo",
-      "path": "skills/seo"
-    },
-    {
       "name": "working-as-an-assistant",
       "path": "skills/working-as-an-assistant"
     },
     {
       "name": "writing-plans",
       "path": "skills/writing-plans"
-    },
-    {
-      "name": "writing-prds",
-      "path": "skills/writing-prds"
     }
   ]
 }
