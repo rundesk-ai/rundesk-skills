@@ -14,6 +14,7 @@ FORBIDDEN_PACKAGE_FILES = {"README.md", "CHANGELOG.md", "rundesk.json"}
 ALLOWED_PACKAGE_ROOTS = {"SKILL.md", "LICENSE.txt", "references", "assets"}
 LEGACY_PACKAGES_WITHOUT_SOURCES = {"pdf-creation"}
 MOVED_DEVELOPMENT_SKILLS = {
+    "conversion-landing-pages",
     "database-design",
     "debugging-code",
     "executing-development-tasks",
@@ -29,6 +30,12 @@ MOVED_DEVELOPMENT_SKILLS = {
     "testing-code",
     "vue-patterns",
     "writing-technical-docs",
+}
+MOVED_MARKETING_SKILLS = {
+    "lead-compliance-gates",
+    "researching-topics",
+    "seo",
+    "writing-prds",
 }
 AGENT_HEADINGS = (
     "# AGENTS",
@@ -144,30 +151,29 @@ class CatalogContract(unittest.TestCase):
             "rundesk skills install https://github.com/rundesk-ai/rundesk-skills --confirm",
             "rundesk skills grant ava rundesk-skills/writing-plans",
             "rundesk-team-development/testing-code",
+            "rundesk-team-development/designing-landing-pages",
             "rundesk-team-development/using-python",
             "rundesk/managing-github",
             "rundesk skills update rundesk-skills --confirm",
+            "rundesk-team-marketing/seo",
         ):
             with self.subTest(readme_contract=required):
                 self.assertIn(required, readme)
         self.assertNotIn("<agent>", readme)
+        self.assertNotIn("rundesk-team-marketing/conversion-landing-pages", readme)
 
     def test_general_catalog_contains_required_specialties(self):
         names = {entry["name"] for entry in self.manifest["skills"]}
         self.assertIn("pdf-creation", names)
         self.assertIn("performance-engineering", names)
         self.assertIn("creating-design-assets", names)
-        self.assertIn("conversion-landing-pages", names)
         self.assertIn("ecommerce-storefronts", names)
         self.assertIn("maintaining-task-briefs", names)
         self.assertIn("naming-grammar-conventions", names)
-        self.assertIn("lead-compliance-gates", names)
         self.assertIn("laravel-stripe-payments", names)
-        self.assertIn("researching-topics", names)
-        self.assertIn("seo", names)
         self.assertIn("working-as-an-assistant", names)
-        self.assertIn("writing-prds", names)
         self.assertEqual(set(), names & MOVED_DEVELOPMENT_SKILLS)
+        self.assertEqual(set(), names & MOVED_MARKETING_SKILLS)
 
     def test_every_entry_is_a_complete_named_skill(self):
         missing_sources = set()

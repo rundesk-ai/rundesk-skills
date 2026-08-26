@@ -5,8 +5,9 @@
 ## Story
 
 `rundesk-skills` is the general-purpose guidance catalog Rundesk installs by default. Its packages
-teach an agent repeatable judgment — how to research a topic, name things, write a plan, review a
-change, hold a brief — the decisions any capable agent has to make regardless of stack or domain.
+teach an agent repeatable judgment — how to name things, write a plan, hold a brief, work as an
+assistant, evaluate performance, and create reusable design or document assets — the decisions any
+capable agent has to make regardless of stack or domain.
 
 It is guidance only. Nothing here runs a command, calls a service, or holds a credential.
 
@@ -30,14 +31,14 @@ owner's installs is not recorded here.*
 
 ## Scope
 
-- **Covers:** general method — research, planning, requirements, technical writing, naming, code
-  review, testing, performance, design, SEO, commerce and landing pages, assistant work, and PDF
-  creation.
+- **Covers:** general method — planning, naming, performance, design assets, ecommerce storefronts,
+  Stripe payment architecture, assistant work, task briefs, and PDF creation.
 - **Refuses:**
   - Executables, service adapters, credentials, network calls, and `rundesk.json` declarations. Those
     belong in a guarded integration catalog.
-  - Domain guidance a specialist catalog owns — software delivery lives in the development team
-    catalog, game work in the gamedev catalog, service integrations in theirs.
+  - Domain guidance a specialist catalog owns — marketing lives in the marketing team catalog,
+    software delivery in the development team catalog, game work in the gamedev catalog, and service
+    integrations in theirs.
   - Product-owned operating skills, which ship with Rundesk itself.
   - Restating another package's manual. A skill routes to the owner rather than copying it.
 
