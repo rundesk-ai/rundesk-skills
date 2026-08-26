@@ -14,6 +14,7 @@ FORBIDDEN_PACKAGE_FILES = {"README.md", "CHANGELOG.md", "rundesk.json"}
 ALLOWED_PACKAGE_ROOTS = {"SKILL.md", "LICENSE.txt", "references", "assets"}
 LEGACY_PACKAGES_WITHOUT_SOURCES = {"pdf-creation"}
 MOVED_DEVELOPMENT_SKILLS = {
+    "conversion-landing-pages",
     "database-design",
     "debugging-code",
     "executing-development-tasks",
@@ -31,7 +32,6 @@ MOVED_DEVELOPMENT_SKILLS = {
     "writing-technical-docs",
 }
 MOVED_MARKETING_SKILLS = {
-    "conversion-landing-pages",
     "lead-compliance-gates",
     "researching-topics",
     "seo",
@@ -151,6 +151,7 @@ class CatalogContract(unittest.TestCase):
             "rundesk skills install https://github.com/rundesk-ai/rundesk-skills --confirm",
             "rundesk skills grant ava rundesk-skills/writing-plans",
             "rundesk-team-development/testing-code",
+            "rundesk-team-development/designing-landing-pages",
             "rundesk-team-development/using-python",
             "rundesk/managing-github",
             "rundesk skills update rundesk-skills --confirm",
@@ -159,6 +160,7 @@ class CatalogContract(unittest.TestCase):
             with self.subTest(readme_contract=required):
                 self.assertIn(required, readme)
         self.assertNotIn("<agent>", readme)
+        self.assertNotIn("rundesk-team-marketing/conversion-landing-pages", readme)
 
     def test_general_catalog_contains_required_specialties(self):
         names = {entry["name"] for entry in self.manifest["skills"]}

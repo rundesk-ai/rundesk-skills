@@ -54,8 +54,8 @@ the same-named gamedev skill. Then update this catalog.
 
 ### Marketing workflow skills
 
-The Rundesk marketing team owns research, SEO, landing-page planning, lead-compliance, and product-
-requirements skills. Install its catalog in skills-only mode to use them without creating the team:
+The Rundesk marketing team owns research, SEO, lead-compliance, and product-requirements skills.
+Install its catalog in skills-only mode to use them without creating the team:
 
 ```sh
 rundesk skills install https://github.com/rundesk-ai/rundesk-team-marketing
@@ -68,7 +68,6 @@ catalog:
 
 | Previous grant | Replacement |
 |---|---|
-| `conversion-landing-pages` | `rundesk-team-marketing/conversion-landing-pages` |
 | `lead-compliance-gates` | `rundesk-team-marketing/lead-compliance-gates` |
 | `researching-topics` | `rundesk-team-marketing/researching-topics` |
 | `seo` | `rundesk-team-marketing/seo` |
@@ -82,8 +81,8 @@ rundesk skills update rundesk-skills --confirm
 
 ### Development workflow skills
 
-The Rundesk development team owns the coding and product-design skills. Install its catalog in
-skills-only mode to use them without creating the team:
+The Rundesk development team owns coding, product-design, and landing-page design skills. Install
+its catalog in skills-only mode to use them without creating the team:
 
 ```sh
 rundesk skills install https://github.com/rundesk-ai/rundesk-team-development
@@ -97,6 +96,7 @@ grant its replacement, then update this catalog:
 
 | Previous grant | Replacement |
 |---|---|
+| `conversion-landing-pages` | `rundesk-team-development/designing-landing-pages` |
 | `database-design` | `rundesk-team-development/designing-databases` |
 | `debugging-code` | `rundesk-team-development/debugging-code` |
 | `executing-development-tasks` | `rundesk-team-development/managing-development-work` |

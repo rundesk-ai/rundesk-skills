@@ -190,7 +190,7 @@ state, and a campaign-specific offer to a dedicated page when that makes the pro
 
 Use `rundesk-team-marketing/seo` for crawling, indexing, product structured data, feeds, category and
 product search visibility, and AI shopping surfaces. Use
-`rundesk-team-marketing/conversion-landing-pages` to plan a dedicated single-offer campaign
+`rundesk-team-development/designing-landing-pages` to design a dedicated single-offer campaign
 destination and its source-to-page message match. The storefront remains responsible for the
 complete catalog, product, cart, checkout, fulfillment, and retained-value journey after arrival.
 
