@@ -5,9 +5,10 @@
 ## Story
 
 `rundesk-skills` is the general-purpose guidance catalog Rundesk installs by default. Its packages
-teach an agent repeatable judgment — how to name things, write a plan, hold a brief, work as an
-assistant, evaluate performance, and create reusable design or document assets — the decisions any
-capable agent has to make regardless of stack or domain.
+teach an agent repeatable judgment — how to write a plan, write task and bug tickets people can
+read, work as an assistant, and create reusable design assets — the decisions any capable agent has
+to make regardless of stack or domain. Development implementation guidance lives in the development
+team catalog, not here.
 
 It is guidance only. Nothing here runs a command, calls a service, or holds a credential.
 
@@ -31,8 +32,7 @@ owner's installs is not recorded here.*
 
 ## Scope
 
-- **Covers:** general method — planning, naming, performance, design assets, ecommerce storefronts,
-  Stripe payment architecture, assistant work, task briefs, and PDF creation.
+- **Covers:** general method — planning, task and bug tickets, assistant work, and design assets.
 - **Refuses:**
   - Executables, service adapters, credentials, network calls, and `rundesk.json` declarations. Those
     belong in a guarded integration catalog.

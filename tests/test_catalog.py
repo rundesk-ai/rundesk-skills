@@ -12,7 +12,7 @@ ALLOWED = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 CATALOG_GUIDE_URL = "https://github.com/rundesk-ai/rundesk-cli/blob/main/docs/catalogs.md"
 FORBIDDEN_PACKAGE_FILES = {"README.md", "CHANGELOG.md", "rundesk.json"}
 ALLOWED_PACKAGE_ROOTS = {"SKILL.md", "LICENSE.txt", "references", "assets"}
-LEGACY_PACKAGES_WITHOUT_SOURCES = {"pdf-creation"}
+LEGACY_PACKAGES_WITHOUT_SOURCES = set()
 MOVED_DEVELOPMENT_SKILLS = {
     "conversion-landing-pages",
     "database-design",
@@ -30,6 +30,15 @@ MOVED_DEVELOPMENT_SKILLS = {
     "testing-code",
     "vue-patterns",
     "writing-technical-docs",
+}
+RETIRED_SKILLS = {
+    "ecommerce-storefronts",
+    "laravel-stripe-payments",
+    "maintaining-task-briefs",
+    "naming-grammar-conventions",
+    "pdf-creation",
+    "performance-engineering",
+    "writing-tasks",
 }
 MOVED_MARKETING_SKILLS = {
     "lead-compliance-gates",
@@ -151,18 +160,13 @@ class CatalogContract(unittest.TestCase):
 
     def test_general_catalog_contains_required_specialties(self):
         names = {entry["name"] for entry in self.manifest["skills"]}
-        self.assertIn("pdf-creation", names)
-        self.assertIn("performance-engineering", names)
         self.assertIn("creating-design-assets", names)
-        self.assertIn("ecommerce-storefronts", names)
-        self.assertIn("maintaining-task-briefs", names)
-        self.assertIn("naming-grammar-conventions", names)
-        self.assertIn("laravel-stripe-payments", names)
         self.assertIn("working-as-an-assistant", names)
         self.assertIn("writing-bug-tickets", names)
         self.assertIn("writing-task-tickets", names)
         self.assertEqual(set(), names & MOVED_DEVELOPMENT_SKILLS)
         self.assertEqual(set(), names & MOVED_MARKETING_SKILLS)
+        self.assertEqual(set(), names & RETIRED_SKILLS)
 
     def test_every_entry_is_a_complete_named_skill(self):
         missing_sources = set()

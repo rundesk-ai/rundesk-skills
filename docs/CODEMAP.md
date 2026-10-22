@@ -6,7 +6,7 @@ the tree moves on without this page.
 A catalog is mostly one shape repeated: every package is a directory under `skills/` holding a
 `SKILL.md` and the references it loads on demand. Nothing else in the repository is large.
 
-## Packages (skills/ — 11, 36 reference files)
+## Packages (skills/ — 5, 15 reference files)
 
 Each holds `SKILL.md` (routing plus core procedure) and `references/` (conditional detail).
 `references/sources.md` is required in every touched package.
@@ -14,12 +14,6 @@ Each holds `SKILL.md` (routing plus core procedure) and `references/` (condition
 | Package | References |
 |---|---|
 | `creating-design-assets` | 5 |
-| `ecommerce-storefronts` | 4 |
-| `laravel-stripe-payments` | 7 |
-| `maintaining-task-briefs` | 1 |
-| `naming-grammar-conventions` | 5 |
-| `pdf-creation` | 0 |
-| `performance-engineering` | 4 |
 | `working-as-an-assistant` | 4 |
 | `writing-bug-tickets` | 2 |
 | `writing-plans` | 1 |

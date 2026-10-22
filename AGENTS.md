@@ -31,7 +31,6 @@ for organization-wide catalog structure and boundaries.
    pattern, and source of truth.
 3. Load the smallest set of available skills that applies to the task. Use the current Rundesk `writing-skills`
    guidance for skill changes and `managing-github` for pull requests or releases when available.
-   When a recurring term crosses files or layers, use `naming-grammar-conventions` when available.
    If governing guidance is unavailable, preserve established conventions and report the limitation;
    do not invent another required skill.
 4. Inspect the worktree before editing. Preserve unrelated work and coordinate overlapping changes.

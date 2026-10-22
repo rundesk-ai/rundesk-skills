@@ -6,12 +6,6 @@ skill packages and no service integration commands, credentials, or shared state
 ## Skills
 
 - `creating-design-assets`
-- `ecommerce-storefronts`
-- `laravel-stripe-payments`
-- `maintaining-task-briefs`
-- `naming-grammar-conventions`
-- `pdf-creation`
-- `performance-engineering`
 - `working-as-an-assistant`
 - `writing-plans`
 - `writing-bug-tickets`
