@@ -172,6 +172,7 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("naming-grammar-conventions", names)
         self.assertIn("laravel-stripe-payments", names)
         self.assertIn("working-as-an-assistant", names)
+        self.assertIn("writing-tasks", names)
         self.assertEqual(set(), names & MOVED_DEVELOPMENT_SKILLS)
         self.assertEqual(set(), names & MOVED_MARKETING_SKILLS)
 
