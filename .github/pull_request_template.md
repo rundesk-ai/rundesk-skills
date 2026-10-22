@@ -1,35 +1,12 @@
-## Problem
+## Summary
 
-<!-- State the current behavior or limitation, who or what it affects, and the consequence. -->
+<!-- What was wrong or missing, and what is true now. One or two sentences. -->
 
-## Proposed solution
+## Changes
 
-<!-- Describe the implemented outcome, important decisions and rationale, its boundary, and preserved behavior. -->
+- <!-- One change per bullet, as someone using the catalog would notice it — not a file list. Add one bold **Breaking:** or **Risk:** line when it applies. -->
 
-## Evidence
-
-<!-- Give concise before-and-after observations, source locations, measurements, or contract links that support the merge case. Distinguish evidence from validation. -->
-
-## Scope and compatibility
-
-- Skills changed:
-- User-visible guidance:
-- Preserved behavior:
-- Executables, service adapters, credentials, or network behavior added: none
-- Third-party source, attribution, or license changes: none
-
-## Risks and safeguards
-
-<!-- Cover material credential, privacy, destructive, deployment, compatibility, or other risks. State "No material risk identified" when none applies. -->
-
-- Risk:
-- Guard:
-
-## Acceptance criteria
-
-- [ ] <!-- Independently checkable outcome proven by this exact head. -->
-
-## Validation
+## Testing
 
 - [ ] `python3 -m unittest discover -s tests -v`
 - [ ] Every touched `SKILL.md` and `references/sources.md` was read completely.
@@ -38,7 +15,7 @@
 - [ ] Required GitHub checks pass for the exact head commit.
 
 ```text
-# Exact validation and manual verification commands with observed results
+# Each command or check run on this exact head, with what it showed
 ```
 
 ## Repository gates
@@ -56,17 +33,3 @@
 - Manifest version: `<before>` → `<after>`
 - SemVer reason:
 - Release or follow-up required after merge:
-
-## Manual user path
-
-<!-- Give the shortest representative trigger or workflow and expected agent behavior. Explain when no manual user path applies. -->
-
-```text
-
-```
-
-## Agent
-
-<!-- Replace the placeholder with the filing agent's display name. Do not add provider, model, tool, session, or generated-by branding. -->
-
-🤖 by <Agent>

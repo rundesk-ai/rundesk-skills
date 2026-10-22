@@ -1,9 +1,9 @@
 ---
-name: writing-tasks
-description: Use when writing, rewriting, trimming or scoping a task, ticket, issue, story or epic that stakeholders read to understand what needs doing and why — including turning a stated problem into a task, cutting a long or process-heavy ticket down, or deciding whether one should be split. It supplies a four-section shape, outcome-level pass-or-fail requirements, and what to leave out. Do not use for implementation plans or build steps, or for a full product requirements document.
+name: writing-task-tickets
+description: Use when writing, rewriting, trimming or scoping a task ticket, story or epic in a tracker such as Jira or Linear that stakeholders read to understand what needs doing and why — including turning a stated problem into a ticket, cutting a long or process-heavy one down, or deciding whether one should be split. It supplies a four-section shape, outcome-level pass-or-fail requirements, and what to leave out. Do not use for a bug report, a GitHub issue, an implementation plan or build steps, or a full product requirements document.
 ---
 
-# Writing tasks
+# Writing task tickets
 
 A task tells a stakeholder — someone who decides, funds, tracks or is affected by the work — what
 needs doing, why it is worth doing, and how they will know it is done, in about a minute. Engineers

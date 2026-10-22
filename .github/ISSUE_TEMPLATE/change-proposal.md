@@ -6,36 +6,20 @@ labels: ""
 assignees: ""
 ---
 
+<!-- Never include credentials, personal data, private identifiers, or owner-specific paths. -->
+
 ## Problem
 
-<!-- State the current limitation, who or what it affects, and its practical consequence. -->
+<!-- What is missing or wrong today, then what it costs. Two sentences. -->
 
-## Proposed solution
+## Goal
 
-<!-- Describe the outcome that should replace the current state and the boundary of the proposal. -->
+<!-- What is true once this is handled. One sentence. -->
 
-## Evidence
+## Done when
 
-<!-- Support the problem with an observed example, measurement, request pattern, source location, or documented contract. Distinguish observation from inference. -->
+<!-- One pass-or-fail outcome per line that someone can check, with no implementation steps. -->
 
-## Scope and compatibility
+## Not included
 
-<!-- Name affected contracts, compatibility constraints, permissions, dependencies, and migration needs. -->
-
-## Acceptance criteria
-
-<!-- Give independently checkable outcomes that must all be true for the proposal to be complete. -->
-
-## Verification
-
-<!-- State which automated checks and representative user path will prove the acceptance criteria. -->
-
-## Alternatives considered
-
-<!-- State the existing path or smaller alternative considered. -->
-
-## Agent
-
-<!-- Only for a named agent: replace the placeholder with its display name and keep this section. Anyone else deletes the section entirely. Never add provider, model, tool, session, or generated-by branding. -->
-
-🤖 by <Agent>
+<!-- Only what a reader might assume is part of this but is not. Delete this section when nothing needs saying. -->

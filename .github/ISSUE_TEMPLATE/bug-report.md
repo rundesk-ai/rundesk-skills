@@ -1,41 +1,37 @@
 ---
 name: Bug report
-about: Report reproducible incorrect behavior
+about: Report something that is broken
 title: "[Bug] "
 labels: ""
 assignees: ""
 ---
 
+<!-- Never include credentials, personal data, private identifiers, or owner-specific paths. -->
+
 ## Problem
 
-<!-- State what happened, who is affected, and why the result is incorrect. -->
+<!-- What goes wrong and for whom, then what it costs. Two sentences. -->
 
-## Reproduction
+## Steps to reproduce
 
-<!-- Give the smallest exact setup and ordered actions that reproduce the problem. -->
+<!-- From a known starting state, one action per step. If it has not been reproduced, say so instead of guessing steps. -->
 
-## Expected behavior
+## Expected
 
-<!-- State the observable result that should occur instead. -->
+<!-- What should happen. -->
 
-## Evidence
+## Actual
 
-<!-- Include fresh, sanitized output, errors, screenshots, source locations, or a regression range. Distinguish observation from inference. -->
+<!-- What happens instead, quoting the exact error. -->
 
-## Acceptance criteria
+## Tested
 
-<!-- Give independently checkable outcomes that distinguish fixed from unfixed. Do not prescribe an implementation. -->
+<!-- Where it fails, where it does not, how often, and when it started if known. Mark unknowns rather than guessing. -->
 
-## Environment
+## Done when
 
-<!-- Include only relevant versions, commit, operating system, runtime, and configuration names. Never include secret values. -->
+<!-- Pass-or-fail outcomes, starting with the steps above giving the expected result. -->
 
-## Scope and privacy
+## Not included
 
-<!-- State the affected surface and confirm the report contains no credentials, personal data, private identifiers, or owner-specific paths. -->
-
-## Agent
-
-<!-- Only for a named agent: replace the placeholder with its display name and keep this section. Anyone else deletes the section entirely. Never add provider, model, tool, session, or generated-by branding. -->
-
-🤖 by <Agent>
+<!-- Only what a reader might assume is part of this fix. Delete this section when nothing needs saying. -->

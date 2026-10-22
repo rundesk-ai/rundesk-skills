@@ -6,7 +6,7 @@ the tree moves on without this page.
 A catalog is mostly one shape repeated: every package is a directory under `skills/` holding a
 `SKILL.md` and the references it loads on demand. Nothing else in the repository is large.
 
-## Packages (skills/ — 10, 34 reference files)
+## Packages (skills/ — 11, 36 reference files)
 
 Each holds `SKILL.md` (routing plus core procedure) and `references/` (conditional detail).
 `references/sources.md` is required in every touched package.
@@ -21,14 +21,15 @@ Each holds `SKILL.md` (routing plus core procedure) and `references/` (condition
 | `pdf-creation` | 0 |
 | `performance-engineering` | 4 |
 | `working-as-an-assistant` | 4 |
+| `writing-bug-tickets` | 2 |
 | `writing-plans` | 1 |
-| `writing-tasks` | 4 |
+| `writing-task-tickets` | 3 |
 
 ## Catalog identity (root)
 
 | File | What it is |
 |---|---|
-| `manifest.json` | schema, name, version (`6.1.0`), description, and the legacy `skills` index the CLI ignores but the tests require |
+| `manifest.json` | schema, name, version (`7.0.0`), description, and the legacy `skills` index the CLI ignores but the tests require |
 | `README.md` | the consumer contract: what the catalog is, how to install it, and every package |
 | `AGENTS.md`, `CLAUDE.md` | the repository guide, byte-identical by contract |
 | `RELEASING.md` | the publication contract |

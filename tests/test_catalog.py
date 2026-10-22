@@ -52,25 +52,17 @@ AGENT_HEADINGS = (
     "## Definition of done",
 )
 PR_HEADINGS = (
-    "## Problem",
-    "## Proposed solution",
-    "## Evidence",
-    "## Scope and compatibility",
-    "## Risks and safeguards",
-    "## Acceptance criteria",
-    "## Validation",
+    "## Summary",
+    "## Changes",
+    "## Testing",
     "## Repository gates",
     "## Release",
-    "## Manual user path",
-    "## Agent",
 )
 PR_CHECKLIST_ANCHORS = (
-    "- Skills changed:",
     "- [ ] `python3 -m unittest discover -s tests -v`",
     "- [ ] Required GitHub checks pass for the exact head commit.",
     "- [ ] The diff contains no credential, customer identifier, private-project language, owner-specific path, generated filler, or unrelated artifact.",
     "- [ ] `README.md`, `manifest.json`, `tests/test_catalog.py`, and `skills/` agree.",
-    "🤖 by <Agent>",
 )
 README_HEADINGS = (
     "## Skills",
@@ -86,28 +78,23 @@ README_HEADINGS = (
 ISSUE_HEADINGS = {
     "bug-report.md": (
         "## Problem",
-        "## Reproduction",
-        "## Expected behavior",
-        "## Evidence",
-        "## Acceptance criteria",
-        "## Environment",
-        "## Scope and privacy",
-        "## Agent",
+        "## Steps to reproduce",
+        "## Expected",
+        "## Actual",
+        "## Tested",
+        "## Done when",
+        "## Not included",
     ),
     "change-proposal.md": (
         "## Problem",
-        "## Proposed solution",
-        "## Evidence",
-        "## Scope and compatibility",
-        "## Acceptance criteria",
-        "## Verification",
-        "## Alternatives considered",
-        "## Agent",
+        "## Goal",
+        "## Done when",
+        "## Not included",
     ),
 }
 ISSUE_DIGESTS = {
-    "bug-report.md": "6e8eadbdaf3198c29ed33edf6b3abaf7374cfca5adb05d46c85daedeb1281276",
-    "change-proposal.md": "82c13fe89d21778e23de6c9a7ae7e918960cf78d4b2cccd69041e9160e97fdbd",
+    "bug-report.md": "916571368315bd276f2ae4e6c7c89c6767e109032450b311939f379f241a462e",
+    "change-proposal.md": "6a26590994ed49343e6b028a6ed607e39df4f4ef90c8f733640bbdaa7ac2c65d",
 }
 
 
@@ -172,7 +159,8 @@ class CatalogContract(unittest.TestCase):
         self.assertIn("naming-grammar-conventions", names)
         self.assertIn("laravel-stripe-payments", names)
         self.assertIn("working-as-an-assistant", names)
-        self.assertIn("writing-tasks", names)
+        self.assertIn("writing-bug-tickets", names)
+        self.assertIn("writing-task-tickets", names)
         self.assertEqual(set(), names & MOVED_DEVELOPMENT_SKILLS)
         self.assertEqual(set(), names & MOVED_MARKETING_SKILLS)
 
@@ -240,6 +228,7 @@ class CatalogContract(unittest.TestCase):
             PR_HEADINGS,
             tuple(re.findall(r"^## .+$", pull_request_text, re.MULTILINE)),
         )
+        self.assertNotIn("🤖", pull_request_text)
         for anchor in PR_CHECKLIST_ANCHORS:
             with self.subTest(pull_request_anchor=anchor):
                 self.assertIn(anchor, pull_request_text)
@@ -262,7 +251,7 @@ class CatalogContract(unittest.TestCase):
                     ISSUE_DIGESTS[filename],
                     hashlib.sha256(issue_bytes).hexdigest(),
                 )
-                self.assertIn("🤖 by <Agent>", issue_bytes.decode("utf-8"))
+                self.assertNotIn("🤖", issue_bytes.decode("utf-8"))
                 self.assertEqual(
                     expected,
                     tuple(re.findall(r"^## .+$", issue_bytes.decode("utf-8"), re.MULTILINE)),

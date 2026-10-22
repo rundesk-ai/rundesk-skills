@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "name": "rundesk-skills",
-  "version": "6.1.0",
+  "version": "7.0.0",
   "description": "Curated general-purpose guidance for Rundesk agents.",
   "skills": [
     {
@@ -37,12 +37,16 @@
       "path": "skills/working-as-an-assistant"
     },
     {
+      "name": "writing-bug-tickets",
+      "path": "skills/writing-bug-tickets"
+    },
+    {
       "name": "writing-plans",
       "path": "skills/writing-plans"
     },
     {
-      "name": "writing-tasks",
-      "path": "skills/writing-tasks"
+      "name": "writing-task-tickets",
+      "path": "skills/writing-task-tickets"
     }
   ]
 }
