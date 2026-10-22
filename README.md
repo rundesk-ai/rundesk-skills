@@ -14,6 +14,7 @@ skill packages and no service integration commands, credentials, or shared state
 - `performance-engineering`
 - `working-as-an-assistant`
 - `writing-plans`
+- `writing-tasks`
 
 ## Install
 
